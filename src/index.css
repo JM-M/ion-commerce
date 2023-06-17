@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+
+:root {
+  --ion-color-primary: #1976d2;
+  --ion-color-primary-rgb: 25, 118, 210;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #1668b9;
+  --ion-color-primary-tint: #3084d7;
+
+  --ion-color-secondary: #d9d9d9;
+  --ion-color-secondary-rgb: 217, 217, 217;
+  --ion-color-secondary-contrast: #333333;
+  --ion-color-secondary-contrast-rgb: 0, 0, 0;
+  --ion-color-secondary-shade: #bfbfbf;
+  --ion-color-secondary-tint: #dddddd;
+
+  --ion-color-tertiary: #5200ff;
+  --ion-color-tertiary-rgb: 82, 0, 255;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #4800e0;
+  --ion-color-tertiary-tint: #631aff;
+
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast-rgb: 0, 0, 0;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  --ion-color-danger: #ea2d2d;
+  --ion-color-danger-rgb: 234, 45, 45;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #ce2828;
+  --ion-color-danger-tint: #ec4242;
+
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #000000;
+  --ion-color-medium-contrast-rgb: 0, 0, 0;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  --ion-color-dark: #333333;
+  --ion-color-dark-rgb: 51, 51, 51;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #2d2d2d;
+  --ion-color-dark-tint: #474747;
+
+  --ion-font-family: 'Ubuntu', sans-serif;
+}
+
+ion-searchbar {
+  --box-shadow: none !important;
+}
+
+ion-menu-button,
+ion-menu-button::part(native),
+ion-back-button,
+ion-back-button::part(native) {
+  @apply w-fit p-0;
+}
+
+#main-content {
+  box-shadow: none;
+}
+
+ion-button {
+  text-transform: none;
+  --border-radius: 8px;
+  --box-shadow: none;
+}
+
+ion-button[fill='outline'] {
+  --border-width: 1px;
+}
+
+ion-label {
+  @apply !mb-1;
+}
+
+.button-native {
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+}
+
+/* Custom classes */
+
+/* Controls whitespace between components and the two sides */
+.container {
+  @apply px-5;
+}
