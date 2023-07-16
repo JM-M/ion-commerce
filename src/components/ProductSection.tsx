@@ -1,15 +1,6 @@
 import { Link } from 'react-router-dom';
 import { IonButton } from '@ionic/react';
-import { useQuery } from '@tanstack/react-query';
-import {
-  query,
-  collection,
-  where,
-  documentId,
-  getDocs,
-} from 'firebase/firestore';
 import ProductGrid from './ProductGrid';
-import { db } from '../../firebase';
 import useProducts from '../hooks/useProducts';
 
 interface Props {
@@ -28,7 +19,7 @@ const ProductSection = ({
   const { productsQuery } = useProducts({ productIds });
   const { data: products = [], isLoading } = productsQuery;
 
-  if (isLoading) return 'Loading...';
+  if (isLoading) return <>Loading...</>;
 
   return (
     <div className='container py-[30px]'>

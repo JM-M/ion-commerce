@@ -2,15 +2,15 @@ import { IonImg } from '@ionic/react';
 import { Control } from 'react-hook-form/dist/types/form';
 import cx from 'classnames';
 import { NAIRA } from '../constants/unicode';
-import { Delivery } from '../constants/schemas/checkout';
+import { CheckoutDelivery } from '../constants/schemas/checkout';
 
 export interface Props {
-  control: Control<Delivery, any>;
+  control: Control<CheckoutDelivery, any>;
   setValue: Function;
   selectedOptionId: string;
 }
 
-const DELIVERY_OPTIONS: Delivery[] = [
+const DELIVERY_OPTIONS: CheckoutDelivery[] = [
   {
     carrier: 'Carrier 1',
     estimatedDeliveryDate: 'Within 2 days',

@@ -12,9 +12,7 @@ const Search = () => {
       <div className='container flex justify-end items-center py-3'>
         <QueryController />
       </div>
-      <IonContent>
-        <ProductSection numProducts={8} />
-      </IonContent>
+      <IonContent>{/* <ProductSection numProducts={8} /> */}</IonContent>
     </>
   );
 };

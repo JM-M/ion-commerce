@@ -69,7 +69,6 @@ const queryClient = new QueryClient();
 
 const App: React.FC = () => {
   const [authModal, setAuthModal] = useState({ isOpen: false, form: 'login' });
-  const [cart, setCart] = useState({ products: [] });
 
   return (
     <QueryClientProvider client={queryClient}>

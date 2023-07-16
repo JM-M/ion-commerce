@@ -1,10 +1,9 @@
-import { RouteComponentProps } from 'react-router';
 import { IonContent, IonButton } from '@ionic/react';
 import SubCategorySelector from '../components/SubCategorySelector';
 import QueryController from '../components/QueryController';
 import ProductSection from '../components/ProductSection';
 
-const Category: React.FC<RouteComponentProps> = ({ match: { url } }) => {
+const Category = () => {
   return (
     <>
       <div className='w-screen overflow-x-auto'>
@@ -36,9 +35,7 @@ const Category: React.FC<RouteComponentProps> = ({ match: { url } }) => {
         <SubCategorySelector />
         <QueryController />
       </div>
-      <IonContent>
-        <ProductSection numProducts={8} />
-      </IonContent>
+      <IonContent>{/* <ProductSection numProducts={8} /> */}</IonContent>
     </>
   );
 };

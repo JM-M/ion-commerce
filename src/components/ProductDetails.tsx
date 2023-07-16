@@ -46,9 +46,9 @@ const ProductDetails = ({ id }: Props) => {
     }, []);
   }, [stocks, variant, variantKeys]);
 
-  if (isLoading) return 'Loading...';
-  if (isError) return 'An error occurred';
-  if (!product) return 'No product';
+  if (isLoading) return <>Loading...</>;
+  if (isError) return <>An error occurred</>;
+  if (!product) return <>No product</>;
 
   return (
     <>
