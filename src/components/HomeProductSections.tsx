@@ -11,18 +11,22 @@ const HomeProductSections = () => {
   if (!sections) return <>No data</>;
   if (!Array.isArray(sections)) return <>sections is not an array</>;
 
-  return sections.map((section: DatabaseProductSection, index: number) => {
-    const { title, products, id = '' } = section;
-    return (
-      <ProductSection
-        key={index}
-        title={title}
-        productIds={products}
-        id={id}
-        fullPageHref='#'
-      />
-    );
-  });
+  return (
+    <>
+      {sections.map((section: DatabaseProductSection, index: number) => {
+        const { title, products, id = '' } = section;
+        return (
+          <ProductSection
+            key={index}
+            title={title}
+            productIds={products}
+            id={id}
+            fullPageHref='#'
+          />
+        );
+      })}
+    </>
+  );
 };
 
 export default HomeProductSections;

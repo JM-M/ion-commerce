@@ -15,7 +15,7 @@ const OrderSummary = () => {
 
   const toggleExpanded = () => setExpanded((v) => !v);
 
-  if (cartQuery.isLoading) return 'Loading...';
+  if (cartQuery.isLoading) return <>Loading...</>;
 
   const numProducts = products.length;
   const expandable = numProducts > DEFAULT_SUMMARY_SIZE;
