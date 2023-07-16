@@ -9,7 +9,7 @@ const CheckoutSteps: React.FC<{
   setStep: Function;
 }> = ({ steps = [], step, setStep = () => null }) => {
   return (
-    <div className='container mt-10'>
+    <div className='container mt-10 mb-5'>
       <div className='w-fit flex items-center gap-[10px] mx-auto'>
         {steps.map((stepOption, i) => {
           const active = stepOption === step;

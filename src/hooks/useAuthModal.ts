@@ -12,7 +12,7 @@ const useAuthModal = () => {
     setAuthModal({ isOpen: false, form: 'login' });
   };
 
-  return { openAuthModal, authModal };
+  return { openAuthModal, authModal, closeAuthModal };
 };
 
 export default useAuthModal;

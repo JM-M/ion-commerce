@@ -1,8 +1,35 @@
 import { Link } from 'react-router-dom';
 import { IonButton } from '@ionic/react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  query,
+  collection,
+  where,
+  documentId,
+  getDocs,
+} from 'firebase/firestore';
 import ProductGrid from './ProductGrid';
+import { db } from '../../firebase';
+import useProducts from '../hooks/useProducts';
 
-const ProductSection = ({ title = '', fullPageHref = '', numProducts = 4 }) => {
+interface Props {
+  title: string;
+  fullPageHref: string;
+  productIds: string[];
+  id: string;
+}
+
+const ProductSection = ({
+  title = '',
+  fullPageHref = '',
+  productIds = [],
+  id = '',
+}: Props) => {
+  const { productsQuery } = useProducts({ productIds });
+  const { data: products = [], isLoading } = productsQuery;
+
+  if (isLoading) return 'Loading...';
+
   return (
     <div className='container py-[30px]'>
       {(title || fullPageHref) && (
@@ -15,7 +42,7 @@ const ProductSection = ({ title = '', fullPageHref = '', numProducts = 4 }) => {
           )}
         </div>
       )}
-      <ProductGrid numProducts={numProducts} />
+      <ProductGrid products={products} />
       <IonButton
         color='secondary'
         className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'

@@ -1,13 +1,33 @@
-import { IonItem, IonLabel, IonInput, IonButton } from '@ionic/react';
+import { IonButton, IonSpinner } from '@ionic/react';
 import { FcGoogle } from 'react-icons/fc';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Input from './Input';
+import { UserLogin } from '../constants/schemas/auth';
+import { userLoginSchema } from '../constants/schemas/auth';
 
 import useAuthModal from '../hooks/useAuthModal';
+import useAuth from '../hooks/useAuth';
 
 const LoginForm = () => {
   const { openAuthModal } = useAuthModal();
+  const { login, loginMutation } = useAuth();
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(userLoginSchema) });
+
+  const submit = (values: UserLogin) => {
+    login(values);
+  };
+
+  const logginIn = loginMutation.isLoading;
+
   return (
     <div className='container flex flex-col justify-center min-h-[calc(100vh_-_56px)] py-10'>
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={handleSubmit(submit)}>
         <h2 className='mb-10 font-medium text-lg text-center'>
           Login to CubeJKiddies
         </h2>
@@ -19,14 +39,19 @@ const LoginForm = () => {
         <div className='text-xs text-[var(--ion-color-medium)] text-center'>
           Or with email and password
         </div>
-        <IonItem>
-          <IonLabel position='floating'>Email</IonLabel>
-          <IonInput type='email' aria-label='Email' />
-        </IonItem>
-        <IonItem>
-          <IonLabel position='floating'>Password</IonLabel>
-          <IonInput aria-label='First name' type='password' />
-        </IonItem>
+        <Input
+          label='Email'
+          labelPlacement='floating'
+          {...register('email')}
+          errorText={errors.email?.message}
+        />
+        <Input
+          type='password'
+          label='Password'
+          labelPlacement='floating'
+          {...register('password')}
+          errorText={errors.password?.message}
+        />
         <div className='flex justify-end mt-1'>
           <span className='font-medium text-[var(--ion-color-medium)]'>
             Forgot password?
@@ -37,7 +62,9 @@ const LoginForm = () => {
           className='h-[50px] mt-[30px]'
           type='submit'
           expand='block'
+          disabled={logginIn}
         >
+          {logginIn && <IonSpinner name='dots' className='inline-block mr-3' />}
           Log in
         </IonButton>
       </form>

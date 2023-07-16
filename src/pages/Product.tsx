@@ -1,16 +1,18 @@
-// import { Link } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
 import { IonContent, IonIcon, useIonRouter } from '@ionic/react';
 import { arrowBackOutline } from 'ionicons/icons';
-import ProductCarousel from '../components/ProductCarousel';
-import ProductInfo from '../components/ProductInfo';
-import ProductVariants from '../components/ProductVariants';
-import AddToCartButton from '../components/AddToCartButton';
-import ProductDescription from '../components/ProductDescription';
-import ProductReviews from '../components/ProductReviews';
+import ProductDetails from '../components/ProductDetails';
 
-const Product: React.FC = () => {
+interface Props
+  extends RouteComponentProps<{
+    productId: string;
+  }> {}
+
+const Product: React.FC<Props> = ({ match }) => {
   const ionRouter = useIonRouter();
   const { canGoBack, goBack, push } = ionRouter;
+
+  const { productId = '' } = match.params;
 
   return (
     <IonContent>
@@ -22,12 +24,7 @@ const Product: React.FC = () => {
           onClick={() => (canGoBack() ? goBack() : push('/store', 'back'))}
         />
       </div>
-      <ProductCarousel />
-      <ProductInfo />
-      <ProductVariants />
-      <AddToCartButton />
-      <ProductDescription />
-      <ProductReviews />
+      <ProductDetails id={productId} />
     </IonContent>
   );
 };

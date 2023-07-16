@@ -1,25 +1,30 @@
+import { IonImg } from '@ionic/react';
 import { DotGroup, Dot } from 'pure-react-carousel';
 import cx from 'classnames';
 
-const ProductCarouselControls = () => {
+const ProductCarouselControls: React.FC<{ images: string[] }> = ({
+  images,
+}) => {
   return (
     <DotGroup
-      className='container flex gap-[10px]'
-      renderDots={({ totalSlides, currentSlide, ...rest }) => {
-        return [...Array(totalSlides)].map((_, i) => {
+      className='container flex gap-[10px] mt-3'
+      renderDots={({ currentSlide }) => {
+        return images.map((image, i) => {
           const active = i === currentSlide;
           return (
-            <Dot
-              key={i}
-              slide={i}
-              className={cx(
-                'h-[50px] w-[60px] bg-gray-200 rounded-[8px] border border-solid transition-[border-color] ease-in-out duration-150',
-                {
-                  'border-transparent': !active,
-                  'border-pri': active,
-                }
-              )}
-            />
+            <Dot key={i} slide={i} className='h-fit w-fit'>
+              <div
+                className={cx(
+                  'relative h-[75px] w-[60px] bg-gray-200 border border-solid transition-[border-color] ease-in-out duration-150 rounded-lg overflow-hidden',
+                  {
+                    'border-transparent': !active,
+                    'border-black': active,
+                  }
+                )}
+              >
+                <IonImg src={image} alt={`Slide ${i + 1}`} />
+              </div>
+            </Dot>
           );
         });
       }}

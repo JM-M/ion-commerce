@@ -1,110 +1,42 @@
-import {
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonButton,
-  IonList,
-  IonSelect,
-  IonSelectOption,
-} from '@ionic/react';
+import CheckoutContactForm from './CheckoutContactForm';
+import CheckoutAddressForm from './CheckoutAddressForm';
+import CheckoutDeliveryForm from './CheckoutDeliveryForm';
+import useCheckout, { CheckoutStep } from '../hooks/useCheckout';
+import useCart from '../hooks/useCart';
 
-import DeliveryOptions from './DeliveryOptions';
+const CheckoutForm: React.FC<{ step: string; setStep: Function }> = ({
+  step,
+  setStep = () => null,
+}) => {
+  const { cartQuery } = useCart();
+  const { submitCheckoutContact, submitCheckoutAddress, submitting } =
+    useCheckout({
+      step: step as CheckoutStep,
+      setStep,
+    });
 
-import { NAIRA } from '../constants/unicode';
+  if (cartQuery.isLoading) return <>Loading...</>;
 
-const CheckoutForm: React.FC<{ step: string }> = ({ step }) => {
-  let formContent;
+  let form;
   if (step === 'contact')
-    formContent = (
-      <>
-        <IonItem>
-          <IonLabel position='floating'>First name</IonLabel>
-          <IonInput aria-label='First name' />
-        </IonItem>
-        <IonItem>
-          <IonLabel position='floating'>Last name</IonLabel>
-          <IonInput aria-label='Last name' />
-        </IonItem>
-        <IonItem>
-          <IonLabel position='floating'>Phone number</IonLabel>
-          <IonInput label='+234' type='number' className='h-[65px]' />
-        </IonItem>
-        <IonButton
-          id='checkoutFormButton'
-          className='h-[50px] mt-[30px]'
-          type='submit'
-          expand='block'
-        >
-          Continue
-        </IonButton>
-      </>
+    form = (
+      <CheckoutContactForm
+        submit={submitCheckoutContact}
+        submitting={submitting}
+      />
     );
 
   if (step === 'address')
-    formContent = (
-      <>
-        <IonList>
-          <IonItem>
-            <IonSelect aria-label='fruit' placeholder='State'>
-              <IonSelectOption value='apples'>Apples</IonSelectOption>
-              <IonSelectOption value='oranges'>Oranges</IonSelectOption>
-              <IonSelectOption value='bananas'>Bananas</IonSelectOption>
-            </IonSelect>
-          </IonItem>
-        </IonList>
-        <IonList>
-          <IonItem>
-            <IonSelect aria-label='fruit' placeholder='City'>
-              <IonSelectOption value='apples'>Apples</IonSelectOption>
-              <IonSelectOption value='oranges'>Oranges</IonSelectOption>
-              <IonSelectOption value='bananas'>Bananas</IonSelectOption>
-            </IonSelect>
-          </IonItem>
-        </IonList>
-        <IonItem>
-          <IonLabel position='floating'>Address Line 1</IonLabel>
-          <IonInput aria-label='Address Line 1' />
-        </IonItem>
-        <IonItem>
-          <IonLabel position='floating'>Address Line 2</IonLabel>
-          <IonInput aria-label='Address Line 2' />
-        </IonItem>
-        <IonItem>
-          <IonLabel position='floating'>Nearest Landmark (optional)</IonLabel>
-          <IonInput aria-label='Nearest Landmark (optional)' />
-        </IonItem>
-        <IonButton
-          id='checkoutFormButton'
-          className='h-[50px] mt-[30px]'
-          type='submit'
-          expand='block'
-        >
-          Continue
-        </IonButton>
-      </>
+    form = (
+      <CheckoutAddressForm
+        submit={submitCheckoutAddress}
+        submitting={submitting}
+      />
     );
 
-  if (step === 'delivery')
-    formContent = (
-      <>
-        <DeliveryOptions />
-        <IonButton
-          id='checkoutFormButton'
-          className='h-[50px] mt-[30px]'
-          type='submit'
-          expand='block'
-        >
-          Pay with Paystack{'\u2800'}
-          <span className='font-medium'>({NAIRA} 13,500)</span>
-        </IonButton>
-      </>
-    );
+  if (step === 'delivery') form = <CheckoutDeliveryForm />;
 
-  return (
-    <form className='container pb-12' onSubmit={(e) => e.preventDefault()}>
-      {formContent}
-    </form>
-  );
+  return <div className='container flex flex-col min-h-[300px]'>{form}</div>;
 };
 
 export default CheckoutForm;

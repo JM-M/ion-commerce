@@ -1,13 +1,18 @@
+import { Product } from '../constants/schemas/product';
 import ProductCard from './ProductCard';
 
-const ProductGrid = ({ numProducts = 4 }) => {
-    return (
-        <ul className="grid grid-cols-2 gap-5">
-            {[...Array(numProducts)].map((_, i) => (
-                <ProductCard key={i} />
-            ))}
-        </ul>
-    );
+interface Props {
+  products: Product[];
+}
+
+const ProductGrid = ({ products = [] }: Props) => {
+  return (
+    <ul className='grid grid-cols-2 gap-5'>
+      {products.map((product: Product, index: number) => (
+        <ProductCard key={index} product={product} />
+      ))}
+    </ul>
+  );
 };
 
 export default ProductGrid;
