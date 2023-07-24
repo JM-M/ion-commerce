@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { IonButton } from '@ionic/react';
 import { NAIRA } from '../constants/unicode';
 import CartProduct from './CartProduct';
-import useCart from '../hooks/useCart';
-import { Product } from '../constants/schemas/product';
+import useCart, { ProductWithCartOptions } from '../hooks/useCart';
 
 const DEFAULT_SUMMARY_SIZE = 2;
 
@@ -28,14 +27,19 @@ const OrderSummary = () => {
       <ul>
         {products
           .slice(0, expanded ? numProducts : DEFAULT_SUMMARY_SIZE)
-          .map((product: Product & { qty: number }, index: number) => {
-            const { qty } = product;
-            return (
-              <li key={index}>
-                <CartProduct product={product} qty={qty} />
-              </li>
-            );
-          })}
+          .map(
+            (
+              product: ProductWithCartOptions & { qty: number },
+              index: number
+            ) => {
+              const { qty } = product;
+              return (
+                <li key={index}>
+                  <CartProduct product={product} qty={qty} />
+                </li>
+              );
+            }
+          )}
       </ul>
       {expandable && (
         <div className='text-center'>

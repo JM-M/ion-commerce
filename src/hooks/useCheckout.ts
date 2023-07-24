@@ -16,10 +16,14 @@ interface Props {
   setStep: Function;
 }
 
-const useCheckout = ({ step = 'contact', setStep = () => null }: Props) => {
+const useCheckout = (
+  props: Props = { step: 'contact', setStep: () => null }
+) => {
+  const { step, setStep } = props;
   const { uid, isLoggedIn } = useAuth();
   const { openAuthModal } = useAuthModal();
-  const { rawCartValue, onCartChange } = useCart();
+  const { rawCartValue, onCartChange, cart = {} } = useCart();
+  const { checkout } = cart;
 
   const goToNextCheckoutStep = () => {
     // if this isnt the last step, goes to the next checkout step
@@ -71,8 +75,7 @@ const useCheckout = ({ step = 'contact', setStep = () => null }: Props) => {
     submitCheckoutAddress,
     checkoutSubmissionMutation,
     submitting,
-    // submitCheckoutAddress,
-    // submitCheckoutDelivery,
+    checkout,
   };
 };
 

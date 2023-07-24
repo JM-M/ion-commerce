@@ -58,7 +58,7 @@ const ProductDetails = ({ id }: Props) => {
         variations={variations}
         setProductVariant={setProductVariant}
       />
-      <AddToCartButton product={product} />
+      <AddToCartButton product={product} variant={variant} />
       <ProductDescription description={description} />
       <ProductReviews />
     </>

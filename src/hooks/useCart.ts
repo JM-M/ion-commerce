@@ -12,6 +12,7 @@ import useAuthModal from './useAuthModal';
 export interface CartProduct {
   id: string;
   qty: number;
+  variant: any;
 }
 
 export interface Cart {
@@ -20,7 +21,16 @@ export interface Cart {
   checkout?: Checkout;
 }
 
-export type ProductWithId = Product & { id: string; qty: number };
+export interface CartProductSearchOptions {
+  id: string;
+  variant: any;
+}
+
+export type ProductWithCartOptions = Product & {
+  id: string;
+  qty: number;
+  variant: any;
+};
 
 const useCart = () => {
   const queryClient = useQueryClient();
@@ -45,21 +55,21 @@ const useCart = () => {
     queryKey: ['cart-products', sortedCartProducts],
     queryFn: async ({ queryKey = {} }: any) => {
       const [_key, cartProducts] = queryKey;
-      const products: ProductWithId[] = [];
+      const products: ProductWithCartOptions[] = [];
       for (let index = 0; index < cartProducts.length; index++) {
-        const { id: productId, qty } = cartProducts[index];
+        const { id: productId, ...rest } = cartProducts[index];
         const docRef = doc(db, 'products', productId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const doc = docSnap.data() as Product;
-          products.push({ ...doc, id: productId, qty });
+          products.push({ ...doc, id: productId, ...rest });
         }
       }
       return products;
     },
     staleTime: Infinity,
   });
-  const cartProducts: ProductWithId[] = cartProductsQuery.data || [];
+  const cartProducts: ProductWithCartOptions[] = cartProductsQuery.data || [];
 
   const onCartChange = (cart: Cart) => {
     queryClient.setQueriesData(
@@ -83,17 +93,39 @@ const useCart = () => {
       invalidateCollectionQuery: false,
     });
 
-  const findProductInCart = (productId: string) => {
-    if (!cartQuery?.data?.products?.length) return false;
-    return cartQuery?.data?.products?.find(
-      (product: CartProduct) => product.id === productId
-    );
+  const variantsMatch = (variant1: any, variant2: any) => {
+    if (!variant1 || !variant2) return false;
+    const variants1Length = Object.keys(variant1).length;
+    const variants2Length = Object.keys(variant2).length;
+    if (variants1Length !== variants2Length) return false;
+    let match = true;
+    for (const key in variant1) {
+      if (Object.prototype.hasOwnProperty.call(variant1, key)) {
+        if (variant1[key] !== variant2[key]) {
+          match = false;
+          break;
+        }
+      }
+    }
+    return match;
   };
 
-  const findProductQty = (productId: string) => {
-    const cartProduct = cartQuery?.data?.products?.find(
-      ({ id }: CartProduct) => id === productId
-    );
+  const findProductInCart = ({
+    id: productId,
+    variant,
+  }: CartProductSearchOptions) => {
+    if (!cartQuery?.data?.products?.length) return false;
+    return cartQuery?.data?.products?.find((product: CartProduct) => {
+      if (product.id === productId) {
+        // check if variants match
+        const match = variantsMatch(product.variant, variant);
+        return match;
+      }
+    });
+  };
+
+  const findProductQty = (options: CartProductSearchOptions) => {
+    const cartProduct = findProductInCart(options);
     if (!cartProduct) return null;
     return cartProduct.qty;
   };
@@ -109,19 +141,23 @@ const useCart = () => {
     return true;
   };
 
-  const addProductToCart = (productId: string) => {
+  const addProductToCart = (options: CartProductSearchOptions) => {
+    const { id: productId } = options;
     if (!canEditCart() || !productId) return;
     if (!isLoggedIn) openAuthModal('login');
 
-    const isInCart = !!findProductInCart(productId);
+    const isInCart = !!findProductInCart(options);
 
     const updatedCartProducts = isInCart
       ? cart.products.map((product: CartProduct) => {
-          if (product.id === productId)
+          if (
+            product.id === productId &&
+            variantsMatch(product.variant, options.variant)
+          )
             return { ...product, qty: product.qty + 1 };
           return product;
         })
-      : [...(cart?.products || []), { id: productId, qty: 1 }];
+      : [...(cart?.products || []), { ...options, qty: 1 }];
 
     const newCart: Cart = {
       ...cart,
@@ -132,17 +168,21 @@ const useCart = () => {
     addProductMutation.mutate({ document: newCart, documentId: uid });
   };
 
-  const removeProductFromCart = (productId: string) => {
+  const removeProductFromCart = (options: CartProductSearchOptions) => {
+    const { id: productId } = options;
     if (!canEditCart() || !productId) return;
     if (!isLoggedIn) openAuthModal('login');
 
-    const cartProduct = findProductInCart(productId);
+    const cartProduct = findProductInCart(options);
     if (!cartProduct) return;
 
     const updatedCartProducts =
       cartProduct.qty > 1
         ? cart.products.map((product: CartProduct) => {
-            if (product.id === productId)
+            if (
+              product.id === productId &&
+              variantsMatch(product.variant, options.variant)
+            )
               return { ...product, qty: product.qty - 1 };
             return product;
           })
@@ -161,7 +201,7 @@ const useCart = () => {
     ? cartProducts.reduce(
         (
           prev: { cartSize: number; totalCartValue: number },
-          curr: ProductWithId
+          curr: ProductWithCartOptions
         ) => ({
           cartSize: curr.qty + prev.cartSize,
           totalCartValue: curr.qty * curr.price + prev.totalCartValue,

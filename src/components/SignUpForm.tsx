@@ -39,6 +39,7 @@ const SignUpForm = () => {
       </div>
       <form onSubmit={handleSubmit(submit)}>
         <Input
+        type='email'
           label='Email'
           labelPlacement='floating'
           {...register('email')}

@@ -6,9 +6,10 @@ import { Product } from '../constants/schemas/product';
 
 interface Props {
   product: Product;
+  variant: any;
 }
 
-const AddToCartButton = ({ product }: Props) => {
+const AddToCartButton = ({ product, variant }: Props) => {
   const {
     addProductToCart,
     removeProductFromCart,
@@ -18,17 +19,19 @@ const AddToCartButton = ({ product }: Props) => {
     editingCart,
   } = useCart();
 
+  const productOptions = { id: product.id!, variant };
+
   const addProduct = () => {
     if (editingCart || !product?.id) return;
-    addProductToCart(product.id);
+    addProductToCart(productOptions);
   };
 
   const removeProduct = () => {
     if (editingCart || !product?.id) return;
-    removeProductFromCart(product.id);
+    removeProductFromCart(productOptions);
   };
 
-  const qty = findProductQty(product.id!);
+  const qty = findProductQty(productOptions);
 
   const addButton = (
     <IonButton

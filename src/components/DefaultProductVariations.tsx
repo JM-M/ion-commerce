@@ -11,6 +11,7 @@ const DefaultProductVariations: React.FC<{
         <div className='flex-1 max-w-[50%]'>
           <IonItem>
             <IonSelect
+              interface='action-sheet'
               label='Colors'
               labelPlacement='floating'
               aria-label='Colors'
@@ -39,6 +40,7 @@ const DefaultProductVariations: React.FC<{
         <div className='flex-1 max-w-[50%]'>
           <IonItem>
             <IonSelect
+              interface='action-sheet'
               label='Sizes'
               labelPlacement='floating'
               aria-label='Sizes'

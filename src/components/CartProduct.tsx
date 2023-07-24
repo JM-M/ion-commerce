@@ -1,16 +1,15 @@
 import { IonIcon, IonSpinner } from '@ionic/react';
 import { remove, add } from 'ionicons/icons';
 import { NAIRA } from '../constants/unicode';
-import { Product } from '../constants/schemas/product';
-import useCart from '../hooks/useCart';
+import useCart, { ProductWithCartOptions } from '../hooks/useCart';
 
 interface Props {
-  product: Product;
+  product: ProductWithCartOptions;
   qty: number;
 }
 
 const CartProduct = ({ product, qty = 1 }: Props) => {
-  const { name, price } = product || {};
+  const { name, price, id, variant = {} } = product || {};
 
   const {
     addProductToCart,
@@ -20,15 +19,19 @@ const CartProduct = ({ product, qty = 1 }: Props) => {
     editingCart,
   } = useCart();
 
+  const productOptions = { id, variant };
+
   const addProduct = () => {
     if (editingCart || !product?.id) return;
-    addProductToCart(product.id);
+    addProductToCart(productOptions);
   };
 
   const removeProduct = () => {
     if (editingCart || !product?.id) return;
-    removeProductFromCart(product.id);
+    removeProductFromCart(productOptions);
   };
+
+  const variantValues: string[] = Object.values(variant);
 
   return (
     <div className='flex items-stretch gap-4 mb-5'>
@@ -37,8 +40,9 @@ const CartProduct = ({ product, qty = 1 }: Props) => {
         <h4 className='text-gray-900 font-medium'>{name}</h4>
         <div className='flex gap-[10px]'>
           <span>{qty} pcs</span>
-          <span>Black</span>
-          <span>M</span>
+          {variantValues.map((value: string, i: number) => {
+            return <span key={i}>{value}</span>;
+          })}
         </div>
         <span>
           {NAIRA} {price} per unit

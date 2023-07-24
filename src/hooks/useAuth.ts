@@ -14,6 +14,7 @@ import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
 import useAuthModal from './useAuthModal';
 
 interface UserFirestoreDocument {
+  email: string;
   firstName: string;
   lastName: string;
   uid: string;
@@ -72,6 +73,7 @@ const useAuth = () => {
     const uid = userCredential.user.uid;
     const { data: userDoc } = await saveCreatedUserToFirestore({
       uid,
+      email: userCredential.user.email as string,
       firstName,
       lastName,
     });
