@@ -1,12 +1,10 @@
-import { ReactNode, useMemo } from 'react';
-import { usePaystackPayment } from 'react-paystack';
-import { v4 as uuidv4 } from 'uuid';
-import Button from './Button';
-import useAuth from '../hooks/useAuth';
-import useCart from '../hooks/useCart';
-import useOrders from '../hooks/useOrders';
-
-const PAYSTACK_PUBLIC_KEY = 'pk_test_7ac0ace64e4a39a3012939b6a7431051372af3e6';
+import { ReactNode, useMemo } from "react";
+import { usePaystackPayment } from "react-paystack";
+import { v4 as uuidv4 } from "uuid";
+import Button from "./Button";
+import useAuth from "../hooks/useAuth";
+import useCart from "../hooks/useCart";
+import useOrders from "../hooks/useOrders";
 
 const PaystackPaymentButton: React.FC<{
   children: ReactNode;
@@ -23,22 +21,24 @@ const PaystackPaymentButton: React.FC<{
       reference: uuidv4(),
       email,
       amount: Math.round(totalCartValue * 100),
-      publicKey: PAYSTACK_PUBLIC_KEY,
+      publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
     };
   }, [email, totalCartValue]);
 
   const initializePayment = usePaystackPayment(config);
 
-  const onSuccess = (reference: any) => {
+  const onSuccess = (referenceData: any) => {
     const data = {
-      paymentReference: reference,
+      paymentReference: referenceData.reference,
       cart,
+      user,
+      userId: user.uid,
     };
     createOrder(data);
   };
 
   const onClose = () => {
-    console.log('closed');
+    console.log("closed");
   };
 
   return (

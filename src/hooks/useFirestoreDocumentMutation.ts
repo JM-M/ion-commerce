@@ -1,6 +1,6 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { doc, setDoc, Timestamp } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const useFirestoreDocumentMutation = ({
   collectionName,
@@ -26,25 +26,27 @@ const useFirestoreDocumentMutation = ({
   }) => {
     const docRef = doc(db, collectionName, documentId);
     let formattedDocument = document;
+    const now = Timestamp.fromDate(new Date());
     if (addTimestamp && !document.createdAt) {
-      const createdAt = Timestamp.fromDate(new Date());
-      formattedDocument = { ...document, createdAt };
+      formattedDocument = { ...document, id: documentId, createdAt: now };
+    } else if (addTimestamp) {
+      formattedDocument = { ...document, id: documentId, updatedAt: now };
     }
     await setDoc(docRef, formattedDocument);
     return { data: formattedDocument, documentId };
   };
 
   const firestoreDocumentMutation = useMutation({
-    mutationKey: ['upload-to-collection', collectionName],
+    mutationKey: ["upload-to-collection", collectionName],
     mutationFn: uploadToFirestore,
     onSuccess: ({ data, documentId }) => {
       onSuccess(data);
       if (invalidateCollectionQuery) {
-        queryClient.invalidateQueries(['collection', collectionName]);
+        queryClient.invalidateQueries(["collection", collectionName]);
       }
       if (invalidateDocumentQuery) {
         queryClient.invalidateQueries([
-          'document',
+          "document",
           { collectionName, documentId },
         ]);
       }

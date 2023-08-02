@@ -1,12 +1,13 @@
-import { useState, useMemo } from 'react';
-import ProductCarousel from './ProductCarousel';
-import ProductInfo from './ProductInfo';
-import ProductVariations from './ProductVariations';
-import AddToCartButton from './AddToCartButton';
-import ProductDescription from './ProductDescription';
-import ProductReviews from './ProductReviews';
-import useProducts from '../hooks/useProducts';
-import { Product } from '../constants/schemas/product';
+import { useState, useMemo } from "react";
+import ProductCarousel from "./ProductCarousel";
+import ProductInfo from "./ProductInfo";
+import ProductVariations from "./ProductVariations";
+import AddToCartButton from "./AddToCartButton";
+import ProductDescription from "./ProductDescription";
+import ProductReviews from "./ProductReviews";
+import PageLoader from "./PageLoader";
+import useProducts from "../hooks/useProducts";
+import { Product } from "../constants/schemas/product";
 
 interface Props {
   id: string;
@@ -46,7 +47,22 @@ const ProductDetails = ({ id }: Props) => {
     }, []);
   }, [stocks, variant, variantKeys]);
 
-  if (isLoading) return <>Loading...</>;
+  // has the user selected all necessary variantions
+  const variantValid = useMemo(() => {
+    const variationKeys = Object.keys(variations);
+    let variantValid = true;
+    for (let index = 0; index < variationKeys.length; index++) {
+      const key = variationKeys[index];
+      const variationOptions = (variations as any)[key];
+      if (!!variationOptions?.length && !variant[key]) {
+        variantValid = false;
+        break;
+      }
+    }
+    return variantValid;
+  }, [variations, variant]);
+
+  if (isLoading) return <PageLoader />;
   if (isError) return <>An error occurred</>;
   if (!product) return <>No product</>;
 
@@ -55,10 +71,15 @@ const ProductDetails = ({ id }: Props) => {
       <ProductCarousel images={images} hasVariant={!!variantKeys.length} />
       <ProductInfo name={name} price={price} />
       <ProductVariations
+        variant={variant}
         variations={variations}
         setProductVariant={setProductVariant}
       />
-      <AddToCartButton product={product} variant={variant} />
+      <AddToCartButton
+        product={product}
+        variant={variant}
+        variantValid={variantValid}
+      />
       <ProductDescription description={description} />
       <ProductReviews />
     </>

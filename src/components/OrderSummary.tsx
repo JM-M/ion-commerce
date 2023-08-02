@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { IonButton } from '@ionic/react';
-import { NAIRA } from '../constants/unicode';
-import CartProduct from './CartProduct';
-import useCart, { ProductWithCartOptions } from '../hooks/useCart';
+import { useState } from "react";
+import { IonButton } from "@ionic/react";
+import { NAIRA } from "../constants/unicode";
+import CartProduct from "./CartProduct";
+import PageLoader from "./PageLoader";
+import useCart, { ProductWithCartOptions } from "../hooks/useCart";
 
 const DEFAULT_SUMMARY_SIZE = 2;
 
@@ -14,14 +15,14 @@ const OrderSummary = () => {
 
   const toggleExpanded = () => setExpanded((v) => !v);
 
-  if (cartQuery.isLoading) return <>Loading...</>;
+  if (cartQuery.isLoading) return <PageLoader />;
 
   const numProducts = products.length;
   const expandable = numProducts > DEFAULT_SUMMARY_SIZE;
 
   return (
-    <div className='container'>
-      <h3 className='font-medium mb-5 mt-3 text-lg'>
+    <div className="container">
+      <h3 className="font-medium mb-5 text-lg">
         Order Summary ({cartSize} items)
       </h3>
       <ul>
@@ -42,19 +43,19 @@ const OrderSummary = () => {
           )}
       </ul>
       {expandable && (
-        <div className='text-center'>
+        <div className="text-center">
           <IonButton
-            fill='clear'
-            className='ion-no-margin'
+            fill="clear"
+            className="ion-no-margin"
             onClick={toggleExpanded}
           >
-            {expanded ? 'See less items' : 'See all items'}
+            {expanded ? "See less items" : "See all items"}
           </IonButton>
         </div>
       )}
-      <div className='flex justify-between font-medium mt-10'>
+      <div className="flex justify-between font-medium mt-10">
         <span>Subtotal</span>
-        <span className='text-lg'>
+        <span className="text-lg">
           {NAIRA} {totalCartValue}
         </span>
       </div>

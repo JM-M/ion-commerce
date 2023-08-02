@@ -1,8 +1,9 @@
-import CheckoutContactForm from './CheckoutContactForm';
-import CheckoutAddressForm from './CheckoutAddressForm';
-import CheckoutDeliveryForm from './CheckoutDeliveryForm';
-import useCheckout, { CheckoutStep } from '../hooks/useCheckout';
-import useCart from '../hooks/useCart';
+import CheckoutContactForm from "./CheckoutContactForm";
+import CheckoutAddressForm from "./CheckoutAddressForm";
+import CheckoutDeliveryForm from "./CheckoutDeliveryForm";
+import PageLoader from "./PageLoader";
+import useCheckout, { CheckoutStep } from "../hooks/useCheckout";
+import useCart from "../hooks/useCart";
 
 const CheckoutForm: React.FC<{ step: string; setStep: Function }> = ({
   step,
@@ -15,10 +16,10 @@ const CheckoutForm: React.FC<{ step: string; setStep: Function }> = ({
       setStep,
     });
 
-  if (cartQuery.isLoading) return <>Loading...</>;
+  if (cartQuery.isLoading) return <PageLoader />;
 
   let form;
-  if (step === 'contact')
+  if (step === "contact")
     form = (
       <CheckoutContactForm
         submit={submitCheckoutContact}
@@ -26,7 +27,7 @@ const CheckoutForm: React.FC<{ step: string; setStep: Function }> = ({
       />
     );
 
-  if (step === 'address')
+  if (step === "address")
     form = (
       <CheckoutAddressForm
         submit={submitCheckoutAddress}
@@ -34,9 +35,9 @@ const CheckoutForm: React.FC<{ step: string; setStep: Function }> = ({
       />
     );
 
-  if (step === 'delivery') form = <CheckoutDeliveryForm />;
+  if (step === "delivery") form = <CheckoutDeliveryForm />;
 
-  return <div className='container flex flex-col min-h-[300px]'>{form}</div>;
+  return form;
 };
 
 export default CheckoutForm;

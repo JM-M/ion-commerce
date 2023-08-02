@@ -1,6 +1,6 @@
-import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
-import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
-import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
+import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
+import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
+import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
 
 export interface SortOption {
   field: string;
@@ -11,23 +11,27 @@ interface Props {
   productId?: string;
   productIds?: string[];
   sortBy?: SortOption;
+  category?: string;
 }
 
-const collectionName = 'products';
+const collectionName = "products";
 
 const useProducts = (props: Props = {}) => {
   const {
     productId,
-    sortBy = { field: 'name', reverse: false },
+    sortBy = { field: "name", reverse: false },
     productIds,
+    category,
   } = props;
 
   const { firestoreDocumentMutation } = useFirestoreDocumentMutation({
     collectionName,
   });
 
+  const match = category ? { category } : {};
   const productsQuery = useFirestoreCollectionQuery({
     collectionName,
+    match,
     orderByField: sortBy.field,
     reverseOrder: sortBy.reverse,
     options: {

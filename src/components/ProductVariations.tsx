@@ -1,19 +1,23 @@
-import DefaultProductVariations from './DefaultProductVariations';
-import CustomProductVariations from './CustomProductVariations';
+import DefaultProductVariations from "./DefaultProductVariations";
+import CustomProductVariations from "./CustomProductVariations";
 
 const ProductVariations: React.FC<{
+  variant: any;
   variations: any;
   setProductVariant: Function;
-}> = ({ variations, setProductVariant = () => null }) => {
+}> = ({ variant = {}, variations, setProductVariant = () => null }) => {
   const { colors, sizes, ...rest } = variations;
   return (
-    <div className='pt-[30px]'>
+    <div className="pt-[30px]">
       <DefaultProductVariations
+        color={variant.colors}
         colors={colors}
+        size={variant.sizes}
         sizes={sizes}
         setProductVariant={setProductVariant}
       />
       <CustomProductVariations
+        variant={variant}
         variations={rest}
         setProductVariant={setProductVariant}
       />

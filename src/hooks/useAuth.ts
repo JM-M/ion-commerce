@@ -1,19 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { useIonRouter } from "@ionic/react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-} from 'firebase/auth';
-import { Timestamp } from 'firebase/firestore';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { auth } from '../../firebase';
-import { UserLogin, UserSignUp } from '../constants/schemas/auth';
-import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
-import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
-import useAuthModal from './useAuthModal';
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  User,
+  updatePassword,
+} from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { auth } from "../../firebase";
+import { UserLogin, UserSignUp } from "../constants/schemas/auth";
+import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
+import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
+import useAuthModal from "./useAuthModal";
 
-interface UserFirestoreDocument {
+export interface UserFirestoreDocument {
   email: string;
   firstName: string;
   lastName: string;
@@ -22,15 +27,17 @@ interface UserFirestoreDocument {
 }
 
 const useAuth = () => {
-  const [uid, setUid] = useState<string>('');
+  const [firebaseAuthUser, setFirebaseAuthUser] = useState<User | null>();
+  const [autoAuthenticating, setAutoAuthenticating] = useState<boolean>(true);
+  const { uid } = firebaseAuthUser || {};
+  const isLoggedIn = !!uid;
+
+  const ionRouter = useIonRouter();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUid(user.uid);
-      } else {
-        setUid('');
-      }
+      setAutoAuthenticating(false);
+      setFirebaseAuthUser(user);
     });
   }, []);
 
@@ -38,26 +45,40 @@ const useAuth = () => {
 
   const { closeAuthModal } = useAuthModal();
 
-  const { data: user } = useFirestoreDocumentQuery({
-    collectionName: 'users',
-    documentId: uid,
-  });
-
-  const { firestoreDocumentMutation: createUserDocMutation } =
+  const { firestoreDocumentMutation: userDocMutation } =
     useFirestoreDocumentMutation({
-      collectionName: 'users',
+      collectionName: "users",
       invalidateCollectionQuery: false,
       invalidateDocumentQuery: false,
     });
 
   const saveCreatedUserToFirestore = (userDoc: UserFirestoreDocument) => {
     const { uid } = userDoc;
-    return createUserDocMutation.mutateAsync({
+    return userDocMutation.mutateAsync({
       document: userDoc,
       documentId: uid,
       addTimestamp: true,
     });
   };
+
+  const synchronizeAuthUserWithUserDoc = (userDoc: UserFirestoreDocument) => {
+    if (!isLoggedIn) return;
+    const authEmail = firebaseAuthUser?.email;
+    const userDocEmail = userDoc.email;
+    if (userDocEmail !== authEmail) {
+      userDocMutation.mutateAsync({
+        document: { ...userDoc, email: authEmail },
+        documentId: uid,
+        addTimestamp: true,
+      });
+    }
+  };
+
+  const { data: user } = useFirestoreDocumentQuery({
+    collectionName: "users",
+    documentId: uid,
+    onSuccess: synchronizeAuthUserWithUserDoc,
+  });
 
   const createUserFn = async ({
     email,
@@ -82,14 +103,14 @@ const useAuth = () => {
 
   const onCreateUser = (user: UserFirestoreDocument) => {
     queryClient.setQueryData(
-      ['document', { collectionName: 'users', documentId: user.uid }],
+      ["document", { collectionName: "users", documentId: user.uid }],
       user
     );
     closeAuthModal();
   };
 
   const createUserMutation = useMutation({
-    mutationKey: ['create-user-doc'],
+    mutationKey: ["create-user-doc"],
     mutationFn: createUserFn,
     onSuccess: onCreateUser, // set userDoc query
   });
@@ -99,18 +120,55 @@ const useAuth = () => {
   };
 
   const loginMutation = useMutation({
-    mutationKey: ['user-sign-in'],
+    mutationKey: ["user-sign-in"],
     mutationFn: loginFn,
     onSuccess: closeAuthModal,
+  });
+
+  const reAuthenticate = async ({ email, password }: UserLogin) => {
+    if (!isLoggedIn) return;
+    const credential = EmailAuthProvider.credential(email, password);
+    const response = await reauthenticateWithCredential(
+      auth.currentUser!,
+      credential
+    );
+    return response;
+  };
+
+  const reAuthenticateMutation = useMutation({
+    mutationKey: ["re-authenticate-user"],
+    mutationFn: reAuthenticate,
+  });
+
+  const updatePasswordFn = async (password: string) => {
+    if (!isLoggedIn) return;
+    const response = await updatePassword(auth.currentUser!, password);
+    return response;
+  };
+
+  const updatePasswordMutation = useMutation({
+    mutationKey: ["update-user-password"],
+    mutationFn: updatePasswordFn,
+    onSuccess: () => ionRouter.push("/account"),
   });
 
   const logOutFn = async () => {
     await signOut(auth);
   };
 
+  const onLogOut = () => {
+    queryClient.setQueryData(
+      ["document", { collectionName: "users", documentId: uid }],
+      [],
+      undefined
+    );
+    setFirebaseAuthUser(null);
+  };
+
   const logOutMutation = useMutation({
-    mutationKey: ['user-log-out'],
+    mutationKey: ["user-log-out"],
     mutationFn: logOutFn,
+    onSuccess: onLogOut,
   });
 
   return {
@@ -118,11 +176,17 @@ const useAuth = () => {
     createUserMutation,
     user: user as UserFirestoreDocument,
     uid,
-    isLoggedIn: !!uid,
+    isLoggedIn,
     login: loginMutation.mutate,
     loginMutation,
     logOut: logOutMutation.mutate,
     logOutMutation,
+    autoAuthenticating,
+    reAuthenticate: reAuthenticateMutation.mutate,
+    reAuthenticateMutation,
+    reAuthenticated: reAuthenticateMutation.status === "success",
+    updatePassword: updatePasswordMutation.mutate,
+    updatePasswordMutation,
   };
 };
 

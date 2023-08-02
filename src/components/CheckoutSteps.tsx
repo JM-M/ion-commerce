@@ -1,27 +1,30 @@
-import { Fragment } from 'react';
-import { IonIcon } from '@ionic/react';
-import { chevronForward } from 'ionicons/icons';
-import cx from 'classnames';
+import { Fragment } from "react";
+import { IonIcon } from "@ionic/react";
+import { chevronForward } from "ionicons/icons";
+import cx from "classnames";
+import useCheckout from "../hooks/useCheckout";
 
 const CheckoutSteps: React.FC<{
   steps: string[];
   step: string;
   setStep: Function;
-}> = ({ steps = [], step, setStep = () => null }) => {
+}> = ({ steps = [], step: activeStep, setStep = () => null }) => {
+  const { isStepEnabled } = useCheckout();
   return (
-    <div className='container mt-10 mb-5'>
-      <div className='w-fit flex items-center gap-[10px] mx-auto'>
+    <div className="container mt-10 mb-5">
+      <div className="w-fit flex items-center gap-[10px] mx-auto">
         {steps.map((stepOption, i) => {
-          const active = stepOption === step;
+          const active = stepOption === activeStep;
           const isLastOption = i === steps.length - 1;
+          const enabled = isStepEnabled(stepOption);
           return (
             <Fragment key={i}>
               <span
-                className={cx('capitalize', {
-                  'font-medium': active,
-                  'text-[var(--ion-color-medium)]': !active,
+                className={cx("capitalize", {
+                  "font-medium": active,
+                  "opacity-50 pointer-events-none": !enabled,
                 })}
-                onClick={() => !active && setStep(stepOption)}
+                onClick={() => enabled && !active && setStep(stepOption)}
               >
                 {stepOption}
               </span>

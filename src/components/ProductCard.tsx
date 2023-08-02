@@ -1,36 +1,39 @@
-import { Link } from 'react-router-dom';
-import { add } from 'ionicons/icons';
-import { NAIRA } from '../constants/unicode';
-import { IonIcon } from '@ionic/react';
-import { Product } from '../constants/schemas/product';
-import useCategories from '../hooks/useCategories';
+import { Link } from "react-router-dom";
+import { IonImg } from "@ionic/react";
+import { NAIRA } from "../constants/unicode";
+import { Product } from "../constants/schemas/product";
+import useCategories from "../hooks/useCategories";
+import useProductImages from "../hooks/useProductImages";
 
 interface Props {
   product: Product;
 }
 
 const ProductCard = ({ product }: Props) => {
-  const { name, category, price, id } = product;
-  const { getCategoryNameFromValue } = useCategories();
-  const categoryName = getCategoryNameFromValue(category);
+  const { name, category, price, id, stocks } = product;
+  const { getCategoryFromValue } = useCategories();
+  const categoryName = getCategoryFromValue(category)?.name;
+
+  const images = useProductImages(product);
+  const image = !!images.length && images[0];
 
   return (
     <div>
-      <Link to={`/store/products/${id}`} className='block'>
-        <div className='w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg'></div>
-      </Link>
-      <div className='flex justify-between'>
-        <div className='flex flex-col'>
-          <span className='block font-medium'>{name}</span>
-          <span className='text-xs text-gray-500'>{categoryName}</span>
+      <Link to={`/store/products/${id}`} className="block">
+        <div className="w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg overflow-hidden">
+          {image && <IonImg src={image} alt={name} className="bg-gray-200" />}
         </div>
-        <span className='text-base'>
-          {NAIRA} {price}
+      </Link>
+      <div className="flex justify-between">
+        <div className="flex flex-col">
+          <span className="block font-medium">{name}</span>
+          <span className="text-xs text-gray-500">{categoryName}</span>
+        </div>
+        <span className="text-base">
+          {NAIRA}
+          {price}
         </span>
       </div>
-      <span className='flex items-center justify-center h-[30px] w-[30px] ml-auto !px-0 rounded-[8px] bg-blue-500'>
-        <IonIcon icon={add} className='text-white h-[20px] w-[20px]' />
-      </span>
     </div>
   );
 };

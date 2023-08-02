@@ -1,26 +1,66 @@
-import { IonButton } from '@ionic/react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import DeliveryOptions from './DeliveryOptions';
-import PaystackPaymentButton from './PaystackPaymentButton';
-import { NAIRA } from '../constants/unicode';
+import { IonButton } from "@ionic/react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import DeliveryOptions from "./DeliveryOptions";
+import PaystackPaymentButton from "./PaystackPaymentButton";
+import PageLoader from "./PageLoader";
+import { NAIRA } from "../constants/unicode";
 import {
   CheckoutDelivery,
   deliverySchema,
-} from '../constants/schemas/checkout';
-import useAuth from '../hooks/useAuth';
+} from "../constants/schemas/checkout";
+import useAuth from "../hooks/useAuth";
+import useTerminal from "../hooks/useTerminal";
+import useCart from "../hooks/useCart";
 
 type FieldKeys = keyof CheckoutDelivery;
 
+interface TerminalDeliveryRate {
+  carrier_name: string;
+  carrier_logo: string;
+  amount: number;
+  delivery_time: string;
+  id: string;
+}
+
 const CheckoutDeliveryForm = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
+  const { cart, totalCartValue } = useCart();
+
+  const { shipmentRatesQuery } = useTerminal({
+    order: {
+      cart,
+      user,
+      userId: user?.uid,
+    },
+  });
 
   const { watch, control, setValue } = useForm({
     resolver: yupResolver(deliverySchema),
   });
-  const selectedOptionId = watch('id');
+  const selectedOptionId = watch("id");
 
   if (!isLoggedIn) return null;
+  if (shipmentRatesQuery.isLoading) return <PageLoader />;
+  if (!shipmentRatesQuery.data) return <>Rates data does not exist</>;
+
+  const deliveryOptions: CheckoutDelivery[] = shipmentRatesQuery.data.map(
+    ({
+      carrier_name: carrier,
+      carrier_logo: logo,
+      amount: price,
+      delivery_time: estimatedDeliveryTime,
+      id,
+    }: TerminalDeliveryRate) => ({
+      carrier,
+      logo,
+      price,
+      estimatedDeliveryTime,
+      id,
+    })
+  );
+
+  const deliveryPrice = +watch("price");
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
@@ -36,15 +76,21 @@ const CheckoutDeliveryForm = () => {
           }
         }}
         selectedOptionId={selectedOptionId}
+        options={deliveryOptions}
       />
       <PaystackPaymentButton
-        id='checkoutFormButton'
-        className='h-[50px] mt-[30px]'
-        type='submit'
-        expand='block'
+        id="checkoutFormButton"
+        className="h-[50px] mt-[30px]"
+        type="submit"
+        expand="block"
+        disabled={!deliveryPrice}
       >
-        Pay with Paystack{'\u2800'}
-        <span className='font-medium'>({NAIRA} 13,500)</span>
+        Pay with Paystack{"\u2800"}
+        {!!deliveryPrice && (
+          <span className="font-medium">
+            ({NAIRA} {totalCartValue + deliveryPrice})
+          </span>
+        )}
       </PaystackPaymentButton>
     </form>
   );
