@@ -1,9 +1,10 @@
-import { useQueryClient } from '@tanstack/react-query';
-import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
-import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
-import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
-import { Review } from '../constants/schemas/review';
-import useAuth from './useAuth';
+import { useQueryClient } from "@tanstack/react-query";
+import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
+import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
+import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
+import useFirestoreDocumentDeletion from "./useFirestoreDocumentDeletion";
+import { Review } from "../constants/schemas/review";
+import useAuth from "./useAuth";
 
 export interface SortOption {
   field: string;
@@ -18,12 +19,12 @@ interface Props {
   onCreateReview?: Function;
 }
 
-const collectionName = 'products';
+const collectionName = "products";
 
 const useProducts = (props: Props = {}) => {
   const {
     productId,
-    sortBy = { field: 'name', reverse: false },
+    sortBy = { field: "name", reverse: false },
     productIds,
     category,
     onCreateReview = () => null,
@@ -55,7 +56,7 @@ const useProducts = (props: Props = {}) => {
 
   const reviewsQuery = useFirestoreCollectionQuery({
     collectionName: reviewsCollectionName,
-    orderByField: 'createdAt',
+    orderByField: "createdAt",
     options: {
       pageSize: 10,
     },
@@ -74,7 +75,7 @@ const useProducts = (props: Props = {}) => {
         onCreateReview();
         queryClient.setQueryData(
           [
-            'document',
+            "document",
             { collectionName: reviewsCollectionName, documentId: uid },
           ],
           review
@@ -91,17 +92,41 @@ const useProducts = (props: Props = {}) => {
     });
   };
 
+  const { firestoreDocumentDeletion: deleteReviewMutation } =
+    useFirestoreDocumentDeletion({
+      collectionName: reviewsCollectionName,
+      documentIds: [uid!],
+      onSuccess: () => {
+        queryClient.setQueryData(
+          [
+            "document",
+            { collectionName: reviewsCollectionName, documentId: uid },
+          ],
+          null
+        );
+      },
+    });
+  const deleteReview = deleteReviewMutation.mutate;
+
+  const hasBoughtProductQuery = useFirestoreDocumentQuery({
+    collectionName: `products/${product?.id}/buyers`,
+    documentId: uid,
+  });
+
   return {
     productsQuery,
     productQuery,
     reviewQuery,
     review: reviewQuery.data,
     reviewsQuery,
-    reviews:
-      reviewsQuery.data?.length &&
-      reviewsQuery.data.filter(({ userId }: Review) => userId !== uid),
+    reviews: reviewsQuery.data?.length
+      ? reviewsQuery.data.filter(({ userId }: Review) => userId !== uid)
+      : undefined,
     reviewMutation,
     addReview,
+    deleteReview,
+    deleteReviewMutation,
+    hasBoughtProduct: !!hasBoughtProductQuery.data,
   };
 };
 

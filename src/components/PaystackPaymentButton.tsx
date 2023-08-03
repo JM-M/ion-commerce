@@ -3,43 +3,37 @@ import { usePaystackPayment } from "react-paystack";
 import { v4 as uuidv4 } from "uuid";
 import Button from "./Button";
 import useAuth from "../hooks/useAuth";
-import useCart from "../hooks/useCart";
-import useOrders from "../hooks/useOrders";
 
-const PaystackPaymentButton: React.FC<{
+interface Props {
   children: ReactNode;
+  paymentValue: number;
+  onSuccess: Function;
+  onClose?: () => void;
+  loading: Boolean;
   [x: string]: any;
-}> = ({ children, ...props }) => {
+}
+
+const PaystackPaymentButton = ({
+  children,
+  paymentValue,
+  onSuccess = () => null,
+  onClose = () => null,
+  loading = false,
+  ...props
+}: Props) => {
   const { user } = useAuth();
   const email = user?.email;
-
-  const { totalCartValue, cart } = useCart();
-  const { createOrder, createOrderMutation } = useOrders();
 
   const config = useMemo(() => {
     return {
       reference: uuidv4(),
       email,
-      amount: Math.round(totalCartValue * 100),
+      amount: paymentValue * 100,
       publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
     };
-  }, [email, totalCartValue]);
+  }, [email, paymentValue]);
 
   const initializePayment = usePaystackPayment(config);
-
-  const onSuccess = (referenceData: any) => {
-    const data = {
-      paymentReference: referenceData.reference,
-      cart,
-      user,
-      userId: user.uid,
-    };
-    createOrder(data);
-  };
-
-  const onClose = () => {
-    console.log("closed");
-  };
 
   return (
     <Button
@@ -48,7 +42,7 @@ const PaystackPaymentButton: React.FC<{
         e.preventDefault();
         initializePayment(onSuccess as any, onClose);
       }}
-      loading={createOrderMutation.isLoading}
+      loading={loading}
     >
       {children}
     </Button>

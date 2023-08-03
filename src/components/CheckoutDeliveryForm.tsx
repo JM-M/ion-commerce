@@ -12,6 +12,7 @@ import {
 import useAuth from "../hooks/useAuth";
 import useTerminal from "../hooks/useTerminal";
 import useCart from "../hooks/useCart";
+import useOrders from "../hooks/useOrders";
 
 type FieldKeys = keyof CheckoutDelivery;
 
@@ -26,6 +27,7 @@ interface TerminalDeliveryRate {
 const CheckoutDeliveryForm = () => {
   const { isLoggedIn, user } = useAuth();
   const { cart, totalCartValue } = useCart();
+  const { createOrder, createOrderMutation } = useOrders();
 
   const { shipmentRatesQuery } = useTerminal({
     order: {
@@ -62,6 +64,8 @@ const CheckoutDeliveryForm = () => {
 
   const deliveryPrice = +watch("price");
 
+  const paymentValue = Math.round((totalCartValue + deliveryPrice) * 100) / 100;
+
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <DeliveryOptions
@@ -84,11 +88,23 @@ const CheckoutDeliveryForm = () => {
         type="submit"
         expand="block"
         disabled={!deliveryPrice}
+        paymentValue={+paymentValue}
+        onSuccess={(referenceData: any) => {
+          const data = {
+            paymentReference: referenceData.reference,
+            cart,
+            user,
+            userId: user.uid,
+          };
+          createOrder(data);
+        }}
+        onClose={() => console.log("close")}
+        loading={createOrderMutation.isLoading}
       >
         Pay with Paystack{"\u2800"}
         {!!deliveryPrice && (
           <span className="font-medium">
-            ({NAIRA} {totalCartValue + deliveryPrice})
+            ({NAIRA} {paymentValue})
           </span>
         )}
       </PaystackPaymentButton>

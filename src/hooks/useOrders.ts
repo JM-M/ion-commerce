@@ -4,8 +4,10 @@ import { Timestamp } from "@firebase/firestore";
 import axios from "axios";
 import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
 import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
+import useMultipleFirebaseDocumentsMutation from "./useMultipleFirebaseDocumentsMutation";
 import useAuth, { UserFirestoreDocument } from "./useAuth";
 import useCart, { Cart } from "./useCart";
+import { Product } from "../constants/schemas/product";
 
 export type StatusEvent = { status: string; time: Timestamp };
 
@@ -32,7 +34,7 @@ const useOrders = (props: Props = {}) => {
 
   const ionRouter = useIonRouter();
 
-  const { user } = useAuth();
+  const { user, uid, isLoggedIn } = useAuth();
 
   const { clearCart } = useCart();
 
@@ -50,7 +52,25 @@ const useOrders = (props: Props = {}) => {
     documentId: orderId,
   });
 
+  const { multipleFirestoreDocumentsMutation: orderProductBuyersMutation } =
+    useMultipleFirebaseDocumentsMutation({
+      mutationKey: ["update-order-products-buyers-subcollection"],
+    });
+
+  const updateBuyerLists = async (products: Product[]) => {
+    const collections = products.map((product) => {
+      return {
+        name: `products/${product.id}/buyers`,
+        documents: [{ id: uid! }],
+      };
+    });
+    await orderProductBuyersMutation.mutateAsync({ collections });
+  };
+
   const createOrder = async (data: Order) => {
+    if (!isLoggedIn) return;
+    const products = data?.cart?.products;
+    await updateBuyerLists(products);
     const { data: order } = await axios.post(
       "https://cubejkiddies-admin-nextjs.vercel.app/api/orders",
       data
@@ -60,6 +80,7 @@ const useOrders = (props: Props = {}) => {
   };
 
   const onOrderCreation = (order: Order) => {
+    if (!order) return;
     const { id } = order;
     ionRouter.push(`/store/orders/${id}`);
     queryClient.invalidateQueries(["collection", collectionName]);

@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { useParams } from 'react-router';
+import { useEffect, useRef } from "react";
+import { useParams } from "react-router";
 import {
   IonHeader,
   IonToolbar,
@@ -10,15 +10,15 @@ import {
   IonTextarea,
   IonLabel,
   IonText,
-} from '@ionic/react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import cx from 'classnames';
-import Rating from './Rating';
-import Button from './Button';
-import reviewSchema, { Review } from '../constants/schemas/review';
-import useProducts from '../hooks/useProducts';
-import useAuth from '../hooks/useAuth';
+} from "@ionic/react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import cx from "classnames";
+import Rating from "./Rating";
+import Button from "./Button";
+import reviewSchema, { Review } from "../constants/schemas/review";
+import useProducts from "../hooks/useProducts";
+import useAuth from "../hooks/useAuth";
 
 interface Props {
   close: Function;
@@ -31,7 +31,7 @@ const ProductReviewEditor = ({ close = () => null, review }: Props) => {
   const submitButtonRef = useRef();
 
   const params: any = useParams();
-  const { productId = '' } = params;
+  const { productId = "" } = params;
 
   const { addReview, reviewMutation } = useProducts({
     productId,
@@ -50,8 +50,9 @@ const ProductReviewEditor = ({ close = () => null, review }: Props) => {
 
   useEffect(() => {
     if (Object.keys(touchedFields).length) return;
-    setValue('rating', review.rating);
-    setValue('content', review.content);
+    const { rating = 0, content = "" } = review || {};
+    setValue("rating", rating);
+    setValue("content", content);
   }, [touchedFields, review]);
 
   const submit = (values: Review) => {
@@ -62,10 +63,10 @@ const ProductReviewEditor = ({ close = () => null, review }: Props) => {
 
   return (
     <>
-      <IonHeader className='px-2 ion-no-border'>
+      <IonHeader className="px-2 ion-no-border">
         <IonToolbar>
-          <IonButtons slot='end'>
-            <IonButton onClick={() => close()} className='text-pri'>
+          <IonButtons slot="end">
+            <IonButton onClick={() => close()} className="text-pri">
               Close
             </IonButton>
           </IonButtons>
@@ -73,25 +74,25 @@ const ProductReviewEditor = ({ close = () => null, review }: Props) => {
       </IonHeader>
       <IonContent>
         <form
-          className='px-5'
+          className="px-5"
           onClick={handleSubmit((values, event) => {
             if (event?.target === submitButtonRef.current) submit(values);
           })}
         >
           <Controller
             control={control}
-            name='rating'
+            name="rating"
             render={({ field, fieldState }) => {
               const { name } = field;
               return (
                 <>
                   <IonItem
                     className={cx({
-                      'ion-invalid': !!errors?.rating?.message,
-                      'ion-valid': !errors?.rating?.message,
+                      "ion-invalid": !!errors?.rating?.message,
+                      "ion-valid": !errors?.rating?.message,
                     })}
                   >
-                    <IonLabel className='block'>Rating</IonLabel>
+                    <IonLabel className="block">Rating</IonLabel>
                     <Rating
                       max={5}
                       value={field.value}
@@ -102,8 +103,8 @@ const ProductReviewEditor = ({ close = () => null, review }: Props) => {
                   </IonItem>
                   {errors?.rating?.message && (
                     <IonText
-                      color='danger'
-                      className='block w-fit ml-auto pr-3 text-xs'
+                      color="danger"
+                      className="block w-fit ml-auto pr-3 text-xs"
                     >
                       {errors?.rating?.message}
                     </IonText>
@@ -114,25 +115,25 @@ const ProductReviewEditor = ({ close = () => null, review }: Props) => {
           />
           <IonItem
             className={cx({
-              'ion-invalid': !!errors?.content?.message,
-              'ion-valid': !errors?.content?.message,
+              "ion-invalid": !!errors?.content?.message,
+              "ion-valid": !errors?.content?.message,
             })}
           >
             <IonTextarea
-              label='Your review'
-              aria-label='Your review'
-              labelPlacement='floating'
-              {...register('content')}
-              errorText={(errors?.content?.message || '') as string}
+              label="Your review"
+              aria-label="Your review"
+              labelPlacement="floating"
+              {...register("content")}
+              errorText={(errors?.content?.message || "") as string}
               autoGrow
             />
           </IonItem>
           <Button
             ref={submitButtonRef}
-            className='block w-fit my-5 ml-auto'
+            className="block w-fit my-5 ml-auto"
             loading={reviewMutation.isLoading}
           >
-            {!!review ? 'Edit' : 'Add'} review
+            {!!review ? "Edit" : "Add"} review
           </Button>
         </form>
       </IonContent>

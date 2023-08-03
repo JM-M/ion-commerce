@@ -11,7 +11,7 @@ const useFirestoreDocumentDeletion = ({
   documentIds: string[];
   onSuccess?: Function;
 }) => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const deleteFromFirestore = async () => {
     for (let i = 0; i < documentIds.length; i++) {
@@ -27,7 +27,6 @@ const useFirestoreDocumentDeletion = ({
     mutationFn: deleteFromFirestore,
     onSuccess: (data) => {
       onSuccess(data);
-      queryClient.invalidateQueries(["collection", collectionName]);
     },
   });
 
