@@ -18,7 +18,7 @@ const CheckoutForm: React.FC<{ step: string; setStep: Function }> = ({
 
   if (cartQuery.isLoading) return <PageLoader />;
 
-  let form;
+  let form = null;
   if (step === "contact")
     form = (
       <CheckoutContactForm

@@ -86,7 +86,7 @@ const useCheckout = (
     };
     checkoutSubmissionMutation.mutate({
       document: newCart,
-      documentId: uid,
+      documentId: uid!,
     });
   };
 

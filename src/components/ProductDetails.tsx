@@ -69,7 +69,7 @@ const ProductDetails = ({ id }: Props) => {
   return (
     <>
       <ProductCarousel images={images} hasVariant={!!variantKeys.length} />
-      <ProductInfo name={name} price={price} />
+      <ProductInfo name={name} price={price} rating={4} />
       <ProductVariations
         variant={variant}
         variations={variations}
