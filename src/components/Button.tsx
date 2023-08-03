@@ -1,21 +1,21 @@
-import { ReactNode } from "react";
-import { IonButton, IonSpinner } from "@ionic/react";
-import { JSX } from "@ionic/core";
+import { ReactNode, forwardRef } from 'react';
+import { IonButton, IonSpinner } from '@ionic/react';
+import { JSX } from '@ionic/core';
 
-const Button: React.FC<
-  JSX.IonButton & {
-    children: ReactNode;
-    loading?: boolean;
-    disabled?: boolean;
-    [x: string]: any;
-  }
-> = ({ children, loading, disabled, ...props }) => {
+type Props = JSX.IonButton & {
+  children: ReactNode;
+  loading?: boolean;
+  disabled?: boolean;
+  [x: string]: any;
+};
+
+const Button = ({ children, loading, disabled, ...props }: Props, ref: any) => {
   return (
-    <IonButton {...props} disabled={loading || disabled}>
-      {loading && <IonSpinner name="dots" className="inline-block mr-3" />}
+    <IonButton ref={ref} {...props} disabled={loading || disabled}>
+      {loading && <IonSpinner name='dots' className='inline-block mr-3' />}
       {children}
     </IonButton>
   );
 };
 
-export default Button;
+export default forwardRef(Button);

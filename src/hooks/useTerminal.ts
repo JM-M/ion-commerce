@@ -1,14 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Order } from "./useOrders";
-import useAuth from "./useAuth";
-import { getCities, getCountries, getStates } from "../utils/terminal/api";
-import getTerminalShipmentRates from "../utils/terminal/functions/getTerminalShipmentRates";
+import { useQuery } from '@tanstack/react-query';
+import { Order } from './useOrders';
+import useAuth from './useAuth';
+import { getCities, getCountries, getStates } from '../utils/terminal/api';
+import getTerminalShipmentRates from '../utils/terminal/functions/getTerminalShipmentRates';
 
 type Country = { name: string; isoCode: string };
 
 export interface OrderWithoutPaymentReference
-  extends Omit<Order, "paymentReference"> {}
+  extends Omit<Order, 'paymentReference'> {}
 
 interface Props {
   countryIsoCode?: string;
@@ -17,12 +16,12 @@ interface Props {
 }
 
 const useTerminal = (props: Props = {}) => {
-  const { countryIsoCode = "NG", stateIsoCode = "", order } = props;
+  const { countryIsoCode = 'NG', stateIsoCode = '', order } = props;
 
   const { isLoggedIn } = useAuth();
 
   const countriesQuery = useQuery({
-    queryKey: ["countries"],
+    queryKey: ['countries'],
     queryFn: async () => {
       const countries = await getCountries();
       return countries;
@@ -31,7 +30,7 @@ const useTerminal = (props: Props = {}) => {
   });
 
   const statesQuery = useQuery({
-    queryKey: ["states", countryIsoCode],
+    queryKey: ['states', countryIsoCode],
     queryFn: async () => {
       const states = await getStates({ country_code: countryIsoCode });
       return states;
@@ -40,7 +39,7 @@ const useTerminal = (props: Props = {}) => {
   });
 
   const citiesQuery = useQuery({
-    queryKey: ["cities", countryIsoCode, stateIsoCode],
+    queryKey: ['cities', countryIsoCode, stateIsoCode],
     queryFn: async () => {
       const cities = await getCities({
         country_code: countryIsoCode,
@@ -52,7 +51,7 @@ const useTerminal = (props: Props = {}) => {
   });
 
   const shipmentRatesQuery = useQuery({
-    queryKey: ["shipment-rates", order],
+    queryKey: ['shipment-rates', order],
     queryFn: async () => {
       if (!order || !isLoggedIn) return [];
       const rates = await getTerminalShipmentRates(order);
