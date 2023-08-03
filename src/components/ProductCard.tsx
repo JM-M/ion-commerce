@@ -20,8 +20,14 @@ const ProductCard = ({ product }: Props) => {
   return (
     <div>
       <Link to={`/store/products/${id}`} className="block">
-        <div className="w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg overflow-hidden">
-          {image && <IonImg src={image} alt={name} className="bg-gray-200" />}
+        <div className="relative w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg overflow-hidden">
+          {image && (
+            <IonImg
+              src={image}
+              alt={name}
+              className="h-full w-full bg-gray-200 object-cover"
+            />
+          )}
         </div>
       </Link>
       <div className="flex justify-between">
