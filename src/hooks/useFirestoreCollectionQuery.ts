@@ -95,7 +95,6 @@ const useFirestoreCollectionQuery = ({
   const fetchNextPage = () => setPageNum((n) => n + 1); // handle hasNextPage
 
   const fetchPreviousPage = () => !!pageNum && setPageNum((n) => n - 1);
-
   const queryState = useQuery({
     queryKey: [
       "collection",

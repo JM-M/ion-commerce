@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { IonImg } from "@ionic/react";
+import WishlistIcon from "./WishlistIcon";
 import { NAIRA } from "../constants/unicode";
 import { Product } from "../constants/schemas/product";
 import useCategories from "../hooks/useCategories";
@@ -26,6 +27,12 @@ const ProductCard = ({ product }: Props) => {
               src={image}
               alt={name}
               className="h-full w-full bg-gray-200 object-cover"
+            />
+          )}
+          {product && (
+            <WishlistIcon
+              className="absolute bottom-3 right-3 h-[24px] w-[24px]"
+              product={product}
             />
           )}
         </div>
