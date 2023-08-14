@@ -50,7 +50,7 @@ const pickupAddress = {
 };
 
 const getParcelItems = (cartProducts: ProductWithCartOptions[]) => {
-  return cartProducts.map(({ name, qty, variant, price }) => {
+  return cartProducts.map(({ name, qty, variant, price, weight = 100 }) => {
     const variantKeys = Object.keys(variant);
     const properties = !!variantKeys.length
       ? `with the following properties: ${variantKeys
@@ -65,7 +65,7 @@ const getParcelItems = (cartProducts: ProductWithCartOptions[]) => {
       currency: "NGN",
       value: price, // validate this before calling this controller
       quantity: qty,
-      weight: 0.1, // add this to the admin form
+      weight: weight / 1000, // add this to the admin form
     };
   });
 };

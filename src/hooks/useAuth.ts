@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useIonRouter } from '@ionic/react';
+import { useState, useEffect } from "react";
+import { useIonRouter } from "@ionic/react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -9,14 +9,15 @@ import {
   EmailAuthProvider,
   User,
   updatePassword,
-} from 'firebase/auth';
-import { Timestamp } from 'firebase/firestore';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { auth } from '../../firebase';
-import { UserLogin, UserSignUp } from '../constants/schemas/auth';
-import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
-import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
-import useAuthModal from './useAuthModal';
+} from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { auth } from "../../firebase";
+import { UserLogin, UserSignUp } from "../constants/schemas/auth";
+import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
+import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
+import useAuthModal from "./useAuthModal";
 
 export interface UserFirestoreDocument {
   email: string;
@@ -44,9 +45,18 @@ const useAuth = () => {
 
   const { closeAuthModal } = useAuthModal();
 
+  const saveUserRecordToAlgolia = async (userDoc: UserFirestoreDocument) => {
+    const { uid, ...rest } = userDoc;
+    const record = { ...rest, objectID: uid };
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_API_ENDPOINT}/algolia/users`,
+      record
+    );
+  };
+
   const { firestoreDocumentMutation: userDocMutation } =
     useFirestoreDocumentMutation({
-      collectionName: 'users',
+      collectionName: "users",
       invalidateCollectionQuery: false,
       invalidateDocumentQuery: false,
     });
@@ -74,7 +84,7 @@ const useAuth = () => {
   };
 
   const { data: user } = useFirestoreDocumentQuery({
-    collectionName: 'users',
+    collectionName: "users",
     documentId: uid,
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
@@ -98,19 +108,20 @@ const useAuth = () => {
       firstName,
       lastName,
     });
+    await saveUserRecordToAlgolia(userDoc);
     return userDoc;
   };
 
   const onCreateUser = (user: UserFirestoreDocument) => {
     queryClient.setQueryData(
-      ['document', { collectionName: 'users', documentId: user.uid }],
+      ["document", { collectionName: "users", documentId: user.uid }],
       user
     );
     closeAuthModal();
   };
 
   const createUserMutation = useMutation({
-    mutationKey: ['create-user-doc'],
+    mutationKey: ["create-user-doc"],
     mutationFn: createUserFn,
     onSuccess: onCreateUser, // set userDoc query
   });
@@ -120,7 +131,7 @@ const useAuth = () => {
   };
 
   const loginMutation = useMutation({
-    mutationKey: ['user-sign-in'],
+    mutationKey: ["user-sign-in"],
     mutationFn: loginFn,
     onSuccess: closeAuthModal,
   });
@@ -136,7 +147,7 @@ const useAuth = () => {
   };
 
   const reAuthenticateMutation = useMutation({
-    mutationKey: ['re-authenticate-user'],
+    mutationKey: ["re-authenticate-user"],
     mutationFn: reAuthenticate,
   });
 
@@ -147,9 +158,9 @@ const useAuth = () => {
   };
 
   const updatePasswordMutation = useMutation({
-    mutationKey: ['update-user-password'],
+    mutationKey: ["update-user-password"],
     mutationFn: updatePasswordFn,
-    onSuccess: () => ionRouter.push('/account'),
+    onSuccess: () => ionRouter.push("/account"),
   });
 
   const logOutFn = async () => {
@@ -158,7 +169,7 @@ const useAuth = () => {
 
   const onLogOut = () => {
     queryClient.setQueryData(
-      ['document', { collectionName: 'users', documentId: uid }],
+      ["document", { collectionName: "users", documentId: uid }],
       [],
       undefined
     );
@@ -166,7 +177,7 @@ const useAuth = () => {
   };
 
   const logOutMutation = useMutation({
-    mutationKey: ['user-log-out'],
+    mutationKey: ["user-log-out"],
     mutationFn: logOutFn,
     onSuccess: onLogOut,
   });
@@ -174,6 +185,7 @@ const useAuth = () => {
   return {
     createUser: createUserMutation.mutate,
     createUserMutation,
+    saveUserRecordToAlgolia,
     user: user as UserFirestoreDocument,
     uid,
     isLoggedIn,
@@ -184,7 +196,7 @@ const useAuth = () => {
     autoAuthenticating,
     reAuthenticate: reAuthenticateMutation.mutate,
     reAuthenticateMutation,
-    reAuthenticated: reAuthenticateMutation.status === 'success',
+    reAuthenticated: reAuthenticateMutation.status === "success",
     updatePassword: updatePasswordMutation.mutate,
     updatePasswordMutation,
   };

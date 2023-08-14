@@ -72,7 +72,7 @@ const useOrders = (props: Props = {}) => {
     const products = data?.cart?.products;
     await updateBuyerLists(products);
     const { data: order } = await axios.post(
-      "https://cubejkiddies-admin-nextjs.vercel.app/api/orders",
+      `${import.meta.env.VITE_BACKEND_API_ENDPOINT}/orders`,
       data
     );
     await clearCart();

@@ -9,7 +9,7 @@ import useAuth from "./useAuth";
 const useAccount = () => {
   const ionRouter = useIonRouter();
 
-  const { user, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, saveUserRecordToAlgolia } = useAuth();
   const { uid } = user || {};
 
   const { firestoreDocumentMutation: userDocMutation } =
@@ -52,6 +52,7 @@ const useAccount = () => {
       documentId: uid,
       addTimestamp: true,
     });
+    await saveUserRecordToAlgolia(userDoc);
     return response;
   };
 
