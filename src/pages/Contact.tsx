@@ -1,11 +1,11 @@
-import PageHeader from '../components/PageHeader';
-import ContactForm from '../components/ContactForm';
+import PageHeader from "../components/PageHeader";
+import ContactForm from "../components/ContactForm";
 
 const Contact = () => {
   return (
-    <div className='h-full flex flex-col'>
+    <div className="h-full flex flex-col">
       <PageHeader>Get in touch</PageHeader>
-      <div className='container my-auto'>
+      <div className="container flex flex-col my-auto">
         <ContactForm />
       </div>
     </div>

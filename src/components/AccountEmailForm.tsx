@@ -39,7 +39,7 @@ const AccountEmailForm = () => {
   return (
     <form onSubmit={handleSubmit(submit)}>
       <Input
-        label="First name"
+        label="Email"
         labelPlacement="floating"
         {...register("email")}
         errorText={errors.email?.message}

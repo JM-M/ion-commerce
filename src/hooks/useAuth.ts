@@ -36,8 +36,8 @@ const useAuth = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      setAutoAuthenticating(false);
       setFirebaseAuthUser(user);
+      if (!user) setAutoAuthenticating(false);
     });
   }, []);
 
@@ -89,6 +89,11 @@ const useAuth = () => {
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
   const isLoggedIn = !!(uid && user);
+
+  // using an effect ensures that autoAuthenticating is only turned to false when user state has been set
+  useEffect(() => {
+    if (user && autoAuthenticating) setAutoAuthenticating(false);
+  }, [user, autoAuthenticating]);
 
   const createUserFn = async ({
     email,
