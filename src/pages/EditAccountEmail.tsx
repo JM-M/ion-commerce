@@ -4,7 +4,7 @@ import AccountEmailForm from "../components/AccountEmailForm";
 const EditAccountEmail = () => {
   return (
     <div className="h-full flex flex-col">
-      <PageHeader>Edit email</PageHeader>
+      <PageHeader backHref="/account">Edit email</PageHeader>
       <div className="container my-auto">
         <AccountEmailForm />
       </div>

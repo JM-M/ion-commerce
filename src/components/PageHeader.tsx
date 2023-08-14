@@ -1,25 +1,28 @@
-import { ReactElement } from 'react';
+import { ReactElement } from "react";
 import {
   IonHeader,
   IonToolbar,
   IonTitle,
   IonBackButton,
   IonButtons,
-} from '@ionic/react';
+} from "@ionic/react";
 
-const PageHeader: React.FC<{ children: ReactElement | string }> = ({
-  children,
-}) => {
+interface Props {
+  children: ReactElement | string;
+  backHref?: string;
+}
+
+const PageHeader: React.FC<Props> = ({ children, backHref = "" }) => {
   return (
-    <IonHeader className='container ion-no-border'>
+    <IonHeader className="container ion-no-border">
       <IonToolbar>
-        <IonButtons slot='start'>
+        <IonButtons slot="start">
           <IonBackButton
-            defaultHref='/'
-            className='ion-no-padding h-[20px] w-[20px]'
+            defaultHref={backHref || "/"}
+            className="ion-no-padding h-[20px] w-[20px]"
           />
         </IonButtons>
-        <IonTitle slot='start'>{children}</IonTitle>
+        <IonTitle slot="start">{children}</IonTitle>
       </IonToolbar>
     </IonHeader>
   );

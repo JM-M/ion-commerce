@@ -27,6 +27,7 @@ const useAccount = () => {
       documentId: uid,
       addTimestamp: true,
     });
+    await saveUserRecordToAlgolia(userDoc);
     return response;
   };
 

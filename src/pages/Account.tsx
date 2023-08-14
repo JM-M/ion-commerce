@@ -53,7 +53,6 @@ const Account = () => {
               </>
             );
           }}
-          exact
         />
       </IonContent>
     </IonRouterOutlet>

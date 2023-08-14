@@ -49,7 +49,7 @@ const useAuth = () => {
     const { uid, ...rest } = userDoc;
     const record = { ...rest, objectID: uid };
     await axios.post(
-      `${import.meta.env.VITE_BACKEND_API_ENDPOINT}/algolia/users`,
+      `${import.meta.env.VITE_DEV_BACKEND_API_ENDPOINT}/algolia/users`,
       record
     );
   };
