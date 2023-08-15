@@ -9,6 +9,7 @@ import {
   EmailAuthProvider,
   User,
   updatePassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { Timestamp } from "firebase/firestore";
 import axios from "axios";
@@ -88,7 +89,7 @@ const useAuth = () => {
     documentId: uid,
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
-  const isLoggedIn = !!(uid && user);
+  const isLoggedIn = !!uid;
 
   // using an effect ensures that autoAuthenticating is only turned to false when user state has been set
   useEffect(() => {
@@ -169,7 +170,7 @@ const useAuth = () => {
   });
 
   const logOutFn = async () => {
-    await signOut(auth);
+    signOut(auth);
   };
 
   const onLogOut = () => {
@@ -181,6 +182,23 @@ const useAuth = () => {
     setFirebaseAuthUser(null);
   };
 
+  const sendPasswordResetEmailFn = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return email;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  const sendPasswordResetEmailMutation = useMutation({
+    mutationKey: ["send-password-reset-email"],
+    mutationFn: sendPasswordResetEmailFn,
+    onSuccess: (email) => {
+      if (email) ionRouter.push(`/forgot-password/sent?email=${email}`);
+    },
+  });
+
   const logOutMutation = useMutation({
     mutationKey: ["user-log-out"],
     mutationFn: logOutFn,
@@ -191,7 +209,7 @@ const useAuth = () => {
     createUser: createUserMutation.mutate,
     createUserMutation,
     saveUserRecordToAlgolia,
-    user: user as UserFirestoreDocument,
+    user: uid ? (user as UserFirestoreDocument) : undefined,
     uid,
     isLoggedIn,
     login: loginMutation.mutate,
@@ -204,6 +222,8 @@ const useAuth = () => {
     reAuthenticated: reAuthenticateMutation.status === "success",
     updatePassword: updatePasswordMutation.mutate,
     updatePasswordMutation,
+    sendPasswordResetEmail: sendPasswordResetEmailMutation.mutate,
+    sendPasswordResetEmailMutation,
   };
 };
 

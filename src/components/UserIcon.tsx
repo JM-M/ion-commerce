@@ -15,8 +15,6 @@ const CartIcon = () => {
 
   const loggingOut = logOutMutation.isLoading;
 
-  if (!user) return null;
-
   return (
     <span className="relative inline-block h-[24px] w-[24px] ml-2" slot="end">
       {isLoggedIn && user ? (
@@ -31,8 +29,8 @@ const CartIcon = () => {
               onClick={(e) => e.preventDefault()}
               className="inline-flex justify-center items-center h-[24px] w-[24px] text-xs font-medium border border-[var(--ionic-color-medium)] text-center rounded-[50%]"
             >
-              {user.firstName[0]}
-              {user.lastName[0]}
+              {user.firstName && user.firstName[0]}
+              {user.lastName && user.lastName[0]}
             </span>
           </IonButton>
           <IonPopover

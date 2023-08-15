@@ -1,18 +1,18 @@
+import { Link } from "react-router-dom";
 import { IonButton, IonSpinner } from "@ionic/react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "./Input";
+import ErrorText from "./ErrorText";
 import { UserLogin } from "../constants/schemas/auth";
 import { userLoginSchema } from "../constants/schemas/auth";
-
+import useFirebaseErrorMessage from "../hooks/useFirebaseErrorMessage";
 import useAuthModal from "../hooks/useAuthModal";
 import useAuth from "../hooks/useAuth";
-import useFirebaseErrorMessage from "../hooks/useFirebaseErrorMessage";
-import ErrorText from "./ErrorText";
 
 const LoginForm = () => {
-  const { openAuthModal } = useAuthModal();
+  const { openAuthModal, closeAuthModal } = useAuthModal();
   const { login, loginMutation } = useAuth();
   const errorMessage = useFirebaseErrorMessage(
     (loginMutation.error as any)?.code
@@ -58,9 +58,13 @@ const LoginForm = () => {
           errorText={errors.password?.message}
         />
         <div className="flex justify-end mt-1">
-          <span className="font-medium text-[var(--ion-color-medium)]">
+          <Link
+            to="/forgot-password"
+            className="font-medium text-[var(--ion-color-primary)]"
+            onClick={closeAuthModal}
+          >
             Forgot password?
-          </span>
+          </Link>
         </div>
         <IonButton
           id="checkoutFormButton"

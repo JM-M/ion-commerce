@@ -35,6 +35,8 @@ import About from "./pages/About";
 import SideMenu from "./components/SideMenu";
 import TopHeader from "./components/TopHeader";
 import AuthForm from "./components/AuthForm";
+import ForgotPassword from "./pages/ForgotPassword";
+import PasswordResetEmailSent from "./pages/PasswordResetEmailSent";
 
 import AuthModalContext from "./contexts/authModal";
 
@@ -99,6 +101,16 @@ const App: React.FC = () => {
                 <IonRouterOutlet className="pt-[60px] flex flex-col">
                   <IonContent>
                     <div className="flex flex-col h-full">
+                      <Route
+                        path="/forgot-password/sent"
+                        component={PasswordResetEmailSent}
+                        exact
+                      />
+                      <Route
+                        path="/forgot-password"
+                        component={ForgotPassword}
+                        exact
+                      />
                       <Route path="/about" component={About} />
                       <Route path="/wishlist" component={Wishlist} />
                       <Route path="/contact" component={Contact} />
