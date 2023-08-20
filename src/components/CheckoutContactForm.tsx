@@ -1,12 +1,12 @@
-import { IonButton, IonSpinner } from '@ionic/react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Input from './Input';
-import PhoneInput from './PhoneInput';
-import { contactSchema } from '../constants/schemas/checkout';
-import useCart from '../hooks/useCart';
-import useAuth from '../hooks/useAuth';
-import { useEffect } from 'react';
+import { IonButton, IonSpinner } from "@ionic/react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Input from "./Input";
+import PhoneInput from "./PhoneInput";
+import { contactSchema } from "../constants/schemas/checkout";
+import useCart from "../hooks/useCart";
+import useAuth from "../hooks/useAuth";
+import { useEffect } from "react";
 
 interface Props {
   submit: Function;
@@ -40,39 +40,39 @@ const CheckoutContactForm = ({ submit, submitting }: Props) => {
 
   useEffect(() => {
     if (defaultValues || !isLoggedIn) return;
-    setValue('firstName', user.firstName);
-    setValue('lastName', user.lastName);
+    setValue("firstName", user.firstName);
+    setValue("lastName", user.lastName);
   }, [user, defaultValues, isLoggedIn]);
 
   return (
     <form onSubmit={handleSubmit((values) => submit(values))}>
       <Input
-        label='First name'
-        labelPlacement='floating'
-        {...register('firstName')}
+        label="First name"
+        labelPlacement="floating"
+        {...register("firstName")}
         errorText={errors.firstName?.message}
       />
       <Input
-        label='Last name'
-        labelPlacement='floating'
-        {...register('lastName')}
+        label="Last name"
+        labelPlacement="floating"
+        {...register("lastName")}
         errorText={errors.lastName?.message}
       />
       <PhoneInput
-        label='Phone number'
-        aria-label='Phone number'
-        name='phoneNumber'
+        label="Phone number"
+        aria-label="Phone number"
+        name="phoneNumber"
         control={control}
         errorText={errors.phoneNumber?.message}
       />
       <IonButton
-        id='checkoutFormButton'
-        className='h-[50px] mt-[30px]'
-        type='submit'
-        expand='block'
+        id="checkoutFormButton"
+        className="h-[50px] mt-[30px]"
+        type="submit"
+        expand="block"
         disabled={submitting}
       >
-        {submitting && <IonSpinner name='dots' className='inline-block mr-3' />}
+        {submitting && <IonSpinner name="dots" className="inline-block mr-3" />}
         Continue
       </IonButton>
     </form>

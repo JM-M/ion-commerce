@@ -227,7 +227,7 @@ const useAuth = () => {
     createUser: createUserMutation.mutate,
     createUserMutation,
     saveUserRecordToAlgolia,
-    user: uid ? (user as UserFirestoreDocument) : undefined,
+    user: user as UserFirestoreDocument,
     uid,
     isLoggedIn,
     login: loginMutation.mutate,
