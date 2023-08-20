@@ -11,10 +11,10 @@ import {
   updatePassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, doc, getDoc } from "firebase/firestore";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { UserLogin, UserSignUp } from "../constants/schemas/auth";
 import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
 import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
@@ -84,12 +84,13 @@ const useAuth = () => {
     }
   };
 
-  const { data: user } = useFirestoreDocumentQuery({
+  const { data: user, ...rest } = useFirestoreDocumentQuery({
     collectionName: "users",
     documentId: uid,
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
   const isLoggedIn = !!uid;
+  // console.log(user, rest);
 
   // using an effect ensures that autoAuthenticating is only turned to false when user state has been set
   useEffect(() => {
@@ -132,8 +133,25 @@ const useAuth = () => {
     onSuccess: onCreateUser, // set userDoc query
   });
 
+  const onLoginFail = async (errorText = "User not found") => {
+    await signOut(auth);
+    const error: any = new Error();
+    error.code = errorText;
+    throw error;
+  };
+
   const loginFn = async ({ email, password }: UserLogin) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    const uid = res?.user?.uid;
+    if (!uid) return onLoginFail();
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) return onLoginFail();
+    const user = { ...docSnap.data(), id: uid } as any;
+    queryClient.setQueryData(
+      ["document", { collectionName: "users", documentId: uid }],
+      user
+    );
   };
 
   const loginMutation = useMutation({
