@@ -30,9 +30,3 @@ yarn-error.log*
 
 # workspace
 /workspace.md
-
-# builds
-/build
-/android
-/ios
-/dist
