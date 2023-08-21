@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
 :root {
   --ion-color-primary: #1976d2;
@@ -64,7 +64,11 @@
   --ion-color-dark-shade: #2d2d2d;
   --ion-color-dark-tint: #474747;
 
-  --ion-font-family: 'Ubuntu', sans-serif;
+  --ion-font-family: "Ubuntu", sans-serif;
+}
+
+body {
+  background-color: white;
 }
 
 ion-searchbar {
@@ -88,7 +92,7 @@ ion-button {
   --box-shadow: none;
 }
 
-ion-button[fill='outline'] {
+ion-button[fill="outline"] {
   --border-width: 1px;
 }
 
@@ -132,7 +136,7 @@ ion-popover ion-content {
 }
 
 .side-menu-link-curve {
-  @apply absolute right-0 block h-5 w-5 bg-white;
+  @apply absolute right-0 block h-5 w-5 bg-white dark:bg-neutral-800;
 }
 
 .side-menu-link-curve.top {
@@ -144,8 +148,8 @@ ion-popover ion-content {
 }
 
 .side-menu-link-curve::after {
-  content: '';
-  @apply absolute top-0 left-0 h-full w-full bg-gray-200;
+  content: "";
+  @apply absolute top-0 left-0 h-full w-full bg-gray-200 dark:bg-neutral-900;
 }
 
 .side-menu-link-curve.top::after {

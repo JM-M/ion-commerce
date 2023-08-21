@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 import {
   setupIonicReact,
@@ -57,7 +57,7 @@ import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
 /* Theme variables */
-import "./theme/variables.css";
+// import "./theme/variables.css";
 
 /* Tailwind CSS utils */
 import "./tailwind.css";
@@ -71,6 +71,10 @@ const queryClient = new QueryClient();
 
 const App: React.FC = () => {
   const [authModal, setAuthModal] = useState({ isOpen: false, form: "login" });
+
+  useEffect(() => {
+    localStorage.theme = "light";
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -100,7 +104,7 @@ const App: React.FC = () => {
               <IonTabs>
                 <IonRouterOutlet className="pt-[60px] flex flex-col">
                   <IonContent>
-                    <div className="flex flex-col h-full">
+                    <div className="flex flex-col h-full mb-10">
                       <Route
                         path="/forgot-password/sent"
                         component={PasswordResetEmailSent}

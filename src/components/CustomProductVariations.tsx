@@ -11,11 +11,11 @@ const CustomProductVariations: React.FC<{
   if (!keys.length) return null;
 
   return (
-    <div className="pt-[30px]">
+    <>
       {keys.map((key, index) => {
         const options = variations[key];
         return (
-          <div key={index} className="flex-1 max-w-[50%]">
+          <div key={index}>
             <IonItem>
               <IonSelect
                 interface="action-sheet"
@@ -33,7 +33,7 @@ const CustomProductVariations: React.FC<{
                       key={i}
                       value={name}
                       className={cx({
-                        "!text-[var(--ion-color-primary)] !bg-gray-200":
+                        "!text-[var(--ion-color-primary)] !bg-gray-200 dark:!bg-neutral-900":
                           selected,
                       })}
                     >
@@ -46,7 +46,7 @@ const CustomProductVariations: React.FC<{
           </div>
         );
       })}
-    </div>
+    </>
   );
 };
 

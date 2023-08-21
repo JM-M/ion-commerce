@@ -8,7 +8,7 @@ const ProductCarousel: React.FC<{ images: string[]; hasVariant: boolean }> = ({
 }) => {
   if (!images.length)
     return (
-      <div className="relative min-h-[400px] flex items-center justify-center m-5 p-5 bg-gray-200 rounded-xl overflow-hidden">
+      <div className="relative min-h-[400px] flex items-center justify-center m-5 p-5 bg-gray-200 dark:bg-neutral-700 rounded-xl overflow-hidden">
         No images available for this {hasVariant ? "variant" : "product"}
       </div>
     );

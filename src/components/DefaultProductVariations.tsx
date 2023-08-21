@@ -9,9 +9,9 @@ const DefaultProductVariations: React.FC<{
   setProductVariant: Function;
 }> = ({ color, colors, size, sizes, setProductVariant = () => null }) => {
   return (
-    <div className="flex">
+    <>
       {!!colors.length && (
-        <div className="flex-1 max-w-[50%]">
+        <div className="block">
           <IonItem>
             <IonSelect
               interface="action-sheet"
@@ -29,7 +29,8 @@ const DefaultProductVariations: React.FC<{
                     key={name}
                     value={name}
                     className={cx({
-                      "!text-[var(--ion-color-primary)] !bg-gray-200": selected,
+                      "!text-[var(--ion-color-primary)] !bg-gray-200 dark:!bg-neutral-900":
+                        selected,
                     })}
                   >
                     <IonItem>
@@ -47,7 +48,7 @@ const DefaultProductVariations: React.FC<{
         </div>
       )}
       {!!sizes.length && (
-        <div className="flex-1 max-w-[50%]">
+        <div className="block">
           <IonItem>
             <IonSelect
               interface="action-sheet"
@@ -65,7 +66,8 @@ const DefaultProductVariations: React.FC<{
                     key={name}
                     value={name}
                     className={cx({
-                      "!text-[var(--ion-color-primary)] !bg-gray-200": selected,
+                      "!text-[var(--ion-color-primary)] !bg-gray-200 dark:!bg-neutral-900":
+                        selected,
                     })}
                   >
                     {name}
@@ -76,7 +78,7 @@ const DefaultProductVariations: React.FC<{
           </IonItem>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -20,6 +20,7 @@ const ProductReviews = () => {
   const {
     reviews = [],
     review,
+    reviewsQuery,
     deleteReview,
     deleteReviewMutation,
     hasBoughtProduct,
@@ -88,12 +89,15 @@ const ProductReviews = () => {
           );
         })}
       </ul>
-      <Button
-        color="sec"
-        className="block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]"
-      >
-        Load more
-      </Button>
+      {reviewsQuery.hasNextPage && (
+        <Button
+          color="medium"
+          className="block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]"
+          onClick={reviewsQuery.fetchNextPage}
+        >
+          Load more
+        </Button>
+      )}
     </div>
   );
 };

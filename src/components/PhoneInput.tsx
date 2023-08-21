@@ -1,11 +1,11 @@
-import { forwardRef } from 'react';
-import { IonItem, IonLabel } from '@ionic/react';
-import { Control } from 'react-hook-form/dist/types/form';
-import { Controller } from 'react-hook-form';
-import cx from 'classnames';
-import ReactPhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import ErrorText from './ErrorText';
+import { forwardRef } from "react";
+import { IonItem, IonLabel } from "@ionic/react";
+import { Control } from "react-hook-form/dist/types/form";
+import { Controller } from "react-hook-form";
+import cx from "classnames";
+import ReactPhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import ErrorText from "./ErrorText";
 
 interface Props {
   onChange?: Function;
@@ -26,13 +26,18 @@ const PhoneInput = (props: Props & any, ref: unknown) => {
         return (
           <>
             <IonItem
-              className={cx('!overflow-visible', {
-                'ion-invalid': !!errorText,
-                'ion-valid': !errorText,
+              className={cx("!overflow-visible !dark:bg-neutral-900", {
+                "ion-invalid": !!errorText,
+                "ion-valid": !errorText,
               })}
             >
-              <IonLabel position='stacked'>{label}</IonLabel>
-              <ReactPhoneInput {...field} country={'ng'} />
+              <IonLabel position="stacked">{label}</IonLabel>
+              <ReactPhoneInput
+                {...field}
+                country={"ng"}
+                // containerClass="!dark:bg-neutral-900"
+                // inputClass="dark:bg-gray-900"
+              />
             </IonItem>
             <ErrorText text={errorText} />
           </>

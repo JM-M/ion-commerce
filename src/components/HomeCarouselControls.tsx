@@ -45,7 +45,7 @@ const HomeCarouselControls = () => {
                   {
                     "w-[10px]": !active,
                     "w-5 bg-[var(--ion-color-primary)]": active,
-                    "bg-gray-300": !active,
+                    "bg-gray-300 dark:bg-gray-600": !active,
                   }
                 )}
               />

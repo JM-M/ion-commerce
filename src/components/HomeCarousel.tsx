@@ -10,7 +10,7 @@ const HomeCarousel = () => {
   if (homeSlidesQuery.isLoading)
     return (
       <div className="container pt-4">
-        <div className="relative min-h-[240px] bg-gray-200 rounded-xl overflow-hidden"></div>
+        <div className="relative min-h-[240px] bg-gray-200 dark:bg-neutral-700 rounded-xl overflow-hidden"></div>
       </div>
     );
 

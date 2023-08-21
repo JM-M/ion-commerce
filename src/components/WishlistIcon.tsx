@@ -30,11 +30,19 @@ const WishlistIcon = ({ product, ...props }: Props) => {
   };
 
   if (isLoading)
-    return <IonSpinner name="crescent" {...props} onClick={onClick} />;
+    return (
+      <IonSpinner
+        name="crescent"
+        color="primary"
+        {...props}
+        onClick={onClick}
+      />
+    );
 
   return (
     <IonIcon
       id="wishlist-icon"
+      color="primary"
       icon={isInWishlist ? heart : heartOutline}
       onClick={toggle}
       {...props}

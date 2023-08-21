@@ -5,12 +5,15 @@ import { NAIRA } from "../constants/unicode";
 import { Product } from "../constants/schemas/product";
 import useCategories from "../hooks/useCategories";
 import useProductImages from "../hooks/useProductImages";
+import useAuth from "../hooks/useAuth";
 
 interface Props {
   product: Product;
 }
 
 const ProductCard = ({ product }: Props) => {
+  const { isLoggedIn } = useAuth();
+
   const { name, category, price, id, stocks } = product;
   const { getCategoryFromValue } = useCategories();
   const categoryName = getCategoryFromValue(category)?.name;
@@ -29,7 +32,7 @@ const ProductCard = ({ product }: Props) => {
               className="h-full w-full bg-gray-200 object-cover"
             />
           )}
-          {product && (
+          {product && isLoggedIn && (
             <WishlistIcon
               className="absolute bottom-3 right-3 h-[24px] w-[24px]"
               product={product}
@@ -37,7 +40,7 @@ const ProductCard = ({ product }: Props) => {
           )}
         </div>
       </Link>
-      <div className="flex justify-between">
+      <div className="flex justify-between dark:text-gray-300">
         <div className="flex flex-col">
           <span className="block font-medium">{name}</span>
           <span className="text-xs text-gray-500">{categoryName}</span>
