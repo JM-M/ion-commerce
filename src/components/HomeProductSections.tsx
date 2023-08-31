@@ -1,7 +1,7 @@
-import ProductSection from "./ProductSection";
-import PageLoader from "./PageLoader";
-import useProductSections from "../hooks/useProductSections";
-import { DatabaseProductSection } from "../hooks/useProductSections";
+import ProductSection from './ProductSection';
+import PageLoader from './PageLoader';
+import useProductSections from '../hooks/useProductSections';
+import { DatabaseProductSection } from '../hooks/useProductSections';
 
 const HomeProductSections = () => {
   const { productSectionsQuery } = useProductSections();
@@ -15,15 +15,7 @@ const HomeProductSections = () => {
   return (
     <>
       {sections.map((section: DatabaseProductSection, index: number) => {
-        const { title, products, id = "" } = section;
-        return (
-          <ProductSection
-            key={index}
-            title={title}
-            productIds={products}
-            fullPageHref="#"
-          />
-        );
+        return <ProductSection key={index} {...section} />;
       })}
     </>
   );

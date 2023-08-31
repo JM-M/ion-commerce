@@ -3,9 +3,7 @@ import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
 import { ProductSection } from '../constants/schemas/productSection';
 
 export interface DatabaseProductSection
-  extends Omit<ProductSection, 'products'> {
-  products: string[];
-}
+  extends Omit<ProductSection, 'products'> {}
 
 interface Props {
   productSectionId?: string;
