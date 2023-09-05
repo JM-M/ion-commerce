@@ -66,13 +66,13 @@ const useOrders = (props: Props = {}) => {
     });
     await orderProductBuyersMutation.mutateAsync({ collections });
   };
-
+  
   const createOrder = async (data: Order) => {
     if (!isLoggedIn) return;
     const products = data?.cart?.products;
     await updateBuyerLists(products);
     const { data: order } = await axios.post(
-      `${import.meta.env.VITE_BACKEND_API_ENDPOINT}/orders`,
+      `${import.meta.env.VITE_BACKEND_URL_DEV}/orders`,
       data
     );
     await clearCart();

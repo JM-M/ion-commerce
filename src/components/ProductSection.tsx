@@ -1,12 +1,17 @@
-import { Link } from 'react-router-dom';
-import ProductGrid from './ProductGrid';
-import Button from './Button';
-import { DatabaseProductSection } from '../hooks/useProductSections';
-import useProductSection from '../hooks/useProductSection';
+import { Link } from "react-router-dom";
+import ProductGrid from "./ProductGrid";
+import Button from "./Button";
+import { DatabaseProductSection } from "../hooks/useProductSections";
+import useProductSection from "../hooks/useProductSection";
 
-const ProductSection = (section: DatabaseProductSection) => {
+interface Props {
+  section: DatabaseProductSection;
+  noHeader?: boolean;
+}
+
+const ProductSection = ({ section, noHeader = false }: Props) => {
   const { title, id } = section;
-  const fullPageHref = `/section/${id}`;
+  const fullPageHref = `/store/sections/${id}`;
   const { productsQuery } = useProductSection(section);
   const {
     hasNextPage,
@@ -17,12 +22,12 @@ const ProductSection = (section: DatabaseProductSection) => {
   } = productsQuery;
 
   return (
-    <div className='container py-[30px]'>
-      {(title || fullPageHref) && (
-        <div className='flex justify-between items-start pb-5'>
-          <h2 className='text-xl font-medium text-gray-500'>{title}</h2>
+    <div className="container py-[30px]">
+      {(title || fullPageHref) && !noHeader && (
+        <div className="flex justify-between items-start pb-5">
+          <h2 className="text-xl font-medium text-gray-500">{title}</h2>
           {fullPageHref && (
-            <Link to={fullPageHref} className='text-blue-500'>
+            <Link to={fullPageHref} className="text-blue-500">
               See all
             </Link>
           )}
@@ -37,8 +42,8 @@ const ProductSection = (section: DatabaseProductSection) => {
       />
       {hasNextPage && (
         <Button
-          color='secondary'
-          className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'
+          color="secondary"
+          className="block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]"
           onClick={fetchNextPage}
           loading={isLoading}
         >

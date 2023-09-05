@@ -1,21 +1,13 @@
-import { Link } from "react-router-dom";
 import {
   IonMenu,
   IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
-  IonMenuToggle,
   useIonRouter,
 } from "@ionic/react";
-import cx from "classnames";
-
-const links: { display: string; path: string }[] = [
-  { display: "cart", path: "/store/checkout" },
-  { display: "Wishlist", path: "/wishlist" },
-  { display: "About", path: "/about" },
-  { display: "Contact", path: "/contact" },
-];
+import CategoriesMenu from "./CategoriesMenu";
+import SideMenuLinks from "./SideMenuLinks";
 
 const SideMenu = () => {
   const {
@@ -30,40 +22,19 @@ const SideMenu = () => {
     >
       <IonHeader className="container ion-no-border bg-gray-200 dark:bg-neutral-900">
         <IonToolbar color="transparent">
-          <IonTitle className="ion-no-padding bg-transparent">
-            CubeJKiddies
-          </IonTitle>
+          <IonTitle className="bg-transparent">CubeJKiddies</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <div className="container !pr-0 h-full flex flex-col justify-end pb-20 bg-gray-200 dark:bg-neutral-900">
-          <ul>
-            {links.map((link) => {
-              const { display, path } = link;
-              const active = pathname.startsWith(`${path}`);
-              return (
-                <li key={path}>
-                  <IonMenuToggle>
-                    <Link
-                      to={path}
-                      className={cx(
-                        "side-menu-link flex items-center h-10 pl-5 ml-5 mb-2 rounded-l-full capitalize",
-                        { "bg-white dark:bg-neutral-800": active }
-                      )}
-                    >
-                      {display}
-                      {active && (
-                        <>
-                          <span className="side-menu-link-curve top"></span>
-                          <span className="side-menu-link-curve bottom"></span>
-                        </>
-                      )}
-                    </Link>
-                  </IonMenuToggle>
-                </li>
-              );
-            })}
-          </ul>
+        <div className="container !pr-0 h-full flex flex-col justify-between pb-20 bg-gray-200 dark:bg-neutral-900">
+          <div>
+            <h2 className="mt-5 mb-3 pl-5 font-medium text-lg">Categories</h2>
+            <CategoriesMenu />
+          </div>
+          <div>
+            <h2 className="mt-5 mb-3 pl-5 font-medium text-lg">Links</h2>
+            <SideMenuLinks pathname={pathname} />
+          </div>
         </div>
       </IonContent>
     </IonMenu>

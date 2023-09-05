@@ -43,6 +43,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
+    "slate": "^0.94.1",
     "uuid": "^9.0.0",
     "yup": "^1.2.0"
   },

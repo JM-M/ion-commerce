@@ -5,6 +5,7 @@ import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
 import useFirestoreDocumentDeletion from "./useFirestoreDocumentDeletion";
 import { Review } from "../constants/schemas/review";
 import useAuth from "./useAuth";
+import axios from "axios";
 
 export interface SortOption {
   field: string;
@@ -38,7 +39,7 @@ const useProducts = (props: Props = {}) => {
   const productsQuery = useFirestoreCollectionQuery({
     collectionName,
     match,
-    orderByField: sortBy.field,
+    orderByField: sortBy.field || "ranking",
     reverseOrder: sortBy.reverse,
     options: {
       pageSize: 10,
@@ -51,6 +52,12 @@ const useProducts = (props: Props = {}) => {
     documentId: productId,
   });
   const product = productQuery.data;
+
+  const { firestoreDocumentMutation: productMutation } =
+    useFirestoreDocumentMutation({
+      collectionName: "products",
+      invalidateDocumentQuery: true,
+    });
 
   const reviewsCollectionName = `products/${productId}/reviews`;
 
@@ -67,11 +74,32 @@ const useProducts = (props: Props = {}) => {
     documentId: uid,
   });
 
+  const updateProductRating = async (userRating: number) => {
+    const oldReview = reviewQuery.data;
+
+    let count = product?.rating?.count || 0;
+    let numUserReviews = product?.rating?.numUserReviews || 0;
+    if (oldReview) {
+      const countDifference = userRating - oldReview.rating;
+      count = count + countDifference;
+    } else {
+      count += userRating;
+      numUserReviews += 1;
+    }
+    const ranking = Math.round(((count + 5) / (count + 10)) * 100000);
+    const newProductRating = { count, numUserReviews };
+    productMutation.mutate({
+      documentId: productId!,
+      document: { ...product, rating: newProductRating, ranking },
+    });
+  };
+
   const { firestoreDocumentMutation: reviewMutation } =
     useFirestoreDocumentMutation({
       collectionName: reviewsCollectionName,
       invalidateDocumentQuery: true,
       onSuccess: (review: Review) => {
+        updateProductRating(review.rating);
         onCreateReview();
         queryClient.setQueryData(
           [
@@ -83,10 +111,11 @@ const useProducts = (props: Props = {}) => {
       },
     });
 
-  const addReview = async (review: Review & { userId: string }) => {
+  const addReview = async (newReview: Review & { userId: string }) => {
     if (!product || !productId || !isLoggedIn) return;
+
     reviewMutation.mutate({
-      document: review,
+      document: newReview,
       documentId: uid!,
       addTimestamp: true,
     });

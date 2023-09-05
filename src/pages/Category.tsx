@@ -1,6 +1,6 @@
 import { useIonRouter, IonContent } from "@ionic/react";
 import { CategoryHeader } from "../components/CategoryHeader";
-import ProductSection from "../components/ProductSection";
+import ProductCategoryDisplay from "../components/ProductCategoryDisplay";
 
 const Category = () => {
   const ionRouter = useIonRouter();
@@ -9,13 +9,12 @@ const Category = () => {
   } = ionRouter;
   const baseUrlPath = "/store/category";
   let category = pathname.replace(baseUrlPath, "");
-  if (category === "/") category = "";
 
   return (
     <>
       <CategoryHeader />
       <IonContent>
-        <ProductSection productIds={[]} category={category} />
+        <ProductCategoryDisplay category={category} />
       </IonContent>
     </>
   );

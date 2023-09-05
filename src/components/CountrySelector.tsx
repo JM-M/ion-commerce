@@ -1,5 +1,4 @@
 import Typeahead from './Typeahead';
-import usePaystack from '../hooks/usePaystack';
 import useTerminal from '../hooks/useTerminal';
 
 interface Props {
@@ -21,8 +20,6 @@ const CountrySelector = ({
   setValue,
   error,
 }: Props) => {
-  const { supportedCountries } = usePaystack();
-  console.log('supported countries in country selector: ', supportedCountries);
   const { countriesQuery } = useTerminal();
   const loading = countriesQuery.isLoading;
   const disabled = !countriesQuery.data?.length;

@@ -18,6 +18,11 @@ const productSchema = object({
       })
     )
     .required(),
+  rating: object({
+    count: number().required(),
+    numUserReviews: number().required(),
+    ranking: number().required(),
+  }),
 });
 
 export type Product = InferType<typeof productSchema>;

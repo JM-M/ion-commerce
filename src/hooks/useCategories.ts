@@ -26,6 +26,11 @@ const useCategories = () => {
     });
   };
 
+  const hasChildCategories = (value: string) => {
+    const childCategories = getChildCategories(value);
+    return !!childCategories.length;
+  };
+
   const getCategoryFromValue = (value: string) =>
     categoriesQuery.data?.find((c: Category) => c.value === value);
 
@@ -33,6 +38,7 @@ const useCategories = () => {
     categoriesQuery,
     getChildCategories,
     getCategoryFromValue,
+    hasChildCategories,
   };
 };
 

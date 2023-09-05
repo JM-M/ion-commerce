@@ -28,11 +28,11 @@ const PaystackPaymentButton = ({
     return {
       reference: uuidv4(),
       email,
-      amount: paymentValue * 100,
+      amount: Math.round(paymentValue * 100),
       publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
     };
   }, [email, paymentValue]);
-
+  
   const initializePayment = usePaystackPayment(config);
 
   return (

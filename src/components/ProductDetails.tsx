@@ -27,6 +27,7 @@ const ProductDetails = ({ id }: Props) => {
     discount,
     stocks = [],
     variations = {},
+    rating
   } = product;
 
   const setProductVariant = (key: string, name: string) =>
@@ -66,10 +67,12 @@ const ProductDetails = ({ id }: Props) => {
   if (isError) return <>An error occurred</>;
   if (!product) return <>No product</>;
 
+  
+
   return (
     <>
       <ProductCarousel images={images} hasVariant={!!variantKeys.length} />
-      <ProductInfo name={name} price={price} rating={4} />
+      <ProductInfo name={name} price={price} rating={rating} />
       <ProductVariations
         variant={variant}
         variations={variations}
