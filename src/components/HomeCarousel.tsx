@@ -1,21 +1,17 @@
-import { IonButton, IonImg } from "@ionic/react";
-import { CarouselProvider, Slider, Slide } from "pure-react-carousel";
-import "pure-react-carousel/dist/react-carousel.es.css";
-import HomeCarouselControls from "./HomeCarouselControls";
-import useHomeSlides, { HomeSlide } from "../hooks/useHomeSlides";
+import { IonButton, IonImg } from '@ionic/react';
+import { CarouselProvider, Slider, Slide } from 'pure-react-carousel';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import HomeCarouselSkeleton from './skeletons/HomeCarouselSkeleton';
+import HomeCarouselControls from './HomeCarouselControls';
+import useHomeSlides, { HomeSlide } from '../hooks/useHomeSlides';
 
 const HomeCarousel = () => {
   const { homeSlides, homeSlidesQuery } = useHomeSlides();
 
-  if (homeSlidesQuery.isLoading)
-    return (
-      <div className="container pt-4">
-        <div className="relative min-h-[240px] bg-gray-200 dark:bg-neutral-700 rounded-xl overflow-hidden"></div>
-      </div>
-    );
+  if (homeSlidesQuery.isLoading) return <HomeCarouselSkeleton />;
 
   return (
-    <div className="container pt-4">
+    <div className='container pt-4'>
       <CarouselProvider
         naturalSlideWidth={100}
         naturalSlideHeight={76}
@@ -26,16 +22,16 @@ const HomeCarousel = () => {
             const { id, image, button, buttonText, buttonHref } = homeSlide;
             return (
               <Slide key={id} index={index}>
-                <div className="relative aspect-[4/3] bg-gray-200 rounded-xl overflow-hidden">
+                <div className='relative aspect-[4/3] bg-gray-200 rounded-xl overflow-hidden'>
                   <IonImg
                     src={image}
                     alt={`Slide ${index + 1}`}
-                    className="bg-gray-200"
+                    className='bg-gray-200'
                   />
                   {button && (
                     <IonButton
                       routerLink={buttonHref}
-                      className="absolute bottom-5 right-5"
+                      className='absolute bottom-5 right-5'
                     >
                       {buttonText}
                     </IonButton>

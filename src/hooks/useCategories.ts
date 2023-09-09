@@ -1,5 +1,5 @@
-import { Timestamp } from "firebase/firestore";
-import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
+import { Timestamp } from 'firebase/firestore';
+import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
 
 export interface Category {
   id?: string;
@@ -11,8 +11,8 @@ export interface Category {
 
 const useCategories = () => {
   const categoriesQuery = useFirestoreCollectionQuery({
-    collectionName: "categories",
-    orderByField: "createdAt",
+    collectionName: 'categories',
+    orderByField: 'createdAt',
     options: {
       pageSize: 1000,
     },

@@ -5,7 +5,7 @@ const usePaystack = () => {
   const getCountries = async () => {
     // console.log('in get paystack countries');
     const { data } = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL_DEV}/paystack/countries`
+      `${import.meta.env.VITE_BACKEND_URL}/paystack/countries`
     );
     // console.log(data);
     return data;

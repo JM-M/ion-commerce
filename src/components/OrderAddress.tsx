@@ -1,10 +1,14 @@
-import { CheckoutAddress } from "../constants/schemas/checkout";
+import { IonSkeletonText } from '@ionic/react';
+import { CheckoutAddress } from '../constants/schemas/checkout';
+import OrderAddressSkeleton from './skeletons/OrderAddressSkeleton';
 
 interface Props {
   address: CheckoutAddress;
+  loading?: boolean;
 }
 
-const OrderAddress = ({ address }: Props) => {
+const OrderAddress = ({ address, loading = false }: Props) => {
+  if (loading) return <OrderAddressSkeleton />;
   const { streetAddress, additionalDetails, city, state } = address;
   return (
     <div>

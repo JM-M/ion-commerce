@@ -1,14 +1,13 @@
-import { RouteComponentProps } from "react-router";
-import { IonIcon, useIonRouter } from "@ionic/react";
-import { arrowBackOutline } from "ionicons/icons";
+import { RouteComponentProps } from 'react-router';
+import { IonSkeletonText, useIonRouter } from '@ionic/react';
 
-import OrderItems from "../components/OrderItems";
-import OrderStatus from "../components/OrderStatus";
-import OrderInfo from "../components/OrderInfo";
-import PageLoader from "../components/PageLoader";
+import OrderItems from '../components/OrderItems';
+import OrderStatus from '../components/OrderStatus';
+import OrderInfo from '../components/OrderInfo';
 
-import useOrders from "../hooks/useOrders";
-import StatusText from "../components/StatusText";
+import useOrders from '../hooks/useOrders';
+import StatusText from '../components/StatusText';
+import PageHeader from '../components/PageHeader';
 
 interface Props
   extends RouteComponentProps<{
@@ -26,47 +25,81 @@ const Order: React.FC<Props> = ({ match }) => {
 
   const { orderId } = match.params;
   const { order, orderQuery } = useOrders({ orderId });
+  const { isLoading, isError } = orderQuery;
 
-  if (orderQuery.isLoading) return <PageLoader />;
-  if (orderQuery.isError) return <>An error occurred.</>;
-  if (!order) return <>No order data</>;
+  if (isError) return <>An error occurred.</>;
 
-  const { cart, user, statusEvents = [], id } = order;
+  const { cart, user, statusEvents = [], id } = order || {};
   const statusEventsLength = statusEvents.length;
   const latestStatus =
     !!statusEventsLength && statusEvents[statusEventsLength - 1];
 
   return (
-    <div className="container mb-12">
-      <IonIcon
-        icon={arrowBackOutline}
-        color="dark"
-        className="h-[20px] w-[20px] block mb-3"
-        onClick={() =>
-          canGoBack() ? goBack() : push(`/${lastPathname}`, "back")
-        }
-      />
-      <div className="flex justify-between mb-5 mt-3">
-        <h2 className="font-medium text-lg">Order #{id}</h2>
-        {!!latestStatus && <StatusText status={latestStatus.status} />}
+    <>
+      <PageHeader backHref={lastPathname}>
+        {isLoading ? (
+          <IonSkeletonText
+            animated={true}
+            className='inline-block h-full w-full mb-3 ion-no-padding ion-no-margin rounded-md'
+          ></IonSkeletonText>
+        ) : (
+          `#${id}`
+        )}
+      </PageHeader>
+      <div className='container mb-12'>
+        <h3 className='font-medium mb-5 text-lg text-[var(--ion-color-medium)]'>
+          {isLoading ? (
+            <IonSkeletonText
+              animated={true}
+              className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
+            ></IonSkeletonText>
+          ) : (
+            'Status'
+          )}
+        </h3>
+        {!!latestStatus && (
+          <StatusText status={latestStatus.status} loading={isLoading} />
+        )}
+        <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
+          {isLoading ? (
+            <IonSkeletonText
+              animated={true}
+              className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
+            ></IonSkeletonText>
+          ) : (
+            'Items'
+          )}
+        </h3>
+        <OrderItems items={cart?.products || []} loading={isLoading} />
+        <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
+          {isLoading ? (
+            <IonSkeletonText
+              animated={true}
+              className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
+            ></IonSkeletonText>
+          ) : (
+            'Track'
+          )}
+        </h3>
+        <OrderStatus events={statusEvents} loading={isLoading} />
+        <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
+          {isLoading ? (
+            <IonSkeletonText
+              animated={true}
+              className='block h-full w-1/3 mb-5 ion-no-padding ion-no-margin rounded-md'
+            ></IonSkeletonText>
+          ) : (
+            'Details'
+          )}
+        </h3>
+        <OrderInfo
+          email={user?.email}
+          contact={cart?.checkout?.contact}
+          address={cart?.checkout?.address}
+          loading={isLoading}
+        />
       </div>
-      <h3 className="font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]">
-        Items
-      </h3>
-      <OrderItems items={cart.products} />
-      <h3 className="font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]">
-        Track
-      </h3>
-      <OrderStatus events={statusEvents} />
-      <h3 className="font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]">
-        Details
-      </h3>
-      <OrderInfo
-        email={user.email}
-        contact={cart.checkout?.contact}
-        address={cart.checkout?.address}
-      />
-    </div>
+    </>
   );
 };
 

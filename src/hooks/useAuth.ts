@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useIonRouter } from "@ionic/react";
+import { useState, useEffect } from 'react';
+import { useIonRouter } from '@ionic/react';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -10,15 +10,15 @@ import {
   User,
   updatePassword,
   sendPasswordResetEmail,
-} from "firebase/auth";
-import { Timestamp, doc, getDoc } from "firebase/firestore";
-import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { auth, db } from "../../firebase";
-import { UserLogin, UserSignUp } from "../constants/schemas/auth";
-import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
-import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
-import useAuthModal from "./useAuthModal";
+} from 'firebase/auth';
+import { Timestamp, doc, getDoc } from 'firebase/firestore';
+import axios from 'axios';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { auth, db } from '../../firebase';
+import { UserLogin, UserSignUp } from '../constants/schemas/auth';
+import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
+import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
+import useAuthModal from './useAuthModal';
 
 export interface UserFirestoreDocument {
   email: string;
@@ -50,14 +50,14 @@ const useAuth = () => {
     const { uid, ...rest } = userDoc;
     const record = { ...rest, objectID: uid };
     await axios.post(
-      `${import.meta.env.VITE_DEV_BACKEND_API_ENDPOINT}/algolia/users`,
+      `${import.meta.env.VITE_BACKEND_URL}/algolia/users`,
       record
     );
   };
 
   const { firestoreDocumentMutation: userDocMutation } =
     useFirestoreDocumentMutation({
-      collectionName: "users",
+      collectionName: 'users',
       invalidateCollectionQuery: false,
       invalidateDocumentQuery: false,
     });
@@ -85,7 +85,7 @@ const useAuth = () => {
   };
 
   const { data: user, ...rest } = useFirestoreDocumentQuery({
-    collectionName: "users",
+    collectionName: 'users',
     documentId: uid,
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
@@ -121,19 +121,19 @@ const useAuth = () => {
 
   const onCreateUser = (user: UserFirestoreDocument) => {
     queryClient.setQueryData(
-      ["document", { collectionName: "users", documentId: user.uid }],
+      ['document', { collectionName: 'users', documentId: user.uid }],
       user
     );
     closeAuthModal();
   };
 
   const createUserMutation = useMutation({
-    mutationKey: ["create-user-doc"],
+    mutationKey: ['create-user-doc'],
     mutationFn: createUserFn,
     onSuccess: onCreateUser, // set userDoc query
   });
 
-  const onLoginFail = async (errorText = "User not found") => {
+  const onLoginFail = async (errorText = 'User not found') => {
     await signOut(auth);
     const error: any = new Error();
     error.code = errorText;
@@ -144,18 +144,18 @@ const useAuth = () => {
     const res = await signInWithEmailAndPassword(auth, email, password);
     const uid = res?.user?.uid;
     if (!uid) return onLoginFail();
-    const docRef = doc(db, "users", uid);
+    const docRef = doc(db, 'users', uid);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) return onLoginFail();
     const user = { ...docSnap.data(), id: uid } as any;
     queryClient.setQueryData(
-      ["document", { collectionName: "users", documentId: uid }],
+      ['document', { collectionName: 'users', documentId: uid }],
       user
     );
   };
 
   const loginMutation = useMutation({
-    mutationKey: ["user-sign-in"],
+    mutationKey: ['user-sign-in'],
     mutationFn: loginFn,
     onSuccess: closeAuthModal,
   });
@@ -171,7 +171,7 @@ const useAuth = () => {
   };
 
   const reAuthenticateMutation = useMutation({
-    mutationKey: ["re-authenticate-user"],
+    mutationKey: ['re-authenticate-user'],
     mutationFn: reAuthenticate,
   });
 
@@ -182,9 +182,9 @@ const useAuth = () => {
   };
 
   const updatePasswordMutation = useMutation({
-    mutationKey: ["update-user-password"],
+    mutationKey: ['update-user-password'],
     mutationFn: updatePasswordFn,
-    onSuccess: () => ionRouter.push("/account"),
+    onSuccess: () => ionRouter.push('/account'),
   });
 
   const logOutFn = async () => {
@@ -193,7 +193,7 @@ const useAuth = () => {
 
   const onLogOut = () => {
     queryClient.setQueryData(
-      ["document", { collectionName: "users", documentId: uid }],
+      ['document', { collectionName: 'users', documentId: uid }],
       [],
       undefined
     );
@@ -210,7 +210,7 @@ const useAuth = () => {
   };
 
   const sendPasswordResetEmailMutation = useMutation({
-    mutationKey: ["send-password-reset-email"],
+    mutationKey: ['send-password-reset-email'],
     mutationFn: sendPasswordResetEmailFn,
     onSuccess: (email) => {
       if (email) ionRouter.push(`/forgot-password/sent?email=${email}`);
@@ -218,7 +218,7 @@ const useAuth = () => {
   });
 
   const logOutMutation = useMutation({
-    mutationKey: ["user-log-out"],
+    mutationKey: ['user-log-out'],
     mutationFn: logOutFn,
     onSuccess: onLogOut,
   });
@@ -237,7 +237,7 @@ const useAuth = () => {
     autoAuthenticating,
     reAuthenticate: reAuthenticateMutation.mutate,
     reAuthenticateMutation,
-    reAuthenticated: reAuthenticateMutation.status === "success",
+    reAuthenticated: reAuthenticateMutation.status === 'success',
     updatePassword: updatePasswordMutation.mutate,
     updatePasswordMutation,
     sendPasswordResetEmail: sendPasswordResetEmailMutation.mutate,

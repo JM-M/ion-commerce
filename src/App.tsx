@@ -21,6 +21,9 @@ import {
   timeOutline,
   personOutline,
   arrowBackOutline,
+  storefront,
+  time,
+  person,
 } from 'ionicons/icons';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -65,7 +68,10 @@ import './tailwind.css';
 /* Custom CSS */
 import './index.css';
 
-setupIonicReact();
+/* react-loading-skeleton styles */
+import 'react-loading-skeleton/dist/skeleton.css';
+
+setupIonicReact({ mode: 'md' });
 
 const queryClient = new QueryClient();
 
@@ -136,15 +142,18 @@ const App: React.FC = () => {
                 </IonRouterOutlet>
                 <IonTabBar slot='bottom'>
                   <IonTabButton tab='store' href='/store'>
-                    <IonIcon icon={storefrontOutline} />
+                    <IonIcon icon={storefrontOutline} className='unselected' />
+                    <IonIcon icon={storefront} className='selected' />
                     <IonLabel>Store</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab='orders' href='/orders'>
-                    <IonIcon icon={timeOutline} />
+                    <IonIcon icon={timeOutline} className='unselected' />
+                    <IonIcon icon={time} className='selected' />
                     <IonLabel>Orders</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab='account' href='/account'>
-                    <IonIcon icon={personOutline} />
+                    <IonIcon icon={personOutline} className='unselected' />
+                    <IonIcon icon={person} className='selected' />
                     <IonLabel>Account</IonLabel>
                   </IonTabButton>
                 </IonTabBar>

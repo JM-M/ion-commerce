@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { IonContent, IonIcon, useIonRouter } from '@ionic/react';
-import { arrowBackOutline } from 'ionicons/icons';
+import { IonContent, useIonRouter } from '@ionic/react';
 import OrderSummary from '../components/OrderSummary';
 import CheckoutSteps from '../components/CheckoutSteps';
 import CheckoutForm from '../components/CheckoutForm';
@@ -9,22 +8,17 @@ import CHECKOUT_STEPS from '../constants/checkoutSteps';
 import { CheckoutStep } from '../hooks/useCheckout';
 import useCart from '../hooks/useCart';
 import Button from '../components/Button';
+import PageHeader from '../components/PageHeader';
 
 const Checkout: React.FC = () => {
   const [step, setStep] = useState<CheckoutStep>(CHECKOUT_STEPS[0]);
   const ionRouter = useIonRouter();
   const { push } = ionRouter;
   const { cartSize } = useCart();
+
   return (
     <IonContent className='flex flex-col min-h-full'>
-      <div className='block container mb-3'>
-        <IonIcon
-          icon={arrowBackOutline}
-          color='dark'
-          className='h-[20px] w-[20px]'
-          onClick={() => push('/store', 'back')}
-        />
-      </div>
+      <PageHeader />
       {!!cartSize ? (
         <>
           <div className='flex flex-col min-h-full'>

@@ -126,6 +126,18 @@ ion-popover ion-content {
   @apply border border-gray-300 rounded-lg overflow-hidden;
 }
 
+.tab-selected .unselected {
+  @apply hidden;
+}
+
+.tab-selected .selected {
+  display: initial !important;
+}
+
+.selected {
+  @apply hidden;
+}
+
 .input-bottom {
   @apply !block;
 }
