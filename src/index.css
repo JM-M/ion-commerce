@@ -142,6 +142,20 @@ ion-popover ion-content {
   @apply !block;
 }
 
+ion-range {
+  @apply pt-5;
+}
+
+ion-range::part(pin) {
+  @apply -top-5 inline-flex items-center justify-center min-w-[28px] h-[28px] px-3 bg-[var(--ion-color-primary)] text-white rounded-md;
+  transform: scale(1.01);
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+ion-range::part(pin)::before {
+  content: none;
+}
+
 /* Custom classes */
 .side-menu-link {
   @apply relative;
@@ -184,4 +198,47 @@ ion-popover ion-content {
 
 .react-tel-input .flag-dropdown {
   @apply !bg-transparent !border-none;
+}
+
+/* react-instantsearch */
+.ais-SearchBox-form {
+  @apply relative;
+}
+
+.ais-SearchBox-input {
+  @apply block h-12 w-full px-12 bg-white rounded-lg focus:outline-none outline-none;
+}
+
+.ais-SearchBox-submit,
+.ais-SearchBox-reset {
+  @apply absolute top-1/2 -translate-y-1/2 h-fit w-fit;
+}
+
+.ais-SearchBox-submit {
+  @apply left-5;
+}
+
+.ais-SearchBox-reset {
+  @apply right-5;
+}
+
+.ais-SearchBox-loadingIcon,
+.ais-SearchBox-submitIcon {
+  @apply h-[18px] w-[18px];
+}
+
+.ais-SearchBox-resetIcon {
+  @apply h-[14px] w-[14px];
+}
+
+.ais-Hits {
+  @apply absolute top-0 left-0 w-full h-fit p-5 bg-white z-40;
+}
+
+.ais-Highlight-highlighted {
+  @apply bg-transparent text-[var(--ion-color-primary)] font-bold;
+}
+
+.ais-SearchBox-loadingIndicator {
+  @apply absolute top-[calc(100%_+_20px)] left-1/2 -translate-x-1/2 h-fit w-fit;
 }

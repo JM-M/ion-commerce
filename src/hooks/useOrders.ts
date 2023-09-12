@@ -41,7 +41,7 @@ const useOrders = (props: Props = {}) => {
   const ordersQuery = useFirestoreCollectionQuery({
     collectionName,
     orderByField: 'createdAt',
-    match: { userId: user?.uid },
+    filter: { userId: ['==', user?.uid] },
     options: {
       pageSize: 10,
     },

@@ -15,22 +15,25 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { db } from '../../firebase';
 
+type QueryOperator = '==' | '!=' | '<' | '<=' | '>' | '>=';
+export type QueryFilter = { [key: string]: [QueryOperator, any] | undefined };
+
 interface FirestoreInfiniteQuery {
   collectionName: string;
-  match?: object;
+  filter?: QueryFilter;
   orderByField?: string;
   reverseOrder?: boolean;
   options: {
     pageSize: number;
   };
   ids?: string[];
-  transformDocuments?: (docs:any[]) => Promise<any[]>
+  transformDocuments?: (docs: any[]) => Promise<any[]>;
 }
 
 const useFirestoreCollectionQuery = ({
   collectionName,
   orderByField,
-  match,
+  filter,
   reverseOrder = false,
   options: { pageSize },
   ids = [],
@@ -57,15 +60,15 @@ const useFirestoreCollectionQuery = ({
     return lastDocument[orderByField];
   };
 
-  const fetchPage: (arg: any) => any = async ({ queryKey = {} }: any) => {
-    const [_key] = queryKey;
-    const collectionRef = collection(db, collectionName);
+  const getQueries = () => {
     let queries: any[] = orderByField
       ? [orderBy(orderByField, reverseOrder ? 'asc' : 'desc')]
       : [];
-    if (match) {
-      Object.entries(match).forEach(([key, value]) => {
-        if (value) queries.unshift(where(key, '==', value));
+    if (filter) {
+      Object.entries(filter).forEach(([key, filterValue]) => {
+        if (!filterValue) return;
+        const [operator, value] = filterValue;
+        if (value) queries.unshift(where(key, operator, value));
       });
     }
     if (ids.length) queries = [where(documentId(), 'in', ids)];
@@ -82,6 +85,14 @@ const useFirestoreCollectionQuery = ({
       // get initial page
       queries = [...queries, limit(pageSize)];
     }
+    return queries;
+  };
+
+  const fetchPage: (arg: any) => any = async ({ queryKey = {} }: any) => {
+    const [_key] = queryKey;
+    const collectionRef = collection(db, collectionName);
+
+    const queries = getQueries();
 
     const documentSnapshots = await getDocs(query(collectionRef, ...queries));
     if (!countedDocuments) {
@@ -106,7 +117,7 @@ const useFirestoreCollectionQuery = ({
     queryKey: [
       'collection',
       collectionName,
-      match,
+      filter,
       pageNum,
       orderByField,
       reverseOrder,

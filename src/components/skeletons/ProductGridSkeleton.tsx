@@ -25,7 +25,7 @@ const ProductGridSkeleton = () => {
             <p>
               <IonSkeletonText
                 animated={true}
-                className='w-1/3'
+                className='w-1/3 rounded-md'
               ></IonSkeletonText>
             </p>
           </IonLabel>

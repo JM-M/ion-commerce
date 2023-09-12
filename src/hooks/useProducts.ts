@@ -1,45 +1,55 @@
-import { useQueryClient } from "@tanstack/react-query";
-import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
-import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
-import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
-import useFirestoreDocumentDeletion from "./useFirestoreDocumentDeletion";
-import { Review } from "../constants/schemas/review";
-import useAuth from "./useAuth";
-import axios from "axios";
+import { useQueryClient } from '@tanstack/react-query';
+import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
+import useFirestoreCollectionQuery, {
+  QueryFilter,
+} from './useFirestoreCollectionQuery';
+import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
+import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
+import { Review } from '../constants/schemas/review';
+import useAuth from './useAuth';
 
 export interface SortOption {
   field: string;
   reverse?: boolean;
 }
 
+export interface FilterOption {
+  field: string;
+}
+
 interface Props {
   productId?: string;
   productIds?: string[];
   sortBy?: SortOption;
+  productFilters?: object;
   category?: string;
   onCreateReview?: Function;
 }
 
-const collectionName = "products";
+const collectionName = 'products';
 
 const useProducts = (props: Props = {}) => {
   const {
     productId,
-    sortBy = { field: "name", reverse: false },
+    sortBy = { field: 'name', reverse: false },
     productIds,
     category,
     onCreateReview = () => null,
+    productFilters = {},
   } = props;
 
   const queryClient = useQueryClient();
 
   const { isLoggedIn, uid } = useAuth();
 
-  const match = category ? { category } : {};
+  const filter = {
+    category: category ? ['==', category] : undefined,
+    ...productFilters,
+  } as QueryFilter;
   const productsQuery = useFirestoreCollectionQuery({
     collectionName,
-    match,
-    orderByField: sortBy.field || "ranking",
+    filter,
+    orderByField: sortBy.field || 'ranking',
     reverseOrder: sortBy.reverse,
     options: {
       pageSize: 10,
@@ -55,7 +65,7 @@ const useProducts = (props: Props = {}) => {
 
   const { firestoreDocumentMutation: productMutation } =
     useFirestoreDocumentMutation({
-      collectionName: "products",
+      collectionName: 'products',
       invalidateDocumentQuery: true,
     });
 
@@ -63,7 +73,7 @@ const useProducts = (props: Props = {}) => {
 
   const reviewsQuery = useFirestoreCollectionQuery({
     collectionName: reviewsCollectionName,
-    orderByField: "createdAt",
+    orderByField: 'createdAt',
     options: {
       pageSize: 10,
     },
@@ -103,7 +113,7 @@ const useProducts = (props: Props = {}) => {
         onCreateReview();
         queryClient.setQueryData(
           [
-            "document",
+            'document',
             { collectionName: reviewsCollectionName, documentId: uid },
           ],
           review
@@ -128,7 +138,7 @@ const useProducts = (props: Props = {}) => {
       onSuccess: () => {
         queryClient.setQueryData(
           [
-            "document",
+            'document',
             { collectionName: reviewsCollectionName, documentId: uid },
           ],
           null

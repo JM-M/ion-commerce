@@ -1,16 +1,24 @@
-import { useIonRouter, IonHeader, IonButton, IonIcon } from '@ionic/react';
-import { arrowBackOutline } from 'ionicons/icons';
+import { useIonRouter, IonHeader, IonButton } from '@ionic/react';
 import PageHeader from './PageHeader';
-import SubCategorySelector from './SubCategorySelector';
 import QueryController from './QueryController';
 import useCategories, { Category } from '../hooks/useCategories';
+import { SortOption } from '../hooks/useProducts';
 
-export const CategoryHeader = () => {
+interface Props {
+  sortOptions: { [option: string]: SortOption };
+  setSortOption: Function;
+  productFilters: {};
+  setProductFilters: Function;
+}
+
+export const CategoryHeader = ({
+  sortOptions,
+  setSortOption,
+  productFilters = {},
+  setProductFilters = () => null,
+}: Props) => {
   const ionRouter = useIonRouter();
   const {
-    canGoBack,
-    goBack,
-    push,
     routeInfo: { pathname },
   } = ionRouter;
 
@@ -21,9 +29,6 @@ export const CategoryHeader = () => {
   const { getChildCategories, getCategoryFromValue } = useCategories();
   const categories = getChildCategories(activeCategoryValue);
   const activeCategory = getCategoryFromValue(activeCategoryValue);
-
-  const parentCategory = activeCategoryValue.split('/').slice(0, -1).join('/');
-  const backUrl = `/store/category/${parentCategory}`;
 
   return (
     <div>
@@ -49,8 +54,13 @@ export const CategoryHeader = () => {
               );
             })}
           </ul>
-          <div className='flex justify-end items-center py-3 px-5'>
-            <QueryController />
+          <div className='container flex justify-end'>
+            <QueryController
+              onSort={(v) => setSortOption(v)}
+              sortOptions={Object.keys(sortOptions)}
+              productFilters={productFilters}
+              setProductFilters={setProductFilters}
+            />
           </div>
         </div>
       </IonHeader>
