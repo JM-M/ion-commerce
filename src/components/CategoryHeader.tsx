@@ -32,7 +32,7 @@ export const CategoryHeader = ({
 
   return (
     <div>
-      <PageHeader backHref={baseUrlPath}>
+      <PageHeader backHref={baseUrlPath} noBackButton={isRootCategory}>
         {!isRootCategory ? activeCategory?.name : 'All products'}
       </PageHeader>
       <IonHeader className='ion-no-border'>

@@ -3,10 +3,9 @@ import { NAIRA } from '../constants/unicode';
 
 const ProductFilterForm = () => {
   return (
-    <form className='container'>
-      <h2 className='font-medium text-lg'>Filter products</h2>
+    <form className='px-10 mt-auto mb-20'>
       <div className='my-5'>
-        <IonLabel>Price range</IonLabel>
+        <IonLabel className='font-medium'>Price range</IonLabel>
         <IonRange
           aria-label='Price range'
           labelPlacement='fixed'
@@ -27,11 +26,9 @@ const ProductFilterForm = () => {
         </ul>
       </div>
       <div className='my-5'>
-        <IonItem className='ion-no-padding'>
-          <IonCheckbox justify='start'>
-            Show only disounted products
-          </IonCheckbox>
-        </IonItem>
+        <IonCheckbox justify='start'>
+          <span className='font-medium'>Show only disounted product</span>s
+        </IonCheckbox>
       </div>
     </form>
   );

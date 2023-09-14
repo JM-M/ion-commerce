@@ -7,6 +7,7 @@ import {
   IonButtons,
   IonIcon,
   IonContent,
+  IonTitle,
 } from '@ionic/react';
 import { closeOutline } from 'ionicons/icons';
 import { CiFilter } from 'react-icons/ci';
@@ -50,10 +51,11 @@ const QueryFilter: React.FC<Props> = ({
                 <IonIcon icon={closeOutline} className='h-[24px] w-[24px]' />
               </IonButton>
             </IonButtons>
+            <IonTitle>Filter products</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <ProductFilterForm />
+          <div className='h-full flex flex-col'><ProductFilterForm /></div>
         </IonContent>
       </IonModal>
     </>

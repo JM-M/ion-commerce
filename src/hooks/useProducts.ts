@@ -7,6 +7,7 @@ import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
 import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
 import { Review } from '../constants/schemas/review';
 import useAuth from './useAuth';
+import useAlgoliaBrowse from './useAlgoliaBrowse';
 
 export interface SortOption {
   field: string;
@@ -46,6 +47,9 @@ const useProducts = (props: Props = {}) => {
     category: category ? ['==', category] : undefined,
     ...productFilters,
   } as QueryFilter;
+
+  useAlgoliaBrowse({ index: collectionName });
+
   const productsQuery = useFirestoreCollectionQuery({
     collectionName,
     filter,
