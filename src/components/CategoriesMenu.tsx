@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IonIcon, IonMenuToggle, IonButton } from '@ionic/react';
-import { chevronBack, chevronForward } from 'ionicons/icons';
+import { chevronForward } from 'ionicons/icons';
 import CategoriesMenuSkeleton from './skeletons/CategoriesMenuSkeleton';
-import PageLoader from './PageLoader';
 import cx from 'classnames';
 import useCategories, { Category } from '../hooks/useCategories';
 
@@ -12,7 +11,7 @@ const CategoriesMenu = () => {
 
   const { categoriesQuery, getChildCategories, hasChildCategories } =
     useCategories();
-  const { isLoading } = categoriesQuery?.data || {};
+  const { isLoading } = categoriesQuery || {};
 
   if (isLoading) return <CategoriesMenuSkeleton />;
   const categories = getChildCategories(activeCategory || '/');

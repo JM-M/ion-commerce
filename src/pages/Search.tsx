@@ -9,9 +9,9 @@ const Search = () => {
         <span className='text-gray-500'>Search results for</span>
         <span className='text-gray-900 font-medium'>'product name'</span>
       </div>
-      <div className='container flex justify-end items-center py-3'>
+      {/* <div className='container flex justify-end items-center py-3'>
         <QueryController />
-      </div>
+      </div> */}
       <IonContent>{/* <ProductSection numProducts={8} /> */}</IonContent>
     </>
   );
