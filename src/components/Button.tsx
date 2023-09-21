@@ -11,7 +11,12 @@ type Props = JSX.IonButton & {
 
 const Button = ({ children, loading, disabled, ...props }: Props, ref: any) => {
   return (
-    <IonButton ref={ref} {...props} disabled={loading || disabled}>
+    <IonButton
+      ref={ref}
+      {...props}
+      color={props.color || 'primary'}
+      disabled={loading || disabled}
+    >
       {loading && <IonSpinner name='dots' className='inline-block mr-3' />}
       {children}
     </IonButton>

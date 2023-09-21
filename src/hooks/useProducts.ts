@@ -7,7 +7,7 @@ import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
 import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
 import { Review } from '../constants/schemas/review';
 import useAuth from './useAuth';
-import useAlgoliaBrowse from './useAlgoliaBrowse';
+import useAlgoliaSearch from './useAlgoliaSearch';
 
 export interface SortOption {
   field: string;
@@ -48,18 +48,21 @@ const useProducts = (props: Props = {}) => {
     ...productFilters,
   } as QueryFilter;
 
-  useAlgoliaBrowse({ index: collectionName });
-
-  const productsQuery = useFirestoreCollectionQuery({
-    collectionName,
-    filter,
-    orderByField: sortBy.field || 'ranking',
-    reverseOrder: sortBy.reverse,
-    options: {
-      pageSize: 10,
-    },
-    ids: productIds,
+  const productsQuery = useAlgoliaSearch({
+    index: collectionName,
+    pageSize: 2,
   });
+
+  // const productsQuery = useFirestoreCollectionQuery({
+  //   collectionName,
+  //   filter,
+  //   orderByField: sortBy.field || 'ranking',
+  //   reverseOrder: sortBy.reverse,
+  //   options: {
+  //     pageSize: 10,
+  //   },
+  //   ids: productIds,
+  // });
 
   const productQuery = useFirestoreDocumentQuery({
     collectionName,
@@ -162,8 +165,8 @@ const useProducts = (props: Props = {}) => {
     reviewQuery,
     review: reviewQuery.data,
     reviewsQuery,
-    reviews: reviewsQuery.data?.length
-      ? reviewsQuery.data.filter(({ userId }: Review) => userId !== uid)
+    reviews: reviewsQuery.data?.docs?.length
+      ? reviewsQuery.data?.docs.filter(({ userId }: Review) => userId !== uid)
       : undefined,
     reviewMutation,
     addReview,

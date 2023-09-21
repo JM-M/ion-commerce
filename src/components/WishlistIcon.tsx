@@ -1,21 +1,18 @@
-import { IonIcon, IonSpinner } from "@ionic/react";
-import { heartOutline, heart } from "ionicons/icons";
-import useWishlist, { WishlistItem } from "../hooks/useWishlist";
-import { Product } from "../constants/schemas/product";
-import useProductImages from "../hooks/useProductImages";
+import { IonIcon, IonSpinner } from '@ionic/react';
+import { heartOutline, heart } from 'ionicons/icons';
+import useWishlist, { WishlistItem } from '../hooks/useWishlist';
+import { ProductAlgoliaRecord } from '../constants/schemas/product';
 
 interface Props {
-  product: Product;
+  product: ProductAlgoliaRecord;
   [x: string]: any;
 }
 
 const WishlistIcon = ({ product, ...props }: Props) => {
-  const { id, name, price } = product;
-  const images = useProductImages(product);
-  const image = images.length ? images[0] : "";
+  const { objectID, name, price, image } = product;
 
   const { addWishlistItem, removeWishlistItem, isInWishlist, isLoading } =
-    useWishlist({ productId: id! });
+    useWishlist({ productId: objectID! });
 
   const onClick = (e: any) => {
     e.preventDefault();
@@ -24,7 +21,7 @@ const WishlistIcon = ({ product, ...props }: Props) => {
 
   const toggle = (e: any) => {
     onClick(e);
-    const wishlistItem: WishlistItem = { id: id!, name, price, image };
+    const wishlistItem: WishlistItem = { id: objectID!, name, price, image };
     if (isInWishlist) return removeWishlistItem();
     addWishlistItem(wishlistItem);
   };
@@ -32,8 +29,8 @@ const WishlistIcon = ({ product, ...props }: Props) => {
   if (isLoading)
     return (
       <IonSpinner
-        name="crescent"
-        color="primary"
+        name='crescent'
+        color='primary'
         {...props}
         onClick={onClick}
       />
@@ -41,8 +38,8 @@ const WishlistIcon = ({ product, ...props }: Props) => {
 
   return (
     <IonIcon
-      id="wishlist-icon"
-      color="primary"
+      id='wishlist-icon'
+      color='primary'
       icon={isInWishlist ? heart : heartOutline}
       onClick={toggle}
       {...props}

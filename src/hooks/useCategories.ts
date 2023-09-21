@@ -17,10 +17,11 @@ const useCategories = () => {
       pageSize: 1000,
     },
   });
+  const categories = categoriesQuery.data?.docs;
 
   const getChildCategories = (value: string) => {
-    if (!categoriesQuery.data?.length) return [];
-    return categoriesQuery.data.filter((category: Category) => {
+    if (!categories?.length) return [];
+    return categories.filter((category: Category) => {
       const { parent } = category;
       return parent === value;
     });
@@ -32,7 +33,7 @@ const useCategories = () => {
   };
 
   const getCategoryFromValue = (value: string) =>
-    categoriesQuery.data?.find((c: Category) => c.value === value);
+    categories?.find((c: Category) => c.value === value);
 
   return {
     categoriesQuery,

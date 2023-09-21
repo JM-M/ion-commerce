@@ -7,7 +7,8 @@ import { DatabaseProductSection } from '../hooks/useProductSections';
 
 const HomeProductSections = () => {
   const { productSectionsQuery } = useProductSections();
-  const { isLoading, isError, data: sections } = productSectionsQuery;
+  const { isLoading, isError, data } = productSectionsQuery;
+  const { docs: sections } = data || {};
 
   if (isLoading) return <HomeProductSectionSkeleton />;
   if (isError) return <>An error occurred</>;

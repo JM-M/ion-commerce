@@ -2,28 +2,24 @@ import { Link } from 'react-router-dom';
 import { IonImg } from '@ionic/react';
 import WishlistIcon from './WishlistIcon';
 import { NAIRA } from '../constants/unicode';
-import { Product } from '../constants/schemas/product';
+import { ProductAlgoliaRecord } from '../constants/schemas/product';
 import useCategories from '../hooks/useCategories';
-import useProductImages from '../hooks/useProductImages';
 import useAuth from '../hooks/useAuth';
 
 interface Props {
-  product: Product;
+  product: ProductAlgoliaRecord;
 }
 
 const ProductCard = ({ product }: Props) => {
   const { isLoggedIn } = useAuth();
 
-  const { name, category, price, id, stocks } = product;
+  const { name, category, price, objectID, image } = product;
   const { getCategoryFromValue } = useCategories();
   const categoryName = getCategoryFromValue(category)?.name;
 
-  const images = useProductImages(product);
-  const image = !!images.length && images[0];
-
   return (
     <div>
-      <Link to={`/store/products/${id}`} className='block'>
+      <Link to={`/store/products/${objectID}`} className='block'>
         <div className='relative w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg overflow-hidden'>
           {image && (
             <IonImg

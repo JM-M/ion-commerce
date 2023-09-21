@@ -90,7 +90,6 @@ const useAuth = () => {
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
   const isLoggedIn = !!uid;
-  // console.log(user, rest);
 
   // using an effect ensures that autoAuthenticating is only turned to false when user state has been set
   useEffect(() => {
@@ -194,7 +193,6 @@ const useAuth = () => {
   const onLogOut = () => {
     queryClient.setQueryData(
       ['document', { collectionName: 'users', documentId: uid }],
-      [],
       undefined
     );
     setFirebaseAuthUser(null);

@@ -2,7 +2,6 @@ import { RouteComponentProps } from 'react-router';
 import { useIonRouter } from '@ionic/react';
 import PageHeader from '../components/PageHeader';
 import useProductSections from '../hooks/useProductSections';
-import PageLoader from '../components/PageLoader';
 import ProductSection from '../components/ProductSection';
 
 interface Props
@@ -20,8 +19,6 @@ const ProductSectionPage: React.FC<Props> = ({ match }) => {
     productSectionId: sectionId,
   });
   const { isLoading, data } = productSectionQuery;
-  // if (isLoading) return <PageLoader />;
-  // const { title } = data;
 
   return (
     <>

@@ -33,7 +33,9 @@ const Category = () => {
         setProductFilters={setProductFilters}
       />
       <IonContent>
-        <ProductCategoryDisplay category={category} sortBy={sortBy} />
+        <div className='container pb-[30px]'>
+          <ProductCategoryDisplay category={category} />
+        </div>
       </IonContent>
     </>
   );

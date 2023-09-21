@@ -1,4 +1,4 @@
-import { object, string, number, array, mixed, InferType } from "yup";
+import { object, string, number, array, mixed, InferType } from 'yup';
 
 const productSchema = object({
   id: string(),
@@ -26,5 +26,16 @@ const productSchema = object({
 });
 
 export type Product = InferType<typeof productSchema>;
+
+export type ProductAlgoliaRecord = {
+  category: string;
+  description: string;
+  image: string;
+  name: string;
+  objectID: string;
+  price: number;
+  stocks: string[];
+  variations: { [key: string]: string };
+};
 
 export default productSchema;

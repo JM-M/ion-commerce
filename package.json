@@ -28,7 +28,7 @@
     "@tanstack/react-query": "^4.29.19",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
-    "algoliasearch": "^4.19.1",
+    "algoliasearch": "^4.20.0",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
     "cordova-plugin-ionic": "5.5.3",
@@ -47,6 +47,7 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "slate": "^0.94.1",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "uuid": "^9.0.0",
     "yup": "^1.2.0"
   },

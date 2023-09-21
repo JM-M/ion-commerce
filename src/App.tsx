@@ -27,7 +27,7 @@ import {
 } from 'ionicons/icons';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import Home from './pages/Home';
+import Store from './pages/Store';
 import Orders from './pages/Orders';
 import Order from './pages/Order';
 import Account from './pages/Account';
@@ -109,7 +109,7 @@ const App: React.FC = () => {
               </IonModal>
               <IonTabs>
                 <IonRouterOutlet className='pt-[60px] flex flex-col'>
-                  <IonContent>
+                  <IonContent className='scrollbar-hide'>
                     <div className='flex flex-col h-full mb-10'>
                       <Route
                         path='/forgot-password/sent'
@@ -131,7 +131,7 @@ const App: React.FC = () => {
                         exact
                       />
                       <Route path='/:tab(orders)' component={Orders} exact />
-                      <Route path='/:tab(store)' component={Home} />
+                      <Route path='/:tab(store)' component={Store} />
                       <Route
                         path='/'
                         render={() => <Redirect to='/store' />}

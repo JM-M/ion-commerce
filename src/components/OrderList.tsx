@@ -14,7 +14,8 @@ const OrderList = () => {
   const { orders, ordersQuery } = useOrders();
   const { measureCart } = useCart();
 
-  const { hasNextPage, fetchNextPage, isLoading, isError } = ordersQuery;
+  const { data, fetchNextPage, isLoading, isError } = ordersQuery;
+  const { hasNextPage } = data || {};
 
   if (isLoading) return <OrderListSkeleton />;
   if (isError) return <>An Error occurred</>;

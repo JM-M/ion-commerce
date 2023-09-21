@@ -1,34 +1,19 @@
-import React, { useMemo } from 'react';
-import useAlgoliaSearch from '../hooks/useAlgoliaSearch';
 import ProductGrid from './ProductGrid';
 import Button from './Button';
-import useCategories from '../hooks/useCategories';
+import useSelectedProductSection from '../hooks/useSelectedProductSection';
 
 interface Props {
-  category: string;
+  id: string;
 }
 
-const ProductCategoryDisplay = ({ category }: Props) => {
-  const { categoriesQuery } = useCategories();
-  const categories = categoriesQuery.data?.docs;
-
-  const filters = useMemo(() => {
-    if (!categories?.length || !category || category === '/') return '';
-    return `category:${category}`;
-  }, [category, categories]);
-
+const SelectedProductSection = ({ id }: Props) => {
   const {
     data = { allDocs: [] },
-    isLoading,
     isFetching,
+    isLoading,
     fetchNextPage,
     hasNextPage,
-  } = useAlgoliaSearch({
-    index: 'products',
-    pageSize: 10,
-    options: { filters },
-  });
-
+  } = useSelectedProductSection({ id });
   const { allDocs: products } = data;
 
   return (
@@ -53,4 +38,4 @@ const ProductCategoryDisplay = ({ category }: Props) => {
   );
 };
 
-export default ProductCategoryDisplay;
+export default SelectedProductSection;

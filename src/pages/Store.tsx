@@ -9,7 +9,7 @@ import Search from "./Search";
 import Checkout from "./Checkout";
 import Order from "./Order";
 
-const Home: React.FC = () => {
+const Store: React.FC = () => {
   return (
     <IonRouterOutlet>
       <IonContent>
@@ -46,4 +46,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Store;

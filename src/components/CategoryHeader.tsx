@@ -54,14 +54,14 @@ export const CategoryHeader = ({
               );
             })}
           </ul>
-          <div className='container flex justify-end'>
+          {/* <div className='container flex justify-end'>
             <QueryController
               onSort={(v) => setSortOption(v)}
               sortOptions={Object.keys(sortOptions)}
               productFilters={productFilters}
               setProductFilters={setProductFilters}
             />
-          </div>
+          </div> */}
         </div>
       </IonHeader>
     </div>

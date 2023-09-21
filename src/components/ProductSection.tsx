@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
-import ProductGrid from './ProductGrid';
-import Button from './Button';
-import ProductGridSkeleton from './skeletons/ProductGridSkeleton';
+import SelectedProductSection from './SelectedProductSection';
+import ProductCategoryDisplay from './ProductCategoryDisplay';
 import { DatabaseProductSection } from '../hooks/useProductSections';
-import useProductSection from '../hooks/useProductSection';
 
 interface Props {
   section: DatabaseProductSection;
@@ -16,40 +14,10 @@ const ProductSection = ({
   noHeader = false,
   loading = false,
 }: Props) => {
-  const { title, id } = section || {};
+  const { title, id, category } = section || {};
   const fullPageHref = `/store/sections/${id}`;
-  const { productsQuery } = useProductSection(section);
-  const {
-    hasNextPage,
-    fetchNextPage,
-    isLoading,
-    isFetching,
-    data: products,
-  } = productsQuery;
 
-  let display = (
-    <>
-      <ProductGrid
-        products={products}
-        initialLoading={isLoading || loading}
-        loadingMore={isFetching}
-        hasMore={hasNextPage}
-        onLoadMore={fetchNextPage}
-      />
-      {hasNextPage && (
-        <Button
-          color='secondary'
-          className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'
-          onClick={fetchNextPage}
-          loading={isLoading}
-        >
-          Load more
-        </Button>
-      )}
-    </>
-  );
-
-  if (!isLoading && products && !products.length) return null;
+  if (!id) return null;
 
   return (
     <div className='container py-[30px]'>
@@ -63,7 +31,11 @@ const ProductSection = ({
           )}
         </div>
       )}
-      {isLoading ? <ProductGridSkeleton /> : display}
+      {category ? (
+        <ProductCategoryDisplay category={category} />
+      ) : (
+        <SelectedProductSection id={id!} />
+      )}
     </div>
   );
 };

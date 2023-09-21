@@ -12,7 +12,7 @@ const CategoriesMenu = () => {
 
   const { categoriesQuery, getChildCategories, hasChildCategories } =
     useCategories();
-  const { isLoading } = categoriesQuery;
+  const { isLoading } = categoriesQuery?.data || {};
 
   if (isLoading) return <CategoriesMenuSkeleton />;
   const categories = getChildCategories(activeCategory || '/');

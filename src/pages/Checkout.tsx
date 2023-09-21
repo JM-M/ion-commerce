@@ -39,7 +39,7 @@ const Checkout: React.FC = () => {
         <div className='h-full flex flex-col gap-5 justify-center items-center'>
           <div>Cart is empty</div>
           <Link to='/store'>
-            <Button>Continue browsing</Button>
+            <Button color='primary'>Continue browsing</Button>
           </Link>
         </div>
       )}

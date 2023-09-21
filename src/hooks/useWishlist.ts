@@ -1,8 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
-import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
-import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
-import useFirestoreDocumentDeletion from "./useFirestoreDocumentDeletion";
-import useAuth from "./useAuth";
+import { useQueryClient } from '@tanstack/react-query';
+import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
+import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
+import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
+import useAuth from './useAuth';
 
 export interface WishlistItem {
   id: string;
@@ -15,7 +15,7 @@ interface Props {
   productId: string;
 }
 
-const useWishlist = (props: Props = { productId: "" }) => {
+const useWishlist = (props: Props = { productId: '' }) => {
   const { productId } = props;
   const { uid, isLoggedIn } = useAuth();
 
@@ -27,14 +27,14 @@ const useWishlist = (props: Props = { productId: "" }) => {
     collectionName,
     options: { pageSize: 10 },
   });
-  const wishlist = wishlistQuery.data;
+  const { docs: wishlist } = wishlistQuery.data || {};
 
   const onWishlistChange = () => {
-    queryClient.invalidateQueries(["collection", collectionName]);
+    queryClient.invalidateQueries(['collection', collectionName]);
   };
 
   const onWishlistItemAdd = (wishlistItem: WishlistItem) => {
-    queryClient.setQueriesData({ queryKey: ["collection", collectionName] }, [
+    queryClient.setQueriesData({ queryKey: ['collection', collectionName] }, [
       ...(wishlist || []),
       wishlistItem,
     ]);
@@ -59,7 +59,7 @@ const useWishlist = (props: Props = { productId: "" }) => {
 
   const onWishlistItemRemove = () => {
     queryClient.setQueriesData(
-      { queryKey: ["collection", collectionName] },
+      { queryKey: ['collection', collectionName] },
       () => {
         if (wishlist)
           return wishlist.filter(({ id }: WishlistItem) => id !== productId);

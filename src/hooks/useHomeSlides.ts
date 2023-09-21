@@ -1,4 +1,4 @@
-import useFirestoreCollectionQuery from "./useFirestoreCollectionQuery";
+import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
 
 export interface HomeSlide {
   id: string;
@@ -8,13 +8,13 @@ export interface HomeSlide {
   buttonHref?: string;
 }
 
-const collectionName = "homeSlides";
+const collectionName = 'homeSlides';
 const useHomeSlides = () => {
   const homeSlidesQuery = useFirestoreCollectionQuery({
     collectionName,
     options: { pageSize: 1000 },
   });
-  const homeSlides = homeSlidesQuery.data;
+  const homeSlides = homeSlidesQuery.data?.docs;
   return { homeSlidesQuery, homeSlides };
 };
 

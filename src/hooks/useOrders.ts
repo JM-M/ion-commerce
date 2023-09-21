@@ -97,7 +97,7 @@ const useOrders = (props: Props = {}) => {
     createOrderMutation,
     order: orderQuery.data,
     orderQuery,
-    orders: ordersQuery.data as Order[],
+    orders: ordersQuery.data?.docs as Order[],
     ordersQuery,
   };
 };

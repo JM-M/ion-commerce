@@ -26,7 +26,7 @@ const HomeCarousel = () => {
                   <IonImg
                     src={image}
                     alt={`Slide ${index + 1}`}
-                    className='bg-gray-200'
+                    className='h-full w-full bg-gray-200 object-cover'
                   />
                   {button && (
                     <IonButton

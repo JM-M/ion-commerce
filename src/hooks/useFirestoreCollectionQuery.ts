@@ -20,6 +20,7 @@ export type QueryFilter = { [key: string]: [QueryOperator, any] | undefined };
 
 interface FirestoreInfiniteQuery {
   collectionName: string;
+  match?: object;
   filter?: QueryFilter;
   orderByField?: string;
   reverseOrder?: boolean;
@@ -30,9 +31,19 @@ interface FirestoreInfiniteQuery {
   transformDocuments?: (docs: any[]) => Promise<any[]>;
 }
 
+type QueryData = {
+  docs: any[];
+  totalDocs: number;
+  pageNum: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+};
+
 const useFirestoreCollectionQuery = ({
   collectionName,
   orderByField,
+  match,
   filter,
   reverseOrder = false,
   options: { pageSize },
@@ -40,8 +51,6 @@ const useFirestoreCollectionQuery = ({
   transformDocuments,
 }: FirestoreInfiniteQuery) => {
   const [pageNum, setPageNum] = useState<number>(1);
-  const [totalDocuments, setTotalDocuments] = useState<any>(1);
-  const [countedDocuments, setCountedDocuments] = useState<boolean>(false);
 
   const lastPageRef = useRef<any>();
   const lastPage = lastPageRef.current;
@@ -95,19 +104,27 @@ const useFirestoreCollectionQuery = ({
     const queries = getQueries();
 
     const documentSnapshots = await getDocs(query(collectionRef, ...queries));
-    if (!countedDocuments) {
-      const countSnapshot = await getCountFromServer(collectionRef);
-      setTotalDocuments(countSnapshot.data().count);
-      setCountedDocuments(true);
-    }
+    const countSnapshot = await getCountFromServer(collectionRef);
+    const totalDocs = countSnapshot.data().count;
 
     lastPageNumRef.current = pageNum;
-    let documents = documentSnapshots.docs.map((doc) => ({
+    let docs = documentSnapshots.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
     }));
-    if (transformDocuments) documents = await transformDocuments(documents);
-    return documents;
+    if (transformDocuments) docs = await transformDocuments(docs);
+    // console.log(pageSize, totalDocs);
+    const totalPages = Math.ceil(totalDocs / pageSize);
+    const hasNextPage = pageNum < totalPages;
+    const hasPrevPage = pageNum > 1;
+    return {
+      docs,
+      totalDocs,
+      totalPages,
+      hasNextPage,
+      hasPrevPage,
+      pageNum,
+    };
   };
 
   const fetchNextPage = () => setPageNum((n) => n + 1); // handle hasNextPage
@@ -117,7 +134,7 @@ const useFirestoreCollectionQuery = ({
     queryKey: [
       'collection',
       collectionName,
-      filter,
+      match,
       pageNum,
       orderByField,
       reverseOrder,
@@ -132,18 +149,11 @@ const useFirestoreCollectionQuery = ({
     lastPageRef.current = queryState.data;
   }, [queryState.data]);
 
-  const totalPages = Math.ceil(totalDocuments / pageSize);
-  const hasNextPage = pageNum < totalPages;
-  const hasPrevPage = pageNum > 1;
-
   return {
     ...queryState,
+    data: (queryState.data as QueryData) || undefined,
     fetchNextPage,
     fetchPreviousPage,
-    totalDocuments,
-    totalPages,
-    hasNextPage,
-    hasPrevPage,
     page: pageNum,
   };
 };

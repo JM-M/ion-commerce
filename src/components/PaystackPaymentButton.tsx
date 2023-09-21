@@ -37,6 +37,7 @@ const PaystackPaymentButton = ({
 
   return (
     <Button
+      color='primary'
       {...props}
       onClick={(e: any) => {
         e.preventDefault();
