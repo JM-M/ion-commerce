@@ -70,6 +70,7 @@ import './index.css';
 
 /* react-loading-skeleton styles */
 import 'react-loading-skeleton/dist/skeleton.css';
+import useEruda from './hooks/useEruda';
 
 setupIonicReact({ mode: 'md' });
 
@@ -81,6 +82,8 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.theme = 'light';
   }, []);
+
+  useEruda();
 
   return (
     <QueryClientProvider client={queryClient}>
