@@ -8,6 +8,7 @@ import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
 import { Review } from '../constants/schemas/review';
 import useAuth from './useAuth';
 import useAlgoliaSearch from './useAlgoliaSearch';
+import useCollectionInfiniteQuery from './useCollectionInfiniteQuery';
 
 export interface SortOption {
   field: string;
@@ -78,13 +79,14 @@ const useProducts = (props: Props = {}) => {
 
   const reviewsCollectionName = `products/${productId}/reviews`;
 
-  const reviewsQuery = useFirestoreCollectionQuery({
+  const reviewsQuery = useCollectionInfiniteQuery({
     collectionName: reviewsCollectionName,
     orderByField: 'createdAt',
-    options: {
-      pageSize: 10,
-    },
+    pageSize: 10,
   });
+
+  const { allDocs = [] } = reviewsQuery.data || {};
+  const reviews = allDocs.filter(({ userId }: Review) => userId !== uid);
 
   const reviewQuery = useFirestoreDocumentQuery({
     collectionName: reviewsCollectionName,
@@ -165,9 +167,7 @@ const useProducts = (props: Props = {}) => {
     reviewQuery,
     review: reviewQuery.data,
     reviewsQuery,
-    reviews: reviewsQuery.data?.docs?.length
-      ? reviewsQuery.data?.docs.filter(({ userId }: Review) => userId !== uid)
-      : undefined,
+    reviews,
     reviewMutation,
     addReview,
     deleteReview,

@@ -15,6 +15,7 @@ import {
   getCountFromServer,
   where,
   documentId,
+  QueryConstraint,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 
@@ -25,7 +26,7 @@ interface FirestoreInfiniteQuery {
   collectionName: string;
   match?: object;
   filter?: QueryFilter;
-  orderByField?: string;
+  orderByField: string;
   reverseOrder?: boolean;
   pageSize: number;
   ids?: string[];
@@ -63,20 +64,27 @@ const useCollectionInfiniteQuery = (props: FirestoreInfiniteQuery) => {
   };
 
   const countQueryState = useQuery({
-    queryKey: ['firebase-collection-size', collectionName],
+    queryKey: ['collection-size', collectionName],
     queryFn: countFn,
   });
 
   const getQueries = ({ lastSnapshot }: { lastSnapshot?: any }) => {
-    return [];
+    const queries: QueryConstraint[] = [orderBy(orderByField), limit(pageSize)];
+    if (lastSnapshot) queries.splice(1, 0, startAfter(lastSnapshot));
+    if (filter) {
+      Object.entries(filter).forEach(([key, filterValue]) => {
+        if (!filterValue) return;
+        const [operator, value] = filterValue;
+        if (value) queries.unshift(where(key, operator, value));
+      });
+    }
+    return queries;
   };
 
   const queryFn: QueryFn = async ({ pageParam }: any) => {
     const queries = getQueries(pageParam ? { lastSnapshot: pageParam } : {});
 
-    const snapshot = await getDocs(
-      query(collectionRef, orderBy('price'), limit(2))
-    );
+    const snapshot = await getDocs(query(collectionRef, ...queries));
     let docs = snapshot?.docs.map((doc: any) => ({
       ...doc.data(),
       id: doc.id,
@@ -91,7 +99,7 @@ const useCollectionInfiniteQuery = (props: FirestoreInfiniteQuery) => {
   };
 
   const queryState = useInfiniteQuery({
-    queryKey: ['firebase-collection', props],
+    queryKey: ['collection', collectionName, props],
     queryFn,
     getNextPageParam,
     select: (data) => ({
@@ -100,6 +108,7 @@ const useCollectionInfiniteQuery = (props: FirestoreInfiniteQuery) => {
         .map((page) => page?.docs)
         .flat(),
     }),
+    staleTime: Infinity,
   });
 
   const isLoading = countQueryState.isLoading || queryState.isLoading;

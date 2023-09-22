@@ -6,12 +6,14 @@ interface Props {
   collectionName: string;
   documentId?: string;
   onSuccess?: Function;
+  retry?: boolean | number;
 }
 
 const useFirestoreDocumentQuery = ({
   collectionName,
   documentId,
   onSuccess = () => null,
+  retry = 3,
 }: Props) => {
   const fetchDocument = async ({ queryKey = {} }: any) => {
     const [_key, { collectionName, documentId }] = queryKey;
@@ -38,6 +40,7 @@ const useFirestoreDocumentQuery = ({
     queryKey: ['document', { collectionName, documentId }],
     queryFn: fetchDocument,
     staleTime: Infinity,
+    retry,
   });
   return queryState;
 };

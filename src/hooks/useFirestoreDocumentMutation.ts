@@ -1,6 +1,6 @@
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { doc, setDoc, Timestamp } from "firebase/firestore";
-import { db } from "../../firebase";
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 const useFirestoreDocumentMutation = ({
   collectionName,
@@ -37,16 +37,16 @@ const useFirestoreDocumentMutation = ({
   };
 
   const firestoreDocumentMutation = useMutation({
-    mutationKey: ["upload-to-collection", collectionName],
+    mutationKey: ['upload-to-collection', collectionName],
     mutationFn: uploadToFirestore,
     onSuccess: ({ data, documentId }) => {
       onSuccess(data);
       if (invalidateCollectionQuery) {
-        queryClient.invalidateQueries(["collection", collectionName]);
+        queryClient.invalidateQueries(['collection', collectionName]);
       }
       if (invalidateDocumentQuery) {
         queryClient.invalidateQueries([
-          "document",
+          'document',
           { collectionName, documentId },
         ]);
       }

@@ -79,7 +79,7 @@ ion-menu-button,
 ion-menu-button::part(native),
 ion-back-button,
 ion-back-button::part(native) {
-  @apply w-fit p-0;
+  @apply p-0;
 }
 
 #main-content {

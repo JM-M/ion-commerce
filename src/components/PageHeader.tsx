@@ -34,7 +34,7 @@ const PageHeader: React.FC<Props> = ({
             ) : (
               <IonBackButton
                 defaultHref={backHref || '/'}
-                className='ion-no-padding h-[20px] w-[20px]'
+                className='ion-no-padding h-[20px] w-[20px] -ml-5'
               />
             )}
           </IonButtons>

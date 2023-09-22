@@ -23,7 +23,7 @@ const TopHeader = () => {
   const { cartSize } = useCart();
 
   return (
-    <IonHeader className='container ion-no-border'>
+    <IonHeader className='pr-5 ion-no-border'>
       <IonToolbar>
         <IonButtons slot='start'>
           <IonMenuButton />

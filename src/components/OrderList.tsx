@@ -3,6 +3,7 @@ import { IonButton, IonIcon, useIonRouter } from '@ionic/react';
 import { formatDistance } from 'date-fns';
 import StatusText from './StatusText';
 import OrderListSkeleton from './skeletons/OrderListSkeleton';
+import Button from './Button';
 import { arrowForward } from 'ionicons/icons';
 import { NAIRA } from '../constants/unicode';
 import useCart, { ProductWithCartOptions } from '../hooks/useCart';
@@ -14,8 +15,7 @@ const OrderList = () => {
   const { orders, ordersQuery } = useOrders();
   const { measureCart } = useCart();
 
-  const { data, fetchNextPage, isLoading, isError } = ordersQuery;
-  const { hasNextPage } = data || {};
+  const { fetchNextPage, isLoading, isError, hasNextPage } = ordersQuery;
 
   if (isLoading) return <OrderListSkeleton />;
   if (isError) return <>An Error occurred</>;
@@ -55,7 +55,7 @@ const OrderList = () => {
                   </span>
                   <span className='flex gap-2'>
                     <span className='text-gray-700 text-sm whitespace-nowrap'>
-                      {NAIRA} {totalCartValue}
+                      {NAIRA} {totalCartValue.toLocaleString()}
                     </span>
                   </span>
                 </div>
@@ -78,13 +78,14 @@ const OrderList = () => {
         })}
       </ul>
       {hasNextPage && (
-        <IonButton
+        <Button
           color='secondary'
-          className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'
+          className='block !h-30 w-fit mx-auto mt-5 font-medium rounded-[8px]'
           onClick={() => fetchNextPage()}
+          loading={isLoading}
         >
           Load more
-        </IonButton>
+        </Button>
       )}
     </>
   );

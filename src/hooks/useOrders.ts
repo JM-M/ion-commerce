@@ -8,6 +8,7 @@ import useMultipleFirebaseDocumentsMutation from './useMultipleFirebaseDocuments
 import useAuth, { UserFirestoreDocument } from './useAuth';
 import useCart, { Cart } from './useCart';
 import { Product } from '../constants/schemas/product';
+import useCollectionInfiniteQuery from './useCollectionInfiniteQuery';
 
 export type StatusEvent = { status: string; time: Timestamp };
 
@@ -38,14 +39,13 @@ const useOrders = (props: Props = {}) => {
 
   const { clearCart } = useCart();
 
-  const ordersQuery = useFirestoreCollectionQuery({
+  const ordersQuery = useCollectionInfiniteQuery({
     collectionName,
     orderByField: 'createdAt',
+    pageSize: 10,
     filter: { userId: ['==', user?.uid] },
-    options: {
-      pageSize: 10,
-    },
   });
+  const { allDocs: orders } = ordersQuery.data || {};
 
   const orderQuery = useFirestoreDocumentQuery({
     collectionName,
@@ -97,7 +97,7 @@ const useOrders = (props: Props = {}) => {
     createOrderMutation,
     order: orderQuery.data,
     orderQuery,
-    orders: ordersQuery.data?.docs as Order[],
+    orders: orders as Order[],
     ordersQuery,
   };
 };

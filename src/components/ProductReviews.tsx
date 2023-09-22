@@ -25,6 +25,7 @@ const ProductReviews = () => {
     deleteReviewMutation,
     hasBoughtProduct,
   } = useProducts({ productId });
+  const { hasNextPage, fetchNextPage } = reviewsQuery;
 
   return (
     <div className='container pt-[30px]'>
@@ -89,11 +90,11 @@ const ProductReviews = () => {
           );
         })}
       </ul>
-      {reviewsQuery.data?.hasNextPage && (
+      {hasNextPage && (
         <Button
           color='medium'
           className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'
-          onClick={reviewsQuery.fetchNextPage}
+          onClick={fetchNextPage}
         >
           Load more
         </Button>

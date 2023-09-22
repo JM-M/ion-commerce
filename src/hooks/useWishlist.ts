@@ -3,6 +3,8 @@ import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
 import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
 import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
 import useAuth from './useAuth';
+import useCollectionInfiniteQuery from './useCollectionInfiniteQuery';
+import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
 
 export interface WishlistItem {
   id: string;
@@ -23,33 +25,36 @@ const useWishlist = (props: Props = { productId: '' }) => {
 
   const collectionName = `users/${uid}/wishlist`;
 
-  const wishlistQuery = useFirestoreCollectionQuery({
+  const wishlistQuery = useCollectionInfiniteQuery({
     collectionName,
-    options: { pageSize: 10 },
+    pageSize: 10,
+    orderByField: 'createdAt',
   });
-  const { docs: wishlist } = wishlistQuery.data || {};
+  const { allDocs: wishlist } = wishlistQuery.data || {};
 
-  const onWishlistChange = () => {
-    queryClient.invalidateQueries(['collection', collectionName]);
-  };
+  const wishlistItemQuery = useFirestoreDocumentQuery({
+    collectionName,
+    documentId: productId,
+    retry: false,
+  });
 
   const onWishlistItemAdd = (wishlistItem: WishlistItem) => {
-    queryClient.setQueriesData({ queryKey: ['collection', collectionName] }, [
-      ...(wishlist || []),
-      wishlistItem,
-    ]);
-    onWishlistChange();
+    queryClient.setQueriesData(
+      { queryKey: ['document', { collectionName, documentId: productId }] },
+      wishlistItem
+    );
   };
 
   const { firestoreDocumentMutation: addWishlistItemMutation } =
     useFirestoreDocumentMutation({
       collectionName,
       invalidateDocumentQuery: true,
+      invalidateCollectionQuery: true,
       onSuccess: onWishlistItemAdd,
     });
 
   const addWishlistItem = (wishlistItem: WishlistItem) => {
-    if (!isLoggedIn || !wishlist) return;
+    if (!isLoggedIn) return;
     addWishlistItemMutation.mutate({
       document: wishlistItem,
       documentId: productId!,
@@ -59,14 +64,9 @@ const useWishlist = (props: Props = { productId: '' }) => {
 
   const onWishlistItemRemove = () => {
     queryClient.setQueriesData(
-      { queryKey: ['collection', collectionName] },
-      () => {
-        if (wishlist)
-          return wishlist.filter(({ id }: WishlistItem) => id !== productId);
-        return undefined;
-      }
+      { queryKey: ['document', { collectionName, documentId: productId }] },
+      null
     );
-    onWishlistChange();
   };
 
   const { firestoreDocumentDeletion: removeWishlistItemMutation } =
@@ -80,22 +80,14 @@ const useWishlist = (props: Props = { productId: '' }) => {
     removeWishlistItemMutation.mutate();
   };
 
-  const isLoading =
-    addWishlistItemMutation.isLoading || removeWishlistItemMutation.isLoading;
-
-  const isInWishlist = !!wishlist?.find(
-    ({ id }: WishlistItem) => id === productId
-  );
-
   return {
     wishlist,
     wishlistQuery,
+    wishlistItemQuery,
     addWishlistItemMutation,
     addWishlistItem,
     removeWishlistItemMutation,
     removeWishlistItem,
-    isLoading,
-    isInWishlist,
   };
 };
 

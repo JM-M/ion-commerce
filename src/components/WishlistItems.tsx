@@ -7,7 +7,10 @@ import useWishlist, {
 
 const WishlistItems = () => {
   const { wishlist, wishlistQuery } = useWishlist();
-  if (wishlistQuery.isLoading) return <PageLoader />;
+  const { isLoading, hasNextPage, isFetching, fetchNextPage } = wishlistQuery;
+
+  if (isLoading) return <PageLoader />;
+
   return (
     <>
       <ul className='mt-5'>
@@ -19,11 +22,12 @@ const WishlistItems = () => {
           );
         })}
       </ul>
-      {wishlistQuery.data?.hasNextPage && (
+      {hasNextPage && (
         <Button
           color='secondary'
-          className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'
-          onClick={wishlistQuery.fetchNextPage}
+          className='block !h-30 w-fit mx-auto mt-5 font-medium rounded-[8px]'
+          onClick={fetchNextPage}
+          loading={isFetching}
         >
           Load more
         </Button>

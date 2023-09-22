@@ -28,12 +28,7 @@ const ProductCard = ({ product }: Props) => {
               className='h-full w-full bg-gray-200 object-cover'
             />
           )}
-          {product && isLoggedIn && (
-            <WishlistIcon
-              className='absolute bottom-3 right-3 h-[24px] w-[24px]'
-              product={product}
-            />
-          )}
+          {product && isLoggedIn && <WishlistIcon product={product} />}
         </div>
       </Link>
       <div>
@@ -44,7 +39,7 @@ const ProductCard = ({ product }: Props) => {
           <span className='text-xs text-gray-500'>{categoryName}</span>
           <span className='inline-block -mb-[2px] text-base'>
             {NAIRA}
-            {price}
+            {price.toLocaleString()}
           </span>
         </div>
       </div>
