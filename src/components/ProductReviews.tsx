@@ -29,8 +29,11 @@ const ProductReviews = () => {
 
   return (
     <div className='container pt-[30px]'>
-      <h4 className='mb-[10px] font-medium text-gray-500 text-base'>Reviews</h4>
-
+      {!!reviews?.length && (
+        <h4 className='mb-[10px] font-medium text-gray-500 text-base'>
+          Reviews
+        </h4>
+      )}
       <IonModal
         ref={reviewModal}
         trigger='open-review-editor'

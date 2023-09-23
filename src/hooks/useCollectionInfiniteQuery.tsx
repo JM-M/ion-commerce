@@ -27,7 +27,7 @@ interface FirestoreInfiniteQuery {
   match?: object;
   filter?: QueryFilter;
   orderByField: string;
-  reverseOrder?: boolean;
+  orderDirection?: 'desc' | 'asc';
   pageSize: number;
   ids?: string[];
   transformDocuments?: (docs: any[]) => Promise<any[]>;
@@ -50,7 +50,7 @@ const useCollectionInfiniteQuery = (props: FirestoreInfiniteQuery) => {
     orderByField,
     match,
     filter,
-    reverseOrder = false,
+    orderDirection = 'desc',
     pageSize,
     ids = [],
     transformDocuments,
@@ -69,7 +69,10 @@ const useCollectionInfiniteQuery = (props: FirestoreInfiniteQuery) => {
   });
 
   const getQueries = ({ lastSnapshot }: { lastSnapshot?: any }) => {
-    const queries: QueryConstraint[] = [orderBy(orderByField), limit(pageSize)];
+    const queries: QueryConstraint[] = [
+      orderBy(orderByField, orderDirection),
+      limit(pageSize),
+    ];
     if (lastSnapshot) queries.splice(1, 0, startAfter(lastSnapshot));
     if (filter) {
       Object.entries(filter).forEach(([key, filterValue]) => {

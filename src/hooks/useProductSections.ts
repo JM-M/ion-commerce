@@ -17,7 +17,6 @@ const useProductSections = (props: Props | undefined = {}) => {
   const productSectionsQuery = useFirestoreCollectionQuery({
     collectionName,
     orderByField: 'title',
-    reverseOrder: false,
     options: {
       pageSize: 100,
     },

@@ -54,17 +54,6 @@ const useProducts = (props: Props = {}) => {
     pageSize: 2,
   });
 
-  // const productsQuery = useFirestoreCollectionQuery({
-  //   collectionName,
-  //   filter,
-  //   orderByField: sortBy.field || 'ranking',
-  //   reverseOrder: sortBy.reverse,
-  //   options: {
-  //     pageSize: 10,
-  //   },
-  //   ids: productIds,
-  // });
-
   const productQuery = useFirestoreDocumentQuery({
     collectionName,
     documentId: productId,

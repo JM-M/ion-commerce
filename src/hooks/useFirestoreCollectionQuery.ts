@@ -23,7 +23,7 @@ interface FirestoreInfiniteQuery {
   match?: object;
   filter?: QueryFilter;
   orderByField?: string;
-  reverseOrder?: boolean;
+  orderDirection?: 'desc' | 'asc';
   options: {
     pageSize: number;
   };
@@ -45,7 +45,7 @@ const useFirestoreCollectionQuery = ({
   orderByField,
   match,
   filter,
-  reverseOrder = false,
+  orderDirection = 'desc',
   options: { pageSize },
   ids = [],
   transformDocuments,
@@ -71,7 +71,7 @@ const useFirestoreCollectionQuery = ({
 
   const getQueries = () => {
     let queries: any[] = orderByField
-      ? [orderBy(orderByField, reverseOrder ? 'asc' : 'desc')]
+      ? [orderBy(orderByField, orderDirection)]
       : [];
     if (filter) {
       Object.entries(filter).forEach(([key, filterValue]) => {
@@ -137,7 +137,7 @@ const useFirestoreCollectionQuery = ({
       match,
       pageNum,
       orderByField,
-      reverseOrder,
+      orderDirection,
       ids,
     ],
     queryFn: fetchPage,
