@@ -7,6 +7,7 @@ import {
   arrowForward,
 } from 'ionicons/icons';
 import cx from 'classnames';
+import ErrorText from './ErrorText';
 import useCart from '../hooks/useCart';
 import { Product } from '../constants/schemas/product';
 
@@ -20,7 +21,8 @@ const AddToCartButton = ({ product, variant, variantValid = false }: Props) => {
   const {
     addProductToCart,
     removeProductFromCart,
-    findProductQty,
+    findCartProductQty,
+    getVariantStock,
     adding,
     removing,
     editingCart,
@@ -38,13 +40,21 @@ const AddToCartButton = ({ product, variant, variantValid = false }: Props) => {
     removeProductFromCart(productOptions);
   };
 
-  const qty = findProductQty(productOptions);
+  const variantSelected =
+    Object.keys(product?.variations || {}).length ===
+    Object.keys(variant).length;
+
+  const qty = findCartProductQty(productOptions);
+
+  const stock = getVariantStock({ product, variant });
+  const availableQuantity = stock?.quantity;
+  const outOfStock = !availableQuantity && variantSelected;
 
   const addButton = (
     <IonButton
       className='flex items-center justify-center gap-[10px] h-[40px] w-full text-white font-medium rounded-[8px]'
       onClick={addProduct}
-      disabled={editingCart || !variantValid}
+      disabled={editingCart || !variantValid || outOfStock}
     >
       {editingCart ? (
         <IonSpinner name='dots' className='inline-block mr-3' />
@@ -119,6 +129,13 @@ const AddToCartButton = ({ product, variant, variantValid = false }: Props) => {
         </div>
       ) : (
         addButton
+      )}
+      {outOfStock && (
+        <ErrorText
+          text='Out of stock'
+          className='text-center'
+          hideHorizontalBar
+        />
       )}
     </div>
   );

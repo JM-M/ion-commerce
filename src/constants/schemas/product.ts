@@ -36,6 +36,7 @@ export type ProductAlgoliaRecord = {
   price: number;
   stocks: string[];
   variations: { [key: string]: string };
+  discount?: number;
 };
 
 export default productSchema;

@@ -1,18 +1,17 @@
-import useAuth from "./useAuth";
-import useAuthModal from "./useAuthModal";
-import useCart, { Cart } from "./useCart";
-import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
-import checkoutSchema, {
+import useAuth from './useAuth';
+import useAuthModal from './useAuthModal';
+import useCart, { Cart } from './useCart';
+import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
+import {
   CheckoutAddress,
   CheckoutContact,
-  CheckoutDelivery,
-  addressSchema,
-  contactSchema,
-  deliverySchema,
-} from "../constants/schemas/checkout";
-import CHECKOUT_STEPS from "../constants/checkoutSteps";
+} from '../constants/schemas/checkout';
+import CHECKOUT_STEPS from '../constants/checkoutSteps';
+import useUserAddress from './useUserAddress';
+import useTerminal from './useTerminal';
+import { useMutation } from '@tanstack/react-query';
 
-export type CheckoutStep = "contact" | "address" | "delivery";
+export type CheckoutStep = 'contact' | 'address' | 'delivery';
 
 interface Props {
   step: CheckoutStep;
@@ -20,23 +19,13 @@ interface Props {
 }
 
 const useCheckout = (
-  props: Props = { step: "contact", setStep: () => null }
+  props: Props = { step: 'contact', setStep: () => null }
 ) => {
   const { step, setStep } = props;
-  const { uid, isLoggedIn } = useAuth();
+  const { uid, isLoggedIn, user = {} } = useAuth();
   const { openAuthModal } = useAuthModal();
   const { rawCartValue, onCartChange, cart = {} } = useCart();
   const { checkout } = cart;
-
-  const validateStep = async (step: CheckoutStep) => {
-    let schema;
-    if (step === "contact") schema = contactSchema;
-    if (step === "address") schema = addressSchema;
-    if (step === "delivery") schema = deliverySchema;
-    const valid = await schema?.validate(checkout[step]);
-    console.log(valid);
-    return valid;
-  };
 
   // confirms that all previous steps have been filled
   const isStepEnabled = (step: string) => {
@@ -72,14 +61,14 @@ const useCheckout = (
 
   const { firestoreDocumentMutation: checkoutSubmissionMutation } =
     useFirestoreDocumentMutation({
-      collectionName: "carts",
+      collectionName: 'carts',
       onSuccess: onSubmissionSuccess,
       invalidateCollectionQuery: false,
       invalidateDocumentQuery: false,
     });
 
   const submitCheckoutStep = (step: any) => {
-    if (!isLoggedIn) openAuthModal("login");
+    if (!isLoggedIn) openAuthModal('login');
     const newCart = {
       ...rawCartValue,
       checkout: { ...(rawCartValue?.checkout || {}), ...step },
@@ -94,11 +83,42 @@ const useCheckout = (
     submitCheckoutStep({ contact });
   };
 
-  const submitCheckoutAddress = (address: CheckoutAddress) => {
-    submitCheckoutStep({ address });
+  const { setUserAddressMutation } = useUserAddress();
+
+  const { getStateFromIsoCode } = useTerminal();
+
+  const submitCheckoutAddress = async (address: CheckoutAddress) => {
+    const { streetAddress, additionalDetails, country, state, city, zipCode } =
+      address;
+    const { firstName, lastName, email } = user as any;
+    const { phoneNumber } = checkout.contact;
+    const terminalAddressData: { [key: string]: any } = {
+      first_name: firstName,
+      last_name: lastName,
+      phone: `+${phoneNumber}`,
+      email,
+      line1: streetAddress,
+      line2: additionalDetails,
+      country,
+      state: getStateFromIsoCode(state)?.name,
+      city,
+      zip: zipCode,
+      metadata: {
+        user: uid,
+      },
+    };
+
+    const terminalAddress = await setUserAddressMutation.mutateAsync(
+      terminalAddressData
+    );
+
+    submitCheckoutStep({
+      address: { ...address, addressId: terminalAddress.address_id },
+    });
   };
 
-  const submitting = checkoutSubmissionMutation.isLoading;
+  const submitting =
+    checkoutSubmissionMutation.isLoading || setUserAddressMutation.isLoading;
 
   return {
     submitCheckoutContact,

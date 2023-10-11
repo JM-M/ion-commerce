@@ -1,16 +1,10 @@
 import { useMemo } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
 import algoliasearch from 'algoliasearch';
-import { db } from '../../firebase';
-import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
-import { DatabaseProductSection } from './useProductSections';
-import useCollectionInfiniteQuery from './useCollectionInfiniteQuery';
-import { getProductImages } from './useProductImages';
 import useAlgoliaSearch from './useAlgoliaSearch';
 
 const client = algoliasearch(
   import.meta.env.VITE_ALGOLIA_APPLICATION_ID,
-  import.meta.env.VITE_ALGOLIA_ADMIN_API_KEY
+  import.meta.env.VITE_ALGOLIA_SEARCH_ONLY_API_KEY
 );
 
 const useSelectedProductSection = (section: { id: string }) => {

@@ -28,17 +28,18 @@ const StateSelector = ({
   const loading = statesQuery.isLoading;
   const disabled = !country || !statesQuery.data?.length;
 
-  const stateOptions: StateOption[] = loading
-    ? []
-    : statesQuery.data.map(
-        ({
-          isoCode: value,
-          name: text,
-        }: {
-          isoCode: string;
-          name: string;
-        }) => ({ value, text })
-      );
+  const stateOptions: StateOption[] =
+    loading || !Array.isArray(statesQuery?.data)
+      ? []
+      : statesQuery.data.map(
+          ({
+            isoCode: value,
+            name: text,
+          }: {
+            isoCode: string;
+            name: string;
+          }) => ({ value, text })
+        );
 
   return (
     <Typeahead

@@ -36,7 +36,7 @@ const DeliveryOptions = ({
               onClick={() => setValue(deliveryOption)}
             >
               <div className='flex gap-3'>
-                <div className='h-12 w-12 rounded-lg bg-gray-200 overflow-hidden'>
+                <div className='flex items-center justify-center h-12 w-12 rounded-lg bg-gray-200 overflow-hidden'>
                   <IonImg src={logo} />
                 </div>
                 <div className='flex flex-col'>

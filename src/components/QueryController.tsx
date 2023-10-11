@@ -1,30 +1,18 @@
-import { IonButton } from '@ionic/react';
-import { CiFilter } from 'react-icons/ci';
 import QuerySort from './QuerySort';
 import QueryFilter from './QueryFilter';
 
 interface Props {
   sortOptions?: string[];
   onSort?: (option: string) => void;
-  productFilters: {};
-  setProductFilters: Function;
 }
 
-const QueryController = ({
-  onSort,
-  sortOptions,
-  productFilters,
-  setProductFilters,
-}: Props) => {
+const QueryController = ({ onSort, sortOptions }: Props) => {
   return (
-    <div className='flex items-center gap-[10px]'>
+    <div className='flex items-center gap-2'>
       {sortOptions && onSort && (
         <QuerySort options={sortOptions} onSort={onSort} />
       )}
-      <QueryFilter
-        productFilters={productFilters}
-        setProductFilters={setProductFilters}
-      />
+      <QueryFilter />
     </div>
   );
 };

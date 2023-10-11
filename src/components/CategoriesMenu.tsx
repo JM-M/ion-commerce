@@ -23,10 +23,10 @@ const CategoriesMenu = () => {
 
   return (
     <>
-      <ul className='flex flex-wrap items-center pl-5 mr-5 mb-2'>
+      <ul className='flex flex-wrap items-center pl-5 mr-5 mb-2 capitalize'>
         <li>
           <span
-            className={cx('uppercase text-sm', {
+            className={cx('text-sm', {
               underline: activeCategoryPaths.length,
             })}
             onClick={() => setActiveCategory('/')}
@@ -43,7 +43,7 @@ const CategoriesMenu = () => {
             <li key={i}>
               <span className='inline-block mx-2'>/</span>
               <span
-                className={cx('uppercase text-sm', { underline: !isLastPath })}
+                className={cx('text-sm', { underline: !isLastPath })}
                 onClick={() => (isLastPath ? null : setCategoryPathAsActive(i))}
               >
                 {path}

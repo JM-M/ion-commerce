@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useIonRouter } from '@ionic/react';
 import {
   createUserWithEmailAndPassword,
@@ -10,6 +10,8 @@ import {
   User,
   updatePassword,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 import { Timestamp, doc, getDoc } from 'firebase/firestore';
 import axios from 'axios';
@@ -33,6 +35,8 @@ const useAuth = () => {
   const [autoAuthenticating, setAutoAuthenticating] = useState<boolean>(true);
   const { uid } = firebaseAuthUser || {};
 
+  const provider = useMemo(() => new GoogleAuthProvider(), []);
+
   const ionRouter = useIonRouter();
 
   useEffect(() => {
@@ -40,6 +44,7 @@ const useAuth = () => {
       setFirebaseAuthUser(user);
       if (!user) setAutoAuthenticating(false);
     });
+    auth.useDeviceLanguage();
   }, []);
 
   const queryClient = useQueryClient();
@@ -50,26 +55,34 @@ const useAuth = () => {
     const { uid, ...rest } = userDoc;
     const record = { ...rest, objectID: uid };
     await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/algolia/users`,
+      `${import.meta.env.VITE_BACKEND_URL}/save-user-record`,
       record
     );
   };
 
+  const saveUserRecordToAlgoliaMutation = useMutation({
+    mutationKey: ['save-user-record-to-algolia'],
+    mutationFn: saveUserRecordToAlgolia,
+  });
+
   const { firestoreDocumentMutation: userDocMutation } =
     useFirestoreDocumentMutation({
       collectionName: 'users',
-      invalidateCollectionQuery: false,
-      invalidateDocumentQuery: false,
+      invalidateCollectionQuery: true,
+      invalidateDocumentQuery: true,
     });
 
-  const saveCreatedUserToFirestore = (userDoc: UserFirestoreDocument) => {
-    const { uid } = userDoc;
-    return userDocMutation.mutateAsync({
-      document: userDoc,
-      documentId: uid,
-      addTimestamp: true,
-    });
-  };
+  const saveCreatedUserToFirestore = useCallback(
+    (userDoc: UserFirestoreDocument) => {
+      const { uid } = userDoc;
+      return userDocMutation.mutateAsync({
+        document: userDoc,
+        documentId: uid,
+        addTimestamp: true,
+      });
+    },
+    [userDocMutation]
+  );
 
   const synchronizeAuthUserWithUserDoc = (userDoc: UserFirestoreDocument) => {
     if (!uid) return;
@@ -84,17 +97,44 @@ const useAuth = () => {
     }
   };
 
-  const { data: user, ...rest } = useFirestoreDocumentQuery({
+  const userDocQuery = useFirestoreDocumentQuery({
     collectionName: 'users',
     documentId: uid,
     onSuccess: synchronizeAuthUserWithUserDoc,
   });
+  const { data: user, ...rest } = userDocQuery;
   const isLoggedIn = !!uid;
 
   // using an effect ensures that autoAuthenticating is only turned to false when user state has been set
   useEffect(() => {
     if (user && autoAuthenticating) setAutoAuthenticating(false);
   }, [user, autoAuthenticating]);
+
+  // update user document if it does'nt exist
+  useEffect(() => {
+    const loadingUserDoc = userDocQuery.isLoading;
+    let userDoc = userDocQuery.data;
+    const mutatingUserDoc = userDocMutation.isLoading;
+    if (loadingUserDoc || !firebaseAuthUser || userDoc || mutatingUserDoc) {
+      return;
+    }
+    const { uid, email, displayName } = firebaseAuthUser;
+    userDoc = {
+      uid,
+      email: email as string,
+      firstName: displayName as string,
+      lastName: '',
+    };
+    saveCreatedUserToFirestore(userDoc);
+    saveUserRecordToAlgoliaMutation.mutate(userDoc);
+  }, [
+    firebaseAuthUser,
+    userDocQuery.isLoading,
+    userDocQuery.data,
+    userDocMutation.isLoading,
+    saveCreatedUserToFirestore,
+    saveUserRecordToAlgoliaMutation,
+  ]);
 
   const createUserFn = async ({
     email,
@@ -107,15 +147,7 @@ const useAuth = () => {
       email,
       password
     );
-    const uid = userCredential.user.uid;
-    const { data: userDoc } = await saveCreatedUserToFirestore({
-      uid,
-      email: userCredential.user.email as string,
-      firstName,
-      lastName,
-    });
-    await saveUserRecordToAlgolia(userDoc);
-    return userDoc;
+    return userCredential as any;
   };
 
   const onCreateUser = (user: UserFirestoreDocument) => {
@@ -143,20 +175,28 @@ const useAuth = () => {
     const res = await signInWithEmailAndPassword(auth, email, password);
     const uid = res?.user?.uid;
     if (!uid) return onLoginFail();
-    const docRef = doc(db, 'users', uid);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) return onLoginFail();
-    const user = { ...docSnap.data(), id: uid } as any;
-    queryClient.setQueryData(
-      ['document', { collectionName: 'users', documentId: uid }],
-      user
-    );
   };
 
   const loginMutation = useMutation({
     mutationKey: ['user-sign-in'],
     mutationFn: loginFn,
     onSuccess: closeAuthModal,
+  });
+
+  const loginWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      closeAuthModal();
+    } catch (error) {
+      const errorObject = error as any;
+      const errorMessage = errorObject?.message;
+      return onLoginFail(errorMessage);
+    }
+  };
+
+  const loginWithGoogleMutation = useMutation({
+    mutationKey: ['login-with-google'],
+    mutationFn: loginWithGoogle,
   });
 
   const reAuthenticate = async ({ email, password }: UserLogin) => {
@@ -230,6 +270,8 @@ const useAuth = () => {
     isLoggedIn,
     login: loginMutation.mutate,
     loginMutation,
+    loginWithGoogle,
+    loginWithGoogleMutation,
     logOut: logOutMutation.mutate,
     logOutMutation,
     autoAuthenticating,

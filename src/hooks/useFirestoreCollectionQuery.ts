@@ -113,7 +113,6 @@ const useFirestoreCollectionQuery = ({
       id: doc.id,
     }));
     if (transformDocuments) docs = await transformDocuments(docs);
-    // console.log(pageSize, totalDocs);
     const totalPages = Math.ceil(totalDocs / pageSize);
     const hasNextPage = pageNum < totalPages;
     const hasPrevPage = pageNum > 1;

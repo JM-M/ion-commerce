@@ -10,7 +10,7 @@ const DefaultProductVariations: React.FC<{
 }> = ({ color, colors, size, sizes, setProductVariant = () => null }) => {
   return (
     <>
-      {!!colors.length && (
+      {!!colors?.length && (
         <div className='block'>
           <IonItem>
             <IonSelect

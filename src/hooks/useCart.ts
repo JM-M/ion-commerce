@@ -1,13 +1,15 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { doc, getDoc } from "firebase/firestore";
-import useFirestoreDocumentMutation from "./useFirestoreDocumentMutation";
-import useFirestoreDocumentQuery from "./useFirestoreDocumentQuery";
-import { db } from "../../firebase";
-import CartProduct from "../components/CartProduct";
-import { Product } from "../constants/schemas/product";
-import { Checkout } from "../constants/schemas/checkout";
-import useAuth from "./useAuth";
-import useAuthModal from "./useAuthModal";
+import { useState, useEffect, useContext } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { doc, getDoc } from 'firebase/firestore';
+import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
+import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
+import { db } from '../../firebase';
+import CartProduct from '../components/CartProduct';
+import { Product } from '../constants/schemas/product';
+import { Checkout } from '../constants/schemas/checkout';
+import useAuth from './useAuth';
+import useAuthModal from './useAuthModal';
+import CartProductsContext from '../contexts/cartProducts';
 
 export interface CartProduct {
   id: string;
@@ -24,6 +26,8 @@ export type ProductWithCartOptions = Product & {
   id: string;
   qty: number;
   variant: any;
+  variantStock?: any;
+  error?: boolean | string;
 };
 
 export interface Cart {
@@ -32,12 +36,16 @@ export interface Cart {
   checkout?: Checkout;
 }
 
-const collectionName = "carts";
+const collectionName = 'carts';
 
 const useCart = () => {
+  // const [_cartProducts, _setCartProducts] = useState<ProductWithCartOptions[]>(
+  //   []
+  // );
+  const { cartProducts, setCartProducts } = useContext(CartProductsContext);
   const queryClient = useQueryClient();
 
-  const { uid = "", isLoggedIn } = useAuth();
+  const { uid = '', isLoggedIn } = useAuth();
   const { openAuthModal } = useAuthModal();
 
   const cartQuery = useFirestoreDocumentQuery({
@@ -53,30 +61,93 @@ const useCart = () => {
       return 0;
     }) || [];
 
+  const variantsMatch = (variant1: any, variant2: any) => {
+    if (!variant1 || !variant2) return false;
+    const variants1Length = Object.keys(variant1).length;
+    const variants2Length = Object.keys(variant2).length;
+    if (variants1Length !== variants2Length) return false;
+    let match = true;
+    for (const key in variant1) {
+      if (Object.prototype.hasOwnProperty.call(variant1, key)) {
+        if (variant1[key] !== variant2[key]) {
+          match = false;
+          break;
+        }
+      }
+    }
+    return match;
+  };
+
+  const getVariantStock = ({
+    product,
+    variant,
+  }: {
+    product: Product;
+    variant: any;
+  }) => {
+    if (!product.stocks) return undefined;
+    return product.stocks.find((stock) =>
+      variantsMatch(variant, stock.variationCombination)
+    );
+  };
+
   const cartProductsQuery = useQuery({
-    queryKey: ["cart-products", sortedCartProducts],
+    queryKey: ['cart-products', sortedCartProducts],
     queryFn: async ({ queryKey = {} }: any) => {
       const [_key, cartProducts] = queryKey;
       const products: ProductWithCartOptions[] = [];
       for (let index = 0; index < cartProducts.length; index++) {
         const { id: productId, ...rest } = cartProducts[index];
-        const docRef = doc(db, "products", productId);
+        const docRef = doc(db, 'products', productId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const doc = docSnap.data() as Product;
-          products.push({ ...doc, id: productId, ...rest });
+          let variantStock = getVariantStock({
+            product: doc,
+            variant: rest.variant,
+          });
+          let error: string | boolean = false;
+          const quantityAvailable = variantStock?.quantity;
+          const quantityInCart = rest.qty;
+          if (!variantStock) {
+            error = 'This variant is no longer available';
+          } else if (quantityAvailable === 0) {
+            error = 'Unfortunately, this variant is out of stock';
+          } else if (quantityAvailable! < quantityInCart) {
+            error = `Only ${quantityAvailable} available`;
+          }
+          products.push({
+            ...doc,
+            id: productId,
+            variantStock,
+            error,
+            ...rest,
+          });
         }
       }
       return products;
     },
-    staleTime: Infinity,
+    staleTime: 1000 * 60, // update cart every minute
   });
-  const cartProducts: ProductWithCartOptions[] = cartProductsQuery.data || [];
+  const fetchedCartProducts: ProductWithCartOptions[] =
+    cartProductsQuery.data || [];
+
+  useEffect(() => {
+    if (!fetchedCartProducts?.length) return;
+    setCartProducts(fetchedCartProducts);
+  }, [fetchedCartProducts]);
 
   const onCartChange = (cart: Cart) => {
     queryClient.setQueriesData(
-      ["document", { collectionName, documentId: uid }],
+      ['document', { collectionName, documentId: uid }],
       cart
+    );
+    if (!cart.products?.length) return;
+    setCartProducts(
+      cart.products.map((product) => {
+        const fullProduct = cartProducts.find((p) => p.id === product.id);
+        return { ...fullProduct, ...product };
+      })
     );
   };
 
@@ -99,7 +170,7 @@ const useCart = () => {
     useFirestoreDocumentMutation({
       collectionName,
       onSuccess: () => {
-        queryClient.setQueryData(["cart-products", sortedCartProducts], []);
+        queryClient.setQueryData(['cart-products', sortedCartProducts], []);
       },
       invalidateCollectionQuery: true,
     });
@@ -109,23 +180,6 @@ const useCart = () => {
       document: { uid, products: [], checkout: {} },
       documentId: uid,
     });
-  };
-
-  const variantsMatch = (variant1: any, variant2: any) => {
-    if (!variant1 || !variant2) return false;
-    const variants1Length = Object.keys(variant1).length;
-    const variants2Length = Object.keys(variant2).length;
-    if (variants1Length !== variants2Length) return false;
-    let match = true;
-    for (const key in variant1) {
-      if (Object.prototype.hasOwnProperty.call(variant1, key)) {
-        if (variant1[key] !== variant2[key]) {
-          match = false;
-          break;
-        }
-      }
-    }
-    return match;
   };
 
   const findProductInCart = ({
@@ -142,7 +196,7 @@ const useCart = () => {
     });
   };
 
-  const findProductQty = (options: CartProductSearchOptions) => {
+  const findCartProductQty = (options: CartProductSearchOptions) => {
     const cartProduct = findProductInCart(options);
     if (!cartProduct) return null;
     return cartProduct.qty;
@@ -150,7 +204,7 @@ const useCart = () => {
 
   const canEditCart = () => {
     const cartNotCreated =
-      (cartQuery.failureReason as any)?.message === "Document does not exist!";
+      (cartQuery.failureReason as any)?.message === 'Document does not exist!';
     const editingCart =
       addProductMutation.isLoading || removeProductMutation.isLoading;
     if ((cartQuery.isLoading && !cartNotCreated) || editingCart) {
@@ -162,7 +216,7 @@ const useCart = () => {
   const addProductToCart = (options: CartProductSearchOptions) => {
     const { id: productId } = options;
     if (!canEditCart() || !productId) return;
-    if (!isLoggedIn) openAuthModal("login");
+    if (!isLoggedIn) openAuthModal('login');
 
     const isInCart = !!findProductInCart(options);
 
@@ -189,7 +243,7 @@ const useCart = () => {
   const removeProductFromCart = (options: CartProductSearchOptions) => {
     const { id: productId } = options;
     if (!canEditCart() || !productId) return;
-    if (!isLoggedIn) openAuthModal("login");
+    if (!isLoggedIn) openAuthModal('login');
 
     const cartProduct = findProductInCart(options);
     if (!cartProduct) return;
@@ -222,18 +276,28 @@ const useCart = () => {
     return cartProducts?.length
       ? cartProducts.reduce(
           (
-            prev: { cartSize: number; totalCartValue: number },
+            prev: {
+              cartSize: number;
+              totalCartValue: number;
+              hasError: boolean;
+            },
             curr: ProductWithCartOptions
-          ) => ({
-            cartSize: curr.qty + prev.cartSize,
-            totalCartValue: curr.qty * curr.price + prev.totalCartValue,
-          }),
-          { cartSize: 0, totalCartValue: 0 }
+          ) => {
+            const { qty, discount = 0, error } = curr;
+            const discountedPrice = curr.price * ((discount || 0) / 100);
+            const price = curr.price - discountedPrice;
+            return {
+              cartSize: curr.qty + prev.cartSize,
+              totalCartValue: qty * price + prev.totalCartValue,
+              hasError: !prev.hasError ? !!error : prev.hasError,
+            };
+          },
+          { cartSize: 0, totalCartValue: 0, hasError: false }
         )
-      : { cartSize: 0, totalCartValue: 0 };
+      : { cartSize: 0, totalCartValue: 0, hasError: false };
   };
 
-  const { cartSize, totalCartValue } = measureCart(cartProducts);
+  const { cartSize, totalCartValue, hasError } = measureCart(cartProducts);
 
   const adding = addProductMutation.isLoading;
   const removing = removeProductMutation.isLoading;
@@ -244,17 +308,25 @@ const useCart = () => {
     cart: { ...cart, products: cartProducts as ProductWithCartOptions[] },
     cartProductsQuery,
     cartSize,
+    cartHasError: hasError,
     totalCartValue,
     cartQuery,
-    addProductMutation,
+    addProductMutation: {
+      ...addProductMutation,
+      isLoading: addProductMutation.isLoading || cartProductsQuery.isLoading,
+    },
     adding,
     addProductToCart,
-    removeProductMutation,
+    removeProductMutation: {
+      ...removeProductMutation,
+      isLoading: removeProductMutation.isLoading || cartProductsQuery.isLoading,
+    },
     removing,
     editingCart,
+    getVariantStock,
     removeProductFromCart,
     findProductInCart,
-    findProductQty,
+    findCartProductQty,
     onCartChange,
     measureCart,
     clearCart,

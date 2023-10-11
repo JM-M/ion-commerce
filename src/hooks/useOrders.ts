@@ -70,13 +70,22 @@ const useOrders = (props: Props = {}) => {
   const createOrder = async (data: Order) => {
     if (!isLoggedIn) return;
     const products = data?.cart?.products;
-    await updateBuyerLists(products);
-    const { data: order } = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/orders`,
+    const res = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL_DEV}/create-order`,
       data
     );
+    const responseData = res.data;
+    let errorMessage = res.data?.errorMessage;
+    if (errorMessage) {
+      if (errorMessage.includes(']'))
+        errorMessage = errorMessage
+          .slice(errorMessage.indexOf(']') + 1)
+          .trimLeft();
+      throw new Error(errorMessage);
+    }
+    await updateBuyerLists(products);
     await clearCart();
-    return order;
+    return responseData;
   };
 
   const onOrderCreation = (order: Order) => {

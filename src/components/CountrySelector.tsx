@@ -24,17 +24,18 @@ const CountrySelector = ({
   const loading = countriesQuery.isLoading;
   const disabled = !countriesQuery.data?.length;
 
-  const countryOptions: CountryOption[] = loading
-    ? []
-    : countriesQuery.data.map(
-        ({
-          isoCode: value,
-          name: text,
-        }: {
-          isoCode: string;
-          name: string;
-        }) => ({ value, text })
-      );
+  const countryOptions: CountryOption[] =
+    loading || !Array.isArray(countriesQuery.data)
+      ? []
+      : countriesQuery.data.map(
+          ({
+            isoCode: value,
+            name: text,
+          }: {
+            isoCode: string;
+            name: string;
+          }) => ({ value, text })
+        );
 
   return (
     <Typeahead

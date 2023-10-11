@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { IonImg } from '@ionic/react';
+import cx from 'classnames';
 import WishlistIcon from './WishlistIcon';
 import { NAIRA } from '../constants/unicode';
 import { ProductAlgoliaRecord } from '../constants/schemas/product';
@@ -13,9 +14,11 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
   const { isLoggedIn } = useAuth();
 
-  const { name, category, price, objectID, image } = product;
-  const { getCategoryFromValue } = useCategories();
-  const categoryName = getCategoryFromValue(category)?.name;
+  const { name, category, price, objectID, image, discount } = product;
+  const { getCategoryFromId } = useCategories();
+  const categoryName = getCategoryFromId(category)?.name;
+
+  const discountedPrice = discount && price - price * (discount / 100);
 
   return (
     <div>
@@ -35,12 +38,24 @@ const ProductCard = ({ product }: Props) => {
         <div>
           <span className='block font-medium'>{name}</span>
         </div>
-        <div className='flex justify-between items-end'>
+        <div>
           <span className='text-xs text-gray-500'>{categoryName}</span>
-          <span className='inline-block -mb-[2px] text-base'>
+        </div>
+        <div className='flex gap-2'>
+          <span
+            className={cx('inline-block -mb-[2px] text-base', {
+              'line-through text-gray-700': discountedPrice,
+            })}
+          >
             {NAIRA}
             {price.toLocaleString()}
           </span>
+          {discountedPrice && (
+            <span className='inline-block -mb-[2px] text-base'>
+              {NAIRA}
+              {discountedPrice.toLocaleString()}
+            </span>
+          )}
         </div>
       </div>
     </div>

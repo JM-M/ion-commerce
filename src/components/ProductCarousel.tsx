@@ -41,7 +41,7 @@ const ProductCarousel: React.FC<Props> = ({ product, hasVariant = false }) => {
               objectID: id!,
               image: images[0],
             }}
-            className='right-10 bottom-28 z-10'
+            className='right-[40px] bottom-[113px] z-10'
           />
         )}
         <Slider>

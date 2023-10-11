@@ -20,7 +20,14 @@ const ProductDetails = ({ id }: Props) => {
   const { isLoading, isError } = productQuery;
   const product: Product = productQuery.data || {};
 
-  const { name, price, description, variations = {}, rating } = product;
+  const {
+    name,
+    price,
+    description,
+    variations = {},
+    rating,
+    discount,
+  } = product;
 
   const setProductVariant = (key: string, name: string) =>
     setVariant((v: any) => ({ ...v, [key]: name }));
@@ -49,7 +56,12 @@ const ProductDetails = ({ id }: Props) => {
   return (
     <>
       <ProductCarousel product={product} hasVariant={!!variantKeys.length} />
-      <ProductInfo name={name} price={price} rating={rating} />
+      <ProductInfo
+        name={name}
+        price={price}
+        rating={rating}
+        discount={discount}
+      />
       <ProductVariations
         variant={variant}
         variations={variations}

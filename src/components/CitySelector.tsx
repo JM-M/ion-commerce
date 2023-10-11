@@ -31,12 +31,13 @@ const CitySelector = ({
   const loading = citiesQuery.isLoading;
   const disabled = !country || !state || !citiesQuery.data?.length;
 
-  const cityOptions: CityOption[] = loading
-    ? []
-    : citiesQuery.data.map(({ name }: { isoCode: string; name: string }) => ({
-        value: name,
-        text: name,
-      }));
+  const cityOptions: CityOption[] =
+    loading || !citiesQuery.data?.length
+      ? []
+      : citiesQuery.data.map(({ name }: { isoCode: string; name: string }) => ({
+          value: name,
+          text: name,
+        }));
 
   return (
     <Typeahead

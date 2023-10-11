@@ -35,10 +35,14 @@ const useCategories = () => {
   const getCategoryFromValue = (value: string) =>
     categories?.find((c: Category) => c.value === value);
 
+  const getCategoryFromId = (id: string) =>
+    categories?.find((c: Category) => c.id === id);
+
   return {
     categoriesQuery,
     getChildCategories,
     getCategoryFromValue,
+    getCategoryFromId,
     hasChildCategories,
   };
 };

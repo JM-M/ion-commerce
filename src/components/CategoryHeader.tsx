@@ -1,5 +1,5 @@
 import { useIonRouter, IonHeader, IonButton } from '@ionic/react';
-import PageHeader from './PageHeader';
+import cx from 'classnames';
 import QueryController from './QueryController';
 import useCategories, { Category } from '../hooks/useCategories';
 import { SortOption } from '../hooks/useProducts';
@@ -7,16 +7,9 @@ import { SortOption } from '../hooks/useProducts';
 interface Props {
   sortOptions: { [option: string]: SortOption };
   setSortOption: Function;
-  productFilters: {};
-  setProductFilters: Function;
 }
 
-export const CategoryHeader = ({
-  sortOptions,
-  setSortOption,
-  productFilters = {},
-  setProductFilters = () => null,
-}: Props) => {
+export const CategoryHeader = ({ sortOptions, setSortOption }: Props) => {
   const ionRouter = useIonRouter();
   const {
     routeInfo: { pathname },
@@ -26,18 +19,55 @@ export const CategoryHeader = ({
   const activeCategoryValue = pathname.replace(baseUrlPath, '');
   const isRootCategory = !activeCategoryValue.replaceAll('/', '');
 
-  const { getChildCategories, getCategoryFromValue } = useCategories();
+  const { getChildCategories } = useCategories();
   const categories = getChildCategories(activeCategoryValue);
-  const activeCategory = getCategoryFromValue(activeCategoryValue);
+  const activeCategoryPaths = activeCategoryValue.split('/').filter((v) => v);
+
+  const goToCategory = (value: string) =>
+    ionRouter.push(`/store/category${value}`);
 
   return (
     <div>
-      <PageHeader backHref={baseUrlPath} noBackButton={isRootCategory}>
+      <div className='container mb-3 capitalize text-base'>
+        <ul className='flex flex-wrap items-center w-full'>
+          <li>
+            <span
+              className={cx({
+                underline: activeCategoryPaths.length,
+              })}
+              onClick={() => goToCategory('/')}
+            >
+              All products
+            </span>
+            {!isRootCategory && <span className='inline-block mx-2'>/</span>}
+          </li>
+          {activeCategoryPaths.map((path, i) => {
+            const isLastPath = i === activeCategoryPaths.length - 1;
+            const pathValue = `/${activeCategoryPaths
+              .slice(0, i + 1)
+              .join('/')}`;
+            return (
+              <li key={i}>
+                <span
+                  className={cx({
+                    underline: !isLastPath,
+                  })}
+                  onClick={() => goToCategory(pathValue)}
+                >
+                  {path}
+                </span>
+                {!isLastPath && <span className='inline-block mx-2'>/</span>}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      {/* <PageHeader backHref={baseUrlPath} noBackButton={isRootCategory}>
         {!isRootCategory ? activeCategory?.name : 'All products'}
-      </PageHeader>
-      <IonHeader className='ion-no-border'>
+      </PageHeader> */}
+      <IonHeader className='container ion-no-border'>
         {' '}
-        <div className='w-screen overflow-x-auto pb-3'>
+        <div className='w-screen overflow-x-auto pb-1'>
           <ul className='flex gap-3'>
             {categories.map((category: Category, index: number) => {
               const { name, value } = category;
@@ -54,14 +84,12 @@ export const CategoryHeader = ({
               );
             })}
           </ul>
-          {/* <div className='container flex justify-end'>
-            <QueryController
-              onSort={(v) => setSortOption(v)}
-              sortOptions={Object.keys(sortOptions)}
-              productFilters={productFilters}
-              setProductFilters={setProductFilters}
-            />
-          </div> */}
+        </div>
+        <div className='flex justify-end pb-2'>
+          <QueryController
+            onSort={(v) => setSortOption(v)}
+            sortOptions={Object.keys(sortOptions)}
+          />
         </div>
       </IonHeader>
     </div>

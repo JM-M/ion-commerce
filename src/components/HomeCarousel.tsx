@@ -6,9 +6,11 @@ import HomeCarouselControls from './HomeCarouselControls';
 import useHomeSlides, { HomeSlide } from '../hooks/useHomeSlides';
 
 const HomeCarousel = () => {
-  const { homeSlides, homeSlidesQuery } = useHomeSlides();
+  const { homeSlides = [], homeSlidesQuery } = useHomeSlides();
 
   if (homeSlidesQuery.isLoading) return <HomeCarouselSkeleton />;
+
+  if (!homeSlides?.length) return null;
 
   return (
     <div className='container pt-4'>

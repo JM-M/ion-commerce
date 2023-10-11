@@ -7,7 +7,7 @@ import {
 
 const client = algoliasearch(
   import.meta.env.VITE_ALGOLIA_APPLICATION_ID,
-  import.meta.env.VITE_ALGOLIA_ADMIN_API_KEY
+  import.meta.env.VITE_ALGOLIA_SEARCH_ONLY_API_KEY
 );
 
 // type AlgoliaRecord = { [key: string]: any };
@@ -16,6 +16,7 @@ interface Props {
   index: string;
   pageSize: number;
   options?: any;
+  facets?: any;
   transformRecords?: Function;
 }
 
@@ -60,7 +61,7 @@ const useAlgoliaSearch = (props: Props) => {
     let docs = hits;
     if (transformRecords) docs = await transformRecords(hits);
 
-    return { docs, page, nextCursor, totalDocs: nbHits };
+    return { ...res, docs, page, nextCursor, totalDocs: nbHits };
   };
 
   const getNextPageParam = (lastPage: any, allPages: [][]) =>

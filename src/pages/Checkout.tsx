@@ -25,7 +25,7 @@ const Checkout: React.FC = () => {
             <div>
               <OrderSummary />
             </div>
-            <div className='container flex-1 flex flex-col py-14'>
+            <div className='container flex-1 flex flex-col pb-14'>
               <CheckoutSteps
                 steps={CHECKOUT_STEPS}
                 step={step}
