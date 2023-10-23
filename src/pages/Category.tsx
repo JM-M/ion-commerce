@@ -13,7 +13,6 @@ const SORT_OPTIONS: { [option: string]: SortOption } = {
 
 const Category = () => {
   const [sortOption, setSortOption] = useState<string>();
-  const [productFilters, setProductFilters] = useState<object>({});
 
   const ionRouter = useIonRouter();
   const {
