@@ -29,8 +29,6 @@ const Category = () => {
       <CategoryHeader
         sortOptions={SORT_OPTIONS}
         setSortOption={setSortOption}
-        productFilters={productFilters}
-        setProductFilters={setProductFilters}
       />
       <IonContent>
         <div className='container pb-[30px]'>
