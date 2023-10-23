@@ -155,15 +155,14 @@ const useCart = () => {
     useFirestoreDocumentMutation({
       collectionName,
       onSuccess: onCartChange,
-      invalidateCollectionQuery: false,
-      invalidateDocumentQuery: false,
+      invalidateDocumentQuery: true,
     });
 
   const { firestoreDocumentMutation: removeProductMutation } =
     useFirestoreDocumentMutation({
       collectionName,
       onSuccess: onCartChange,
-      invalidateCollectionQuery: false,
+      invalidateCollectionQuery: true,
     });
 
   const { firestoreDocumentMutation: clearCartMutation } =

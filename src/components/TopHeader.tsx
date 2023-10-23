@@ -33,7 +33,7 @@ const TopHeader = () => {
         ) : (
           <>
             <IonTitle className='ion-no-padding'>
-              <Link to='/store' className='ml-3'>
+              <Link to='/store' className='flex gap-3 ml-3'>
                 {import.meta.env.VITE_APP_NAME}
               </Link>
             </IonTitle>

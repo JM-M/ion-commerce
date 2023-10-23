@@ -40,6 +40,7 @@ import PasswordResetEmailSent from './pages/PasswordResetEmailSent';
 import SideMenu from './components/SideMenu';
 import TopHeader from './components/TopHeader';
 import AuthForm from './components/AuthForm';
+// import AppLoading from './components/AppLoading';
 
 import AuthModalContext from './contexts/authModal';
 import CartProductsContext from './contexts/cartProducts';
@@ -116,6 +117,7 @@ const App: React.FC = () => {
                 <IonTabs>
                   <IonRouterOutlet className='pt-[60px] flex flex-col'>
                     <IonContent className='scrollbar-hide'>
+                      {/* <AppLoading /> */}
                       <div className='flex flex-col min-h-[100%] mb-10'>
                         <Route
                           path='/forgot-password/sent'

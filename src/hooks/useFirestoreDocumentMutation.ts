@@ -25,12 +25,12 @@ const useFirestoreDocumentMutation = ({
     addTimestamp?: boolean;
   }) => {
     const docRef = doc(db, collectionName, documentId);
-    let formattedDocument = document;
+    let formattedDocument = { ...document, id: documentId };
     const now = Timestamp.fromDate(new Date());
     if (addTimestamp && !document.createdAt) {
-      formattedDocument = { ...document, id: documentId, createdAt: now };
+      formattedDocument = { ...document, createdAt: now };
     } else if (addTimestamp) {
-      formattedDocument = { ...document, id: documentId, updatedAt: now };
+      formattedDocument = { ...document, updatedAt: now };
     }
     await setDoc(docRef, formattedDocument);
     return { data: formattedDocument, documentId };

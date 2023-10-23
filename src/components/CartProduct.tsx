@@ -72,7 +72,7 @@ const CartProduct = ({ product, qty = 1, hideCounter = false }: Props) => {
               return <span key={i}>{value}</span>;
             })}
           </div>
-          <div className='flex gap-2 text-black'>
+          <div className='flex flex-wrap gap-2 text-black'>
             <span
               className={cx('inline-block -mb-[2px] text-base', {
                 'line-through text-gray-700': discountedPrice,

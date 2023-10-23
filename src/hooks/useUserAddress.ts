@@ -14,7 +14,7 @@ const useUserAddress = () => {
     queryFn: async () => {
       if (!addressId) return null;
       const { data } = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/address`,
+        `${import.meta.env.VITE_BACKEND_URL}/address`,
         {
           params: { addressId: addressId },
         }
@@ -33,7 +33,7 @@ const useUserAddress = () => {
     mutationFn: async (address: any) => {
       if (!userId) throw new Error('No user id provided');
       const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/address`,
+        `${import.meta.env.VITE_BACKEND_URL}/address`,
         address
       );
       const updatedUser = { ...user, addressId: data.address_id };

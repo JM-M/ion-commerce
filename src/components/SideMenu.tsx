@@ -22,7 +22,9 @@ const SideMenu = () => {
     >
       <IonHeader className='container ion-no-border bg-gray-200 dark:bg-neutral-900'>
         <IonToolbar color='transparent'>
-          <IonTitle className='bg-transparent'>CubeJKiddies</IonTitle>
+          <IonTitle className='bg-transparent'>
+            {import.meta.env.VITE_APP_NAME}
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

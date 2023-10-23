@@ -9,6 +9,8 @@ import useAuth, { UserFirestoreDocument } from './useAuth';
 import useCart, { Cart } from './useCart';
 import { Product } from '../constants/schemas/product';
 import useCollectionInfiniteQuery from './useCollectionInfiniteQuery';
+import useFirestoreDocumentMutation from './useFirestoreDocumentMutation';
+import generateOrderId from '../utils/cart/orders/generateOrderId';
 
 export type StatusEvent = { status: string; time: Timestamp };
 
@@ -52,6 +54,9 @@ const useOrders = (props: Props = {}) => {
     documentId: orderId,
   });
 
+  for (let i = 0; i < 100; i++) {
+    generateOrderId();
+  }
   const { multipleFirestoreDocumentsMutation: orderProductBuyersMutation } =
     useMultipleFirebaseDocumentsMutation({
       mutationKey: ['update-order-products-buyers-subcollection'],
@@ -67,38 +72,34 @@ const useOrders = (props: Props = {}) => {
     await orderProductBuyersMutation.mutateAsync({ collections });
   };
 
+  const { firestoreDocumentMutation: createOrderDocumentMutation } =
+    useFirestoreDocumentMutation({ collectionName });
+
   const createOrder = async (data: Order) => {
     if (!isLoggedIn) return;
     const products = data?.cart?.products;
-    const res = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL_DEV}/create-order`,
-      data
-    );
+    const orderId = generateOrderId();
+    const res = await createOrderDocumentMutation.mutateAsync({
+      document: {
+        ...data,
+        statusEvents: [
+          { status: 'confirmed', time: Timestamp.fromDate(new Date()) },
+        ],
+      },
+      documentId: orderId,
+      addTimestamp: true, // important, orderQuery doesn't work without createdAt field
+    });
     const responseData = res.data;
-    let errorMessage = res.data?.errorMessage;
-    if (errorMessage) {
-      if (errorMessage.includes(']'))
-        errorMessage = errorMessage
-          .slice(errorMessage.indexOf(']') + 1)
-          .trimLeft();
-      throw new Error(errorMessage);
-    }
     await updateBuyerLists(products);
     await clearCart();
-    return responseData;
-  };
-
-  const onOrderCreation = (order: Order) => {
-    if (!order) return;
-    const { id } = order;
-    ionRouter.push(`/store/orders/${id}`);
+    ionRouter.push(`/store/orders/${orderId}`);
     queryClient.invalidateQueries(['collection', collectionName]);
+    return responseData;
   };
 
   const createOrderMutation = useMutation({
     mutationKey: ['create-order'],
     mutationFn: createOrder,
-    onSuccess: onOrderCreation,
   });
 
   return {

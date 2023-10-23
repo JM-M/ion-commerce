@@ -12,6 +12,7 @@ import cx from 'classnames';
 import CountrySelector from './CountrySelector';
 import StateSelector from './StateSelector';
 import CitySelector from './CitySelector';
+import Input from './Input';
 import useCart from '../hooks/useCart';
 import { addressSchema } from '../constants/schemas/checkout';
 
@@ -35,7 +36,7 @@ const CheckoutAddressForm = ({ submit, submitting }: Props) => {
   const {
     handleSubmit,
     register,
-    formState: { errors, touchedFields },
+    formState: { errors, touchedFields, isSubmitted },
     setValue,
     watch,
     trigger,
@@ -68,7 +69,7 @@ const CheckoutAddressForm = ({ submit, submitting }: Props) => {
           setValue('state', '');
           setValue('city', '');
         }}
-        error={touchedFields.country && errors.country}
+        error={(touchedFields.country || isSubmitted) && errors.country}
       />
       <StateSelector
         register={register}
@@ -80,7 +81,7 @@ const CheckoutAddressForm = ({ submit, submitting }: Props) => {
           setValue('state', state, { shouldTouch: true });
           setValue('city', '');
         }}
-        error={touchedFields.state && errors.state}
+        error={(touchedFields.state || isSubmitted) && errors.state}
       />
       <CitySelector
         register={register}
@@ -92,63 +93,34 @@ const CheckoutAddressForm = ({ submit, submitting }: Props) => {
         setValue={(city: string) => {
           setValue('city', city, { shouldTouch: true });
         }}
-        error={touchedFields.city && errors.city}
+        error={(touchedFields.city || isSubmitted) && errors.city}
       />
-      <IonItem
-        className={cx({
-          'ion-invalid': !!errors?.streetAddress,
-          'ion-valid': !errors?.streetAddress,
-        })}
-      >
-        <IonInput
-          label='Street address'
-          aria-label='Street address'
-          labelPlacement='floating'
-          {...register('streetAddress')}
-          errorText={
-            touchedFields.streetAddress
-              ? ((errors?.streetAddress?.message || '') as string)
-              : ''
-          }
-        />
-      </IonItem>
-      <IonItem
-        className={cx({
-          'ion-invalid': !!errors?.zipCode,
-          'ion-valid': !errors?.zipCode,
-        })}
-      >
-        <IonInput
-          label='Zip/Postal code'
-          aria-label='Zip/Postal code'
-          labelPlacement='floating'
-          {...register('zipCode')}
-          errorText={
-            touchedFields.zipCode
-              ? ((errors?.zipCode?.message || '') as string)
-              : ''
-          }
-        />
-      </IonItem>
-      <IonItem
-        className={cx({
-          'ion-invalid': !!errors?.additionalDetails,
-          'ion-valid': !errors?.additionalDetails,
-        })}
-      >
-        <IonTextarea
-          label='Additional details (optional)'
-          aria-label='Additional details (optional)'
-          labelPlacement='floating'
-          {...register('additionalDetails')}
-          errorText={
-            touchedFields.additionalDetails
-              ? ((errors?.additionalDetails?.message || '') as string)
-              : ''
-          }
-          autoGrow
-        />
-      </IonItem>
+      <Input
+        label='Street address'
+        labelPlacement='floating'
+        {...register('streetAddress')}
+        errorText={
+          (touchedFields.streetAddress || isSubmitted) &&
+          errors.streetAddress?.message
+        }
+      />
+      <Input
+        label='Zip/Postal code'
+        labelPlacement='floating'
+        {...register('zipCode')}
+        errorText={
+          (touchedFields.zipCode || isSubmitted) && errors.zipCode?.message
+        }
+      />
+      <Input
+        label='Additional details (optional)'
+        labelPlacement='floating'
+        {...register('additionalDetails')}
+        errorText={
+          (touchedFields.additionalDetails || isSubmitted) &&
+          errors.additionalDetails?.message
+        }
+      />
       <IonButton
         id='checkoutFormButton'
         className='h-[50px] mt-[30px]'

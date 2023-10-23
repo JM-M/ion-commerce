@@ -1,8 +1,8 @@
-import { ReactNode, useMemo } from "react";
-import { usePaystackPayment } from "react-paystack";
-import { v4 as uuidv4 } from "uuid";
-import Button from "./Button";
-import useAuth from "../hooks/useAuth";
+import { ReactNode, useMemo } from 'react';
+import { usePaystackPayment } from 'react-paystack';
+import { v4 as uuidv4 } from 'uuid';
+import Button from './Button';
+import useAuth from '../hooks/useAuth';
 
 interface Props {
   children: ReactNode;
@@ -29,10 +29,10 @@ const PaystackPaymentButton = ({
       reference: uuidv4(),
       email,
       amount: Math.round(paymentValue * 100),
-      publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+      publicKey: import.meta.env.VITE_TEST_PAYSTACK_PUBLIC_KEY,
     };
   }, [email, paymentValue]);
-  
+
   const initializePayment = usePaystackPayment(config);
 
   return (

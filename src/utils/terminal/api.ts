@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const terminalAPIInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_URL_DEV}/terminal/`,
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/terminal/`,
 });
 
 export const getCountries = async () => {
