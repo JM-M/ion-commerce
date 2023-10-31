@@ -1,8 +1,8 @@
 import { IonButton, IonSpinner } from '@ionic/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FcGoogle } from 'react-icons/fc';
-import Button from './Button';
+// import { FcGoogle } from 'react-icons/fc';
+// import Button from './Button';
 import Input from './Input';
 import ErrorText from './ErrorText';
 import useAuthModal from '../hooks/useAuthModal';
@@ -40,7 +40,7 @@ const SignUpForm = () => {
       <h2 className='mb-10 font-medium text-lg text-center'>
         Create CubeJKiddies account
       </h2>
-      <Button
+      {/* <Button
         fill='outline'
         color='medium'
         className='block h-10 mb-5'
@@ -53,7 +53,7 @@ const SignUpForm = () => {
       </Button>
       <div className='text-xs text-[var(--ion-color-medium)] text-center'>
         Or with email and password
-      </div>
+      </div> */}
       <form onSubmit={handleSubmit(submit)}>
         <Input
           type='email'

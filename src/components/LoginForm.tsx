@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { IonButton, IonSpinner } from '@ionic/react';
-import { FcGoogle } from 'react-icons/fc';
+// import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Button from './Button';
+// import Button from './Button';
 import Input from './Input';
 import ErrorText from './ErrorText';
 import { UserLogin } from '../constants/schemas/auth';
@@ -38,7 +38,7 @@ const LoginForm = () => {
         <h2 className='mb-10 font-medium text-lg text-center'>
           Login to CubeJKiddies
         </h2>
-        <Button
+        {/* <Button
           fill='outline'
           color='medium'
           className='block h-10 mb-5'
@@ -51,7 +51,7 @@ const LoginForm = () => {
         </Button>
         <div className='text-xs text-[var(--ion-color-medium)] text-center'>
           Or with email and password
-        </div>
+        </div> */}
         <Input
           label='Email'
           labelPlacement='floating'
