@@ -35,6 +35,7 @@ const useWishlist = (props: Props = { productId: '' }) => {
   const wishlistItemQuery = useFirestoreDocumentQuery({
     collectionName,
     documentId: productId,
+    keys: [uid],
     retry: false,
   });
 

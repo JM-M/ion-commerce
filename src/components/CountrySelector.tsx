@@ -48,6 +48,7 @@ const CountrySelector = ({
       error={error}
       loading={loading}
       disabled={disabled}
+      initialBreakpoint={0.6}
     />
   );
 };

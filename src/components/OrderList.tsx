@@ -33,9 +33,7 @@ const OrderList = () => {
           const lastStatus =
             !!statusEvents.length &&
             statusEvents[statusEvents?.length - 1].status;
-          const { totalCartValue } = measureCart(
-            cart.products as ProductWithCartOptions[]
-          );
+          const { totalCartValue } = measureCart(cart);
 
           return (
             <li key={i}>

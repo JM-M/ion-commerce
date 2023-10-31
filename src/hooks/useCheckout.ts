@@ -9,7 +9,6 @@ import {
 import CHECKOUT_STEPS from '../constants/checkoutSteps';
 import useUserAddress from './useUserAddress';
 import useTerminal from './useTerminal';
-import { useMutation } from '@tanstack/react-query';
 
 export type CheckoutStep = 'contact' | 'address' | 'delivery';
 

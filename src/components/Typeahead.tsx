@@ -31,6 +31,7 @@ interface TypeaheadProps {
   error: any;
   loading?: boolean;
   disabled?: boolean;
+  initialBreakpoint?: number;
 }
 
 const Typeahead = ({
@@ -43,6 +44,7 @@ const Typeahead = ({
   error,
   disabled = false,
   loading = false,
+  initialBreakpoint,
 }: TypeaheadProps) => {
   const [filteredItems, setFilteredItems] = useState<any[]>([...items]);
 
@@ -135,7 +137,11 @@ const Typeahead = ({
           {error?.message}
         </IonText>
       )}
-      <IonModal trigger={`select-${name}`} ref={categoriesModal}>
+      <IonModal
+        trigger={`select-${name}`}
+        ref={categoriesModal}
+        initialBreakpoint={initialBreakpoint}
+      >
         <IonHeader>
           <IonToolbar>
             <IonButtons slot='start'>

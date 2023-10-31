@@ -5,6 +5,7 @@ import { db } from '../../firebase';
 interface Props {
   collectionName: string;
   documentId?: string;
+  keys?: any[];
   onSuccess?: Function;
   retry?: boolean | number;
 }
@@ -13,6 +14,7 @@ const useFirestoreDocumentQuery = ({
   collectionName,
   documentId,
   onSuccess = () => null,
+  keys = undefined,
   retry = 3,
 }: Props) => {
   const fetchDocument = async ({ queryKey = {} }: any) => {
@@ -37,7 +39,11 @@ const useFirestoreDocumentQuery = ({
   };
 
   const queryState = useQuery({
-    queryKey: ['document', { collectionName, documentId }],
+    queryKey: [
+      'document',
+      { collectionName, documentId },
+      ...(keys || []),
+    ].filter((v) => v),
     queryFn: fetchDocument,
     staleTime: Infinity,
     retry,

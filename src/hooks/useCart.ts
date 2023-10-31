@@ -39,9 +39,6 @@ export interface Cart {
 const collectionName = 'carts';
 
 const useCart = () => {
-  // const [_cartProducts, _setCartProducts] = useState<ProductWithCartOptions[]>(
-  //   []
-  // );
   const { cartProducts, setCartProducts } = useContext(CartProductsContext);
   const queryClient = useQueryClient();
 
@@ -168,7 +165,8 @@ const useCart = () => {
   const { firestoreDocumentMutation: clearCartMutation } =
     useFirestoreDocumentMutation({
       collectionName,
-      onSuccess: () => {
+      onSuccess: (cart: any) => {
+        onCartChange(cart);
         queryClient.setQueryData(['cart-products', sortedCartProducts], []);
       },
       invalidateCollectionQuery: true,
@@ -179,6 +177,10 @@ const useCart = () => {
       document: { uid, products: [], checkout: {} },
       documentId: uid,
     });
+    queryClient.setQueryData(
+      ['document', { collectionName, documentId: uid }],
+      () => ({ ...cart, products: [] })
+    );
   };
 
   const findProductInCart = ({
@@ -271,9 +273,9 @@ const useCart = () => {
     removeProductMutation.mutate({ document: newCart, documentId: uid });
   };
 
-  const measureCart = (cartProducts: ProductWithCartOptions[]) => {
-    return cartProducts?.length
-      ? cartProducts.reduce(
+  const measureCart = (cart: Cart) => {
+    return cart?.products?.length
+      ? cart.products.reduce(
           (
             prev: {
               cartSize: number;
@@ -296,7 +298,7 @@ const useCart = () => {
       : { cartSize: 0, totalCartValue: 0, hasError: false };
   };
 
-  const { cartSize, totalCartValue, hasError } = measureCart(cartProducts);
+  const { cartSize, totalCartValue, hasError } = measureCart(cart);
 
   const adding = addProductMutation.isLoading;
   const removing = removeProductMutation.isLoading;

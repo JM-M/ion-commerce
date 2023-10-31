@@ -50,6 +50,7 @@ const CitySelector = ({
       error={error}
       loading={loading}
       disabled={disabled}
+      initialBreakpoint={0.6}
     />
   );
 };

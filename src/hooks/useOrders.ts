@@ -1,9 +1,7 @@
 import { useIonRouter } from '@ionic/react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { Timestamp } from '@firebase/firestore';
-import axios from 'axios';
 import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
-import useFirestoreCollectionQuery from './useFirestoreCollectionQuery';
 import useMultipleFirebaseDocumentsMutation from './useMultipleFirebaseDocumentsMutation';
 import useAuth, { UserFirestoreDocument } from './useAuth';
 import useCart, { Cart } from './useCart';
@@ -52,6 +50,7 @@ const useOrders = (props: Props = {}) => {
   const orderQuery = useFirestoreDocumentQuery({
     collectionName,
     documentId: orderId,
+    keys: [uid],
   });
 
   for (let i = 0; i < 100; i++) {
