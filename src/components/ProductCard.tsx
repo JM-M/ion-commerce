@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { IonImg } from '@ionic/react';
 import cx from 'classnames';
-import WishlistIcon from './WishlistIcon';
+import ToggleWishlistIcon from './ToggleWishlistIcon';
 import { NAIRA } from '../constants/unicode';
 import { ProductAlgoliaRecord } from '../constants/schemas/product';
 import useCategories from '../hooks/useCategories';
@@ -31,7 +31,7 @@ const ProductCard = ({ product }: Props) => {
               className='h-full w-full bg-gray-200 object-cover'
             />
           )}
-          {product && isLoggedIn && <WishlistIcon product={product} />}
+          {product && isLoggedIn && <ToggleWishlistIcon product={product} />}
         </div>
       </Link>
       <div>
@@ -50,10 +50,10 @@ const ProductCard = ({ product }: Props) => {
             {NAIRA}
             {price.toLocaleString()}
           </span>
-          {discountedPrice && (
+          {!!discount && (
             <span className='inline-block -mb-[2px] text-base'>
               {NAIRA}
-              {discountedPrice.toLocaleString()}
+              {discountedPrice!.toLocaleString()}
             </span>
           )}
         </div>

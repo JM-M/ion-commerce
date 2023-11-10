@@ -12,12 +12,7 @@ import { UserSignUp, userSignUpSchema } from '../constants/schemas/auth';
 
 const SignUpForm = () => {
   const { openAuthModal } = useAuthModal();
-  const {
-    createUser,
-    createUserMutation,
-    loginWithGoogle,
-    loginWithGoogleMutation,
-  } = useAuth();
+  const { createUser, createUserMutation } = useAuth();
   const errorMessage = useFirebaseErrorMessage(
     (createUserMutation.error as any)?.code
   );
@@ -35,25 +30,11 @@ const SignUpForm = () => {
   const signingUp = createUserMutation.isLoading;
 
   return (
-    <div className='container flex flex-col justify-center min-h-[calc(100vh_-_56px)] py-10'>
+    <div className='container flex flex-col justify-center'>
       <h2 className='font-medium text-lg text-center'></h2>
       <h2 className='mb-10 font-medium text-lg text-center'>
         Create CubeJKiddies account
       </h2>
-      {/* <Button
-        fill='outline'
-        color='medium'
-        className='block h-10 mb-5'
-        onClick={loginWithGoogle}
-        loading={loginWithGoogleMutation.isLoading}
-      >
-        <span className='flex items-center justify-center gap-[10px]'>
-          <FcGoogle size={24} /> Sign up with Google
-        </span>
-      </Button>
-      <div className='text-xs text-[var(--ion-color-medium)] text-center'>
-        Or with email and password
-      </div> */}
       <form onSubmit={handleSubmit(submit)}>
         <Input
           type='email'

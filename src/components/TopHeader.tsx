@@ -11,22 +11,26 @@ import {
 import { searchOutline } from 'ionicons/icons';
 
 import TopHeaderSearchbar from './TopHeaderSearchbar';
-import useCart from '../hooks/useCart';
 import CartIcon from './CartIcon';
+import WishlistIcon from './WishlistIcon';
 import UserIcon from './UserIcon';
+
+import useCart from '../hooks/useCart';
+import useScreenSize from '../hooks/useScreenSize';
 
 const TopHeader = () => {
   const [showSearchbar, setShowSearchbar] = useState(false);
   const openSearchbar = () => setShowSearchbar(true);
   const closeSearchbar = () => setShowSearchbar(false);
 
+  const { width } = useScreenSize();
   const { cartSize } = useCart();
 
   return (
-    <IonHeader className='pr-5 ion-no-border'>
-      <IonToolbar>
+    <IonHeader className='ion-no-border ion-no-padding'>
+      <IonToolbar className='container overflow-visible'>
         <IonButtons slot='start'>
-          <IonMenuButton />
+          <IonMenuButton className='relative right-5' />
         </IonButtons>
         {showSearchbar ? (
           <TopHeaderSearchbar close={closeSearchbar} />
@@ -45,6 +49,7 @@ const TopHeader = () => {
             />
           </>
         )}
+        <WishlistIcon />
         <CartIcon cartSize={cartSize} />
         <UserIcon />
       </IonToolbar>

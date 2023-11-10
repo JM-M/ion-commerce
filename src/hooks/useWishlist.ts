@@ -5,6 +5,7 @@ import useFirestoreDocumentDeletion from './useFirestoreDocumentDeletion';
 import useAuth from './useAuth';
 import useCollectionInfiniteQuery from './useCollectionInfiniteQuery';
 import useFirestoreDocumentQuery from './useFirestoreDocumentQuery';
+import useCollectionCount from './useCollectionCount';
 
 export interface WishlistItem {
   id: string;
@@ -24,6 +25,10 @@ const useWishlist = (props: Props = { productId: '' }) => {
   const queryClient = useQueryClient();
 
   const collectionName = `users/${uid}/wishlist`;
+
+  const wishlistCountQuery = useCollectionCount({
+    collectionName,
+  });
 
   const wishlistQuery = useCollectionInfiniteQuery({
     collectionName,
@@ -89,6 +94,7 @@ const useWishlist = (props: Props = { productId: '' }) => {
     addWishlistItem,
     removeWishlistItemMutation,
     removeWishlistItem,
+    wishlistCountQuery,
   };
 };
 

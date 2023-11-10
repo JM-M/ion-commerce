@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { IonImg } from '@ionic/react';
 import { Highlight } from 'react-instantsearch';
 import { NAIRA } from '../constants/unicode';
+import useCategories from '../hooks/useCategories';
 
 interface Props {
   hit: any;
@@ -9,6 +10,8 @@ interface Props {
 }
 
 const ProductSearchHit: React.FC<Props> = ({ hit, close = () => null }) => {
+  const { getCategoryFromId } = useCategories();
+
   return (
     <Link
       to={`/store/products/${hit.objectID}`}
@@ -26,14 +29,14 @@ const ProductSearchHit: React.FC<Props> = ({ hit, close = () => null }) => {
         <div className='flex-[3] flex flex-col'>
           <Highlight attribute='name' hit={hit} />
           <p className='text-gray-700'>
-            <Highlight attribute='category' hit={hit} />
+            <span>{getCategoryFromId(hit.category).name}</span>
           </p>
           <p className='mt-auto text-lg'>
             {NAIRA}
             {hit.price}
           </p>
         </div>
-        {hit.discount && (
+        {!!hit.discount && (
           <div className='ml-auto'>
             <span className='inline-block py-1 px-3 bg-[var(--ion-color-primary)] text-white rounded-md'>
               {hit.discount}% off

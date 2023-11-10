@@ -1,7 +1,7 @@
 import { IonImg } from '@ionic/react';
 import { CarouselProvider, Slider, Slide } from 'pure-react-carousel';
 import ProductCarouselControls from './ProductCarouselControls';
-import WishlistIcon from './WishlistIcon';
+import ToggleWishlistIcon from './ToggleWishlistIcon';
 import useAuth from '../hooks/useAuth';
 import { getProductImages } from '../hooks/useProductImages';
 import { Product } from '../constants/schemas/product';
@@ -34,7 +34,7 @@ const ProductCarousel: React.FC<Props> = ({ product, hasVariant = false }) => {
         className='relative ml-5'
       >
         {isLoggedIn && (
-          <WishlistIcon
+          <ToggleWishlistIcon
             product={{
               name,
               price,

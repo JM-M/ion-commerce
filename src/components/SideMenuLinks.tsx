@@ -7,6 +7,8 @@ const LINKS: { display: string; path: string }[] = [
   { display: 'Wishlist', path: '/wishlist' },
   { display: 'About', path: '/about' },
   { display: 'Contact', path: '/contact' },
+  { display: 'Orders', path: '/orders' },
+  { display: 'Account settings', path: '/account' },
 ];
 
 interface Props {

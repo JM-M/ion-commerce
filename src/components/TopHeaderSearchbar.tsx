@@ -31,7 +31,11 @@ const TopHeaderSearchbar: React.FC<{ close: Function }> = ({ close }) => {
 
   return (
     <InstantSearch searchClient={searchClient} indexName='products'>
-      <IonModal isOpen={true}>
+      <IonModal
+        isOpen={true}
+        className='product-search-modal'
+        onWillDismiss={() => close()}
+      >
         <IonHeader className='container ion-no-border'>
           <IonToolbar>
             <div className='flex items-center' id='searchbox-container'>

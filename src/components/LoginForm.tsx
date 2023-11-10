@@ -33,7 +33,7 @@ const LoginForm = () => {
   const logginIn = loginMutation.isLoading;
 
   return (
-    <div className='container flex flex-col justify-center min-h-[calc(100vh_-_56px)] py-10'>
+    <div className='container flex flex-col justify-center'>
       <form onSubmit={handleSubmit(submit)}>
         <h2 className='mb-10 font-medium text-lg text-center'>
           Login to CubeJKiddies

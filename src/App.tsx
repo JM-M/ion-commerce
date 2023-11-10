@@ -44,6 +44,7 @@ import AuthForm from './components/AuthForm';
 
 import AuthModalContext from './contexts/authModal';
 import CartProductsContext from './contexts/cartProducts';
+import ScreenSizeContext from './contexts/screenSize';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -81,99 +82,114 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   const [authModal, setAuthModal] = useState({ isOpen: false, form: 'login' });
   const [cartProducts, setCartProducts] = useState([]);
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   useEffect(() => {
     localStorage.theme = 'light';
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   useEruda();
+
+  const { width } = screenSize;
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthModalContext.Provider value={{ authModal, setAuthModal }}>
-        <CartProductsContext.Provider value={{ cartProducts, setCartProducts }}>
-          <IonApp>
-            <IonReactRouter>
-              <SideMenu />
-              <IonPage id='main-content'>
-                <TopHeader />
-                <IonModal isOpen={authModal.isOpen}>
-                  <IonHeader className='container ion-no-border'>
-                    <IonToolbar>
-                      <IonIcon
-                        icon={arrowBackOutline}
-                        color='dark'
-                        className='h-[20px] w-[20px]'
-                        onClick={() =>
-                          setAuthModal({ isOpen: false, form: 'login' })
-                        }
-                      />
-                    </IonToolbar>
-                  </IonHeader>
-                  <IonContent>
-                    <AuthForm />
-                  </IonContent>
-                </IonModal>
-                <IonTabs>
-                  <IonRouterOutlet className='pt-[60px] flex flex-col'>
-                    <IonContent className='scrollbar-hide'>
-                      {/* <AppLoading /> */}
-                      <div className='flex flex-col min-h-[100%] mb-10'>
-                        <Route
-                          path='/forgot-password/sent'
-                          component={PasswordResetEmailSent}
-                          exact
+      <ScreenSizeContext.Provider value={screenSize}>
+        <AuthModalContext.Provider value={{ authModal, setAuthModal }}>
+          <CartProductsContext.Provider
+            value={{ cartProducts, setCartProducts }}
+          >
+            <IonApp>
+              <IonReactRouter>
+                <SideMenu />
+                <IonPage id='main-content'>
+                  <TopHeader />
+                  <AuthForm
+                    isOpen={authModal.isOpen}
+                    close={() => setAuthModal({ isOpen: false, form: 'login' })}
+                  />
+                  <IonTabs>
+                    <IonRouterOutlet className='pt-[60px] flex flex-col'>
+                      <IonContent className='scrollbar-hide'>
+                        <div className='flex flex-col min-h-[100%] mb-10'>
+                          <Route
+                            path='/forgot-password/sent'
+                            component={PasswordResetEmailSent}
+                            exact
+                          />
+                          <Route
+                            path='/forgot-password'
+                            component={ForgotPassword}
+                            exact
+                          />
+                          <Route path='/about' component={About} />
+                          <Route path='/wishlist' component={Wishlist} />
+                          <Route path='/contact' component={Contact} />
+                          <Route path='/:tab(account)' component={Account} />
+                          <Route
+                            path='/:tab(orders)/:orderId'
+                            component={Order}
+                            exact
+                          />
+                          <Route
+                            path='/:tab(orders)'
+                            component={Orders}
+                            exact
+                          />
+                          <Route path='/:tab(store)' component={Store} />
+                          <Route
+                            path='/'
+                            render={() => <Redirect to='/store' />}
+                            exact
+                          />
+                        </div>
+                      </IonContent>
+                    </IonRouterOutlet>
+                    <IonTabBar slot='bottom' hidden={width > 768}>
+                      <IonTabButton tab='store' href='/store'>
+                        <IonIcon
+                          icon={storefrontOutline}
+                          className='unselected'
                         />
-                        <Route
-                          path='/forgot-password'
-                          component={ForgotPassword}
-                          exact
-                        />
-                        <Route path='/about' component={About} />
-                        <Route path='/wishlist' component={Wishlist} />
-                        <Route path='/contact' component={Contact} />
-                        <Route path='/:tab(account)' component={Account} />
-                        <Route
-                          path='/:tab(orders)/:orderId'
-                          component={Order}
-                          exact
-                        />
-                        <Route path='/:tab(orders)' component={Orders} exact />
-                        <Route path='/:tab(store)' component={Store} />
-                        <Route
-                          path='/'
-                          render={() => <Redirect to='/store' />}
-                          exact
-                        />
-                      </div>
-                    </IonContent>
-                  </IonRouterOutlet>
-                  <IonTabBar slot='bottom'>
-                    <IonTabButton tab='store' href='/store'>
-                      <IonIcon
-                        icon={storefrontOutline}
-                        className='unselected'
-                      />
-                      <IonIcon icon={storefront} className='selected' />
-                      <IonLabel>Store</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab='orders' href='/orders'>
-                      <IonIcon icon={timeOutline} className='unselected' />
-                      <IonIcon icon={time} className='selected' />
-                      <IonLabel>Orders</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab='account' href='/account'>
-                      <IonIcon icon={personOutline} className='unselected' />
-                      <IonIcon icon={person} className='selected' />
-                      <IonLabel>Account</IonLabel>
-                    </IonTabButton>
-                  </IonTabBar>
-                </IonTabs>
-              </IonPage>
-            </IonReactRouter>
-          </IonApp>
-        </CartProductsContext.Provider>
-      </AuthModalContext.Provider>
+                        <IonIcon icon={storefront} className='selected' />
+                        <IonLabel>Store</IonLabel>
+                      </IonTabButton>
+                      <IonTabButton tab='orders' href='/orders'>
+                        <IonIcon icon={timeOutline} className='unselected' />
+                        <IonIcon icon={time} className='selected' />
+                        <IonLabel>Orders</IonLabel>
+                      </IonTabButton>
+                      <IonTabButton tab='account' href='/account'>
+                        <IonIcon icon={personOutline} className='unselected' />
+                        <IonIcon icon={person} className='selected' />
+                        <IonLabel>Account</IonLabel>
+                      </IonTabButton>
+                    </IonTabBar>
+                  </IonTabs>
+                </IonPage>
+              </IonReactRouter>
+            </IonApp>
+          </CartProductsContext.Provider>
+        </AuthModalContext.Provider>
+      </ScreenSizeContext.Provider>
     </QueryClientProvider>
   );
 };
