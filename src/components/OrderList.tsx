@@ -27,7 +27,7 @@ const OrderList = () => {
 
   return (
     <>
-      <ul className='container'>
+      <ul>
         {orders.map((order, i: number) => {
           const { id, statusEvents = [], cart, createdAt } = order;
           const lastStatus =

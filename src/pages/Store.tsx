@@ -8,6 +8,7 @@ import Category from './Category';
 import Search from './Search';
 import Checkout from './Checkout';
 import Order from './Order';
+import Footer from '../components/Footer';
 
 const Store: React.FC = () => {
   return (
@@ -34,10 +35,11 @@ const Store: React.FC = () => {
           />
           <Route path='/:tab(store)' exact>
             <IonContent className='py-[50px]'>
-              <div className='flex flex-col h-full'>
+              <div className='flex flex-col min-h-screen'>
                 <HomeCarousel />
                 <HomeProductSections />
               </div>
+              <Footer />
             </IonContent>
           </Route>
         </div>

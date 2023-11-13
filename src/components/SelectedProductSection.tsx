@@ -4,16 +4,17 @@ import useSelectedProductSection from '../hooks/useSelectedProductSection';
 
 interface Props {
   id: string;
+  numProducts?: number;
 }
 
-const SelectedProductSection = ({ id }: Props) => {
+const SelectedProductSection = ({ id, numProducts = 10 }: Props) => {
   const {
     data = { allDocs: [] },
     isFetching,
     isLoading,
     fetchNextPage,
     hasNextPage,
-  } = useSelectedProductSection({ id });
+  } = useSelectedProductSection({ id, pageSize: numProducts });
   const { allDocs: products } = data;
 
   return (

@@ -31,7 +31,7 @@ const ProductCarousel: React.FC<Props> = ({ product, hasVariant = false }) => {
         naturalSlideWidth={100}
         naturalSlideHeight={120}
         totalSlides={images.length}
-        className='relative ml-5'
+        className='relative'
       >
         {isLoggedIn && (
           <ToggleWishlistIcon

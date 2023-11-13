@@ -21,7 +21,7 @@ const ProductCard = ({ product }: Props) => {
   const discountedPrice = discount && price - price * (discount / 100);
 
   return (
-    <div>
+    <div className='min-w-[150px] sm:min-w-[280px] md:min-w-[220px] lg:min-w-[290px]'>
       <Link to={`/store/products/${objectID}`} className='block'>
         <div className='relative w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg overflow-hidden'>
           {image && (

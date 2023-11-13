@@ -1,13 +1,15 @@
-import PageHeader from "../components/PageHeader";
-import AboutDetails from "../components/AboutDetails";
+import PageHeader from '../components/PageHeader';
+import AboutDetails from '../components/AboutDetails';
+import Footer from '../components/Footer';
 
 const About = () => {
   return (
-    <div className="h-full flex flex-col">
+    <div className='h-full flex flex-col'>
       <PageHeader>About us</PageHeader>
-      <div className="container flex flex-col my-auto">
+      <div className='container min-h-screen flex flex-col my-auto'>
         <AboutDetails />
       </div>
+      <Footer />
     </div>
   );
 };

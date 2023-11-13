@@ -1,5 +1,5 @@
-import DefaultProductVariations from "./DefaultProductVariations";
-import CustomProductVariations from "./CustomProductVariations";
+import DefaultProductVariations from './DefaultProductVariations';
+import CustomProductVariations from './CustomProductVariations';
 
 const ProductVariations: React.FC<{
   variant: any;
@@ -8,7 +8,7 @@ const ProductVariations: React.FC<{
 }> = ({ variant = {}, variations, setProductVariant = () => null }) => {
   const { colors, sizes, ...rest } = variations;
   return (
-    <div className="grid grid-cols-2 gap-4 px-5 pt-[30px]">
+    <div className='grid grid-cols-2 gap-4 pt-[30px]'>
       <DefaultProductVariations
         color={variant.colors}
         colors={colors}

@@ -5,7 +5,11 @@ const Orders = () => {
   return (
     <>
       <PageHeader noBackButton>Orders</PageHeader>
-      <OrderList />
+      <div className='container'>
+        <div className='max-w-[500px]'>
+          <OrderList />
+        </div>
+      </div>
     </>
   );
 };

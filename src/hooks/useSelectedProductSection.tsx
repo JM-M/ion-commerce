@@ -7,8 +7,11 @@ const client = algoliasearch(
   import.meta.env.VITE_ALGOLIA_SEARCH_ONLY_API_KEY
 );
 
-const useSelectedProductSection = (section: { id: string }) => {
-  const { id } = section || {};
+const useSelectedProductSection = (section: {
+  id: string;
+  pageSize: number;
+}) => {
+  const { id, pageSize } = section || {};
   const collectionName = `productSections/${id}/products`;
   const productsAlgoliaIndex = useMemo(() => client.initIndex('products'), []);
 
@@ -28,7 +31,7 @@ const useSelectedProductSection = (section: { id: string }) => {
 
   const productsQuery = useAlgoliaSearch({
     index: collectionName,
-    pageSize: 10,
+    pageSize,
     transformRecords: fetchProductRecords,
   });
 

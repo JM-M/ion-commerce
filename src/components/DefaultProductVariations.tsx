@@ -1,5 +1,6 @@
 import { IonItem, IonSelect, IonSelectOption } from '@ionic/react';
 import cx from 'classnames';
+import useScreenSize from '../hooks/useScreenSize';
 
 const DefaultProductVariations: React.FC<{
   color: string;
@@ -8,13 +9,15 @@ const DefaultProductVariations: React.FC<{
   sizes: any[];
   setProductVariant: Function;
 }> = ({ color, colors, size, sizes, setProductVariant = () => null }) => {
+  const { width } = useScreenSize();
+  const ionSelectInterface = width < 768 ? 'action-sheet' : undefined;
   return (
     <>
       {!!colors?.length && (
         <div className='block'>
           <IonItem>
             <IonSelect
-              interface='action-sheet'
+              interface={ionSelectInterface}
               label='Colors'
               labelPlacement='floating'
               aria-label='Colors'
@@ -51,7 +54,7 @@ const DefaultProductVariations: React.FC<{
         <div className='block'>
           <IonItem>
             <IonSelect
-              interface='action-sheet'
+              interface={ionSelectInterface}
               label='Sizes'
               labelPlacement='floating'
               aria-label='Sizes'

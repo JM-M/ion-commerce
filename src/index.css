@@ -195,6 +195,10 @@ ion-modal::part(content) {
   @apply px-5 mx-auto;
 }
 
+/* pure-react-carousel styles div.carousel div[aria-label='slide'] {
+  @apply xl:pb-[9.5%];
+} */
+
 /* react-phone-input-2 */
 .react-tel-input .form-control {
   @apply !border-none;

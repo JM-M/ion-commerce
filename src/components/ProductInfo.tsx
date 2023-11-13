@@ -18,8 +18,8 @@ const ProductInfo = ({ name, price, rating, discount }: Props) => {
   const avgRating = rating ? rating.count / rating.numUserReviews : null;
   const discountedPrice = discount && price - price * (discount / 100);
   return (
-    <div className='container pt-4 flex flex-col gap-[10px]'>
-      <h3 className='font-medium'>{name}</h3>
+    <div className='pt-4 flex flex-col gap-[10px] md:pt-0'>
+      <h3 className='font-medium text-lg'>{name}</h3>
       <div className='flex gap-2 text-lg'>
         <span
           className={cx('inline-block -mb-[2px]', {

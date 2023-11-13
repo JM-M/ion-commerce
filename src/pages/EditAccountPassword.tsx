@@ -1,11 +1,11 @@
-import PageHeader from "../components/PageHeader";
-import AccountPasswordForm from "../components/AccountPasswordForm";
+import PageHeader from '../components/PageHeader';
+import AccountPasswordForm from '../components/AccountPasswordForm';
 
 const EditAccountPassword = () => {
   return (
-    <div className="h-full flex flex-col">
-      <PageHeader backHref="/account">Edit password</PageHeader>
-      <div className="container my-auto">
+    <div className='min-h-screen flex flex-col'>
+      <PageHeader backHref='/account'>Edit password</PageHeader>
+      <div className='container my-auto'>
         <AccountPasswordForm />
       </div>
     </div>

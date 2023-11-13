@@ -19,6 +19,7 @@ import {
 } from '@ionic/react';
 import { closeOutline } from 'ionicons/icons';
 import cx from 'classnames';
+import useScreenSize from '../hooks/useScreenSize';
 
 interface TypeaheadProps {
   name: string;
@@ -49,6 +50,8 @@ const Typeahead = ({
   const [filteredItems, setFilteredItems] = useState<any[]>([...items]);
 
   const searchQueryRef = useRef<string>(value || '');
+
+  const { width } = useScreenSize();
 
   useEffect(() => {
     filterList(searchQueryRef.current);
@@ -140,7 +143,7 @@ const Typeahead = ({
       <IonModal
         trigger={`select-${name}`}
         ref={categoriesModal}
-        initialBreakpoint={initialBreakpoint}
+        initialBreakpoint={width < 768 ? initialBreakpoint : undefined}
       >
         <IonHeader>
           <IonToolbar>

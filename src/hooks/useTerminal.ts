@@ -3,6 +3,7 @@ import { Order } from './useOrders';
 import useAuth from './useAuth';
 import { getCities, getCountries, getStates } from '../utils/terminal/api';
 import getTerminalShipmentRates from '../utils/terminal/functions/getTerminalShipmentRates';
+import shipmentRates from '../data/terminal/shipmentRates';
 
 type Country = { name: string; isoCode: string };
 
@@ -64,7 +65,7 @@ const useTerminal = (props: Props = {}) => {
     queryKey: ['shipment-rates', order],
     queryFn: async () => {
       if (!order || !isLoggedIn) return [];
-      const rates = await getTerminalShipmentRates(order);
+      const rates = shipmentRates;
       return rates;
     },
     staleTime: 1000 * 60 * 5,

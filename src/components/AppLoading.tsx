@@ -4,7 +4,6 @@ import useProductSections from '../hooks/useProductSections';
 
 const AppLoading: React.FC = () => {
   const { productSectionsQuery } = useProductSections();
-  console.log(productSectionsQuery.isLoading);
   return (
     <IonModal isOpen={productSectionsQuery.isLoading}>
       <IonContent>

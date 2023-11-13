@@ -1,11 +1,14 @@
-import { IonItem, IonSelect, IonSelectOption } from "@ionic/react";
-import cx from "classnames";
+import { IonItem, IonSelect, IonSelectOption } from '@ionic/react';
+import cx from 'classnames';
+import useScreenSize from '../hooks/useScreenSize';
 
 const CustomProductVariations: React.FC<{
   variant: any;
   variations: any;
   setProductVariant: Function;
 }> = ({ variant = {}, variations = {}, setProductVariant = () => null }) => {
+  const { width } = useScreenSize();
+  const ionSelectInterface = width < 768 ? 'action-sheet' : undefined;
   const keys = Object.keys(variations);
 
   if (!keys.length) return null;
@@ -18,11 +21,11 @@ const CustomProductVariations: React.FC<{
           <div key={index}>
             <IonItem>
               <IonSelect
-                interface="action-sheet"
+                interface={ionSelectInterface}
                 label={key}
-                labelPlacement="floating"
+                labelPlacement='floating'
                 aria-label={key}
-                placeholder="Select"
+                placeholder='Select'
                 onIonChange={(ev) => setProductVariant(key, ev.detail.value)}
               >
                 {options.map((option: any, i: number) => {
@@ -33,7 +36,7 @@ const CustomProductVariations: React.FC<{
                       key={i}
                       value={name}
                       className={cx({
-                        "!text-[var(--ion-color-primary)] !bg-gray-200 dark:!bg-neutral-900":
+                        '!text-[var(--ion-color-primary)] !bg-gray-200 dark:!bg-neutral-900':
                           selected,
                       })}
                     >

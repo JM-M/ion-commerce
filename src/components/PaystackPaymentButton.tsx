@@ -29,7 +29,7 @@ const PaystackPaymentButton = ({
       reference: uuidv4(),
       email,
       amount: Math.round(paymentValue * 100),
-      publicKey: import.meta.env.VITE_TEST_PAYSTACK_PUBLIC_KEY,
+      publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
     };
   }, [email, paymentValue]);
 

@@ -31,7 +31,11 @@ const HomeCarousel = () => {
           {homeSlides.map((homeSlide: HomeSlide, index: number) => {
             const { id, image, button, buttonText, buttonHref } = homeSlide;
             return (
-              <Slide key={id} index={index}>
+              <Slide
+                key={id}
+                index={index}
+                style={width >= 1280 ? { paddingBottom: '9.5%' } : {}}
+              >
                 <div
                   className={cx(
                     'relative h-full w-full bg-gray-200 rounded-xl overflow-hidden',

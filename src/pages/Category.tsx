@@ -3,6 +3,7 @@ import { useIonRouter, IonContent } from '@ionic/react';
 import { CategoryHeader } from '../components/CategoryHeader';
 import ProductCategoryDisplay from '../components/ProductCategoryDisplay';
 import { SortOption } from '../hooks/useProducts';
+import Footer from '../components/Footer';
 
 const SORT_OPTIONS: { [option: string]: SortOption } = {
   'Most popular': { field: 'ranking', reverse: false },
@@ -33,6 +34,7 @@ const Category = () => {
         <div className='container pb-[30px]'>
           <ProductCategoryDisplay category={category} />
         </div>
+        <Footer />
       </IonContent>
     </>
   );

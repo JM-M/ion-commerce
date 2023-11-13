@@ -13,15 +13,22 @@ import {
 import { closeOutline } from 'ionicons/icons';
 import useAlgoliaSearch from '../hooks/useAlgoliaSearch';
 import ProductGrid from './ProductGrid';
+import ProductRow from './ProductRow';
 import Button from './Button';
 import ProductFilterForm from './ProductFilterForm';
 import useCategories from '../hooks/useCategories';
 
 interface Props {
   category: string;
+  numProducts?: number;
+  displayType?: 'row' | 'grid';
 }
 
-const ProductCategoryDisplay = ({ category }: Props) => {
+const ProductCategoryDisplay = ({
+  category,
+  numProducts = 10,
+  displayType = 'grid',
+}: Props) => {
   const [queryFilter, setQueryFilter] = useState<any>();
   const { categoriesQuery, getCategoryFromValue } = useCategories();
   const categories = categoriesQuery.data?.docs;
@@ -64,7 +71,7 @@ const ProductCategoryDisplay = ({ category }: Props) => {
     hasNextPage,
   } = useAlgoliaSearch({
     index: 'products',
-    pageSize: 10,
+    pageSize: numProducts,
     options: { filters, facets: 'price' },
   });
 
@@ -124,13 +131,22 @@ const ProductCategoryDisplay = ({ category }: Props) => {
           </div>
         </IonContent>
       </IonModal>
-      <ProductGrid
-        products={products}
-        initialLoading={isLoading && !products?.length}
-        loadingMore={isFetching}
-        onLoadMore={fetchNextPage}
-      />
-      {hasNextPage && (
+      {displayType === 'grid' ? (
+        <ProductGrid
+          products={products}
+          initialLoading={isLoading && !products?.length}
+          loadingMore={isFetching}
+          onLoadMore={fetchNextPage}
+        />
+      ) : displayType === 'row' ? (
+        <ProductRow
+          products={products}
+          initialLoading={isLoading && !products?.length}
+          loadingMore={isFetching}
+          onLoadMore={fetchNextPage}
+        />
+      ) : null}
+      {hasNextPage && displayType === 'grid' && (
         <Button
           color='secondary'
           className='block !h-30 w-fit mx-auto mt-[30px] font-medium rounded-[8px]'

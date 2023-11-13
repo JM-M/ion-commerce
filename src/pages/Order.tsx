@@ -47,57 +47,59 @@ const Order: React.FC<Props> = ({ match }) => {
         )}
       </PageHeader>
       <div className='container mb-12'>
-        <h3 className='font-medium mb-5 text-lg text-[var(--ion-color-medium)]'>
-          {isLoading ? (
-            <IonSkeletonText
-              animated={true}
-              className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
-            ></IonSkeletonText>
-          ) : (
-            'Status'
+        <div className='max-w-[500px]'>
+          <h3 className='font-medium mb-5 text-lg text-[var(--ion-color-medium)]'>
+            {isLoading ? (
+              <IonSkeletonText
+                animated={true}
+                className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
+              ></IonSkeletonText>
+            ) : (
+              'Status'
+            )}
+          </h3>
+          {!!latestStatus && (
+            <StatusText status={latestStatus.status} loading={isLoading} />
           )}
-        </h3>
-        {!!latestStatus && (
-          <StatusText status={latestStatus.status} loading={isLoading} />
-        )}
-        <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
-          {isLoading ? (
-            <IonSkeletonText
-              animated={true}
-              className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
-            ></IonSkeletonText>
-          ) : (
-            'Items'
-          )}
-        </h3>
-        <OrderItems items={cart?.products || []} loading={isLoading} />
-        <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
-          {isLoading ? (
-            <IonSkeletonText
-              animated={true}
-              className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
-            ></IonSkeletonText>
-          ) : (
-            'Track'
-          )}
-        </h3>
-        <OrderStatus events={statusEvents} loading={isLoading} />
-        <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
-          {isLoading ? (
-            <IonSkeletonText
-              animated={true}
-              className='block h-full w-1/3 mb-5 ion-no-padding ion-no-margin rounded-md'
-            ></IonSkeletonText>
-          ) : (
-            'Details'
-          )}
-        </h3>
-        <OrderInfo
-          email={user?.email}
-          contact={cart?.checkout?.contact}
-          address={cart?.checkout?.address}
-          loading={isLoading}
-        />
+          <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
+            {isLoading ? (
+              <IonSkeletonText
+                animated={true}
+                className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
+              ></IonSkeletonText>
+            ) : (
+              'Items'
+            )}
+          </h3>
+          <OrderItems items={cart?.products || []} loading={isLoading} />
+          <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
+            {isLoading ? (
+              <IonSkeletonText
+                animated={true}
+                className='block h-full w-1/5 mb-5 ion-no-padding ion-no-margin rounded-md'
+              ></IonSkeletonText>
+            ) : (
+              'Track'
+            )}
+          </h3>
+          <OrderStatus events={statusEvents} loading={isLoading} />
+          <h3 className='font-medium mt-6 mb-2 text-lg text-[var(--ion-color-medium)]'>
+            {isLoading ? (
+              <IonSkeletonText
+                animated={true}
+                className='block h-full w-1/3 mb-5 ion-no-padding ion-no-margin rounded-md'
+              ></IonSkeletonText>
+            ) : (
+              'Details'
+            )}
+          </h3>
+          <OrderInfo
+            email={user?.email}
+            contact={cart?.checkout?.contact}
+            address={cart?.checkout?.address}
+            loading={isLoading}
+          />
+        </div>
       </div>
     </>
   );

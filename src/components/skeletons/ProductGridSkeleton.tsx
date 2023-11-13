@@ -1,9 +1,23 @@
+import { useMemo } from 'react';
 import { IonLabel, IonSkeletonText } from '@ionic/react';
+import useScreenSize from '../../hooks/useScreenSize';
 
 const ProductGridSkeleton = () => {
+  const { breakpoint } = useScreenSize();
+  let numProducts = useMemo(() => {
+    return (
+      {
+        '2xl': 8,
+        xl: 8,
+        lg: 6,
+        md: 6,
+        sm: 4,
+      }[breakpoint] || 4
+    );
+  }, [breakpoint]);
   return (
-    <ul className='grid grid-cols-2 gap-5'>
-      {[...Array(4)].map((_, i) => (
+    <ul className='grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-4'>
+      {[...Array(numProducts)].map((_, i) => (
         <li key={i}>
           <div className='relative w-full aspect-[5/6] mb-[10px] bg-gray-100 rounded-lg overflow-hidden'>
             <IonSkeletonText

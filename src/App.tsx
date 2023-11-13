@@ -129,7 +129,7 @@ const App: React.FC = () => {
                   <IonTabs>
                     <IonRouterOutlet className='pt-[60px] flex flex-col'>
                       <IonContent className='scrollbar-hide'>
-                        <div className='flex flex-col min-h-[100%] mb-10'>
+                        <div className='flex flex-col min-h-[100%]'>
                           <Route
                             path='/forgot-password/sent'
                             component={PasswordResetEmailSent}

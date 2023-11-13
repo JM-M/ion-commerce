@@ -1,8 +1,8 @@
 import { RouteComponentProps } from 'react-router';
-import { useIonRouter } from '@ionic/react';
 import PageHeader from '../components/PageHeader';
 import useProductSections from '../hooks/useProductSections';
 import ProductSection from '../components/ProductSection';
+import Footer from '../components/Footer';
 
 interface Props
   extends RouteComponentProps<{
@@ -10,9 +10,6 @@ interface Props
   }> {}
 
 const ProductSectionPage: React.FC<Props> = ({ match }) => {
-  const ionRouter = useIonRouter();
-  const { canGoBack, goBack, push } = ionRouter;
-
   const { sectionId } = match.params;
 
   const { productSectionQuery } = useProductSections({
@@ -26,6 +23,7 @@ const ProductSectionPage: React.FC<Props> = ({ match }) => {
       <div className='-mt-5'>
         <ProductSection section={data} loading={isLoading} noHeader />
       </div>
+      <Footer />
     </>
   );
 };

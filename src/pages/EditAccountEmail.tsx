@@ -1,11 +1,11 @@
-import PageHeader from "../components/PageHeader";
-import AccountEmailForm from "../components/AccountEmailForm";
+import PageHeader from '../components/PageHeader';
+import AccountEmailForm from '../components/AccountEmailForm';
 
 const EditAccountEmail = () => {
   return (
-    <div className="h-full flex flex-col">
-      <PageHeader backHref="/account">Edit email</PageHeader>
-      <div className="container my-auto">
+    <div className='min-h-screen flex flex-col'>
+      <PageHeader backHref='/account'>Edit email</PageHeader>
+      <div className='container min-h-screen my-auto'>
         <AccountEmailForm />
       </div>
     </div>

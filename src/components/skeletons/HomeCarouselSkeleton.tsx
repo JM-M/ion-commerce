@@ -3,7 +3,7 @@ import { IonSkeletonText } from '@ionic/react';
 const HomeCarouselSkeleton = () => {
   return (
     <div className='container pt-4'>
-      <div className='w-full aspect-[345/265] pt-4 rounded-2xl overflow-hidden'>
+      <div className='w-full h-[400px] md:h-[500px] pt-4 rounded-2xl overflow-hidden'>
         <IonSkeletonText
           animated={true}
           className='block h-full w-full ion-no-padding ion-no-margin'

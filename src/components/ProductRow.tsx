@@ -9,11 +9,11 @@ interface Props {
   loadingMore?: boolean;
 }
 
-const ProductGrid = ({ products = [], initialLoading = false }: Props) => {
+const ProductRow = ({ products = [], initialLoading = false }: Props) => {
   if (initialLoading) return <ProductGridSkeleton />;
 
   return (
-    <ul className='grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-4'>
+    <ul className='flex gap-5 overflow-x-auto scrollbar-hide'>
       {products.map((product: ProductAlgoliaRecord, i: number) => {
         return (
           <li key={i}>
@@ -25,4 +25,4 @@ const ProductGrid = ({ products = [], initialLoading = false }: Props) => {
   );
 };
 
-export default ProductGrid;
+export default ProductRow;
