@@ -27,15 +27,12 @@ const CategoriesMenu = () => {
         <li>
           <span
             className={cx('text-sm', {
-              underline: activeCategoryPaths.length,
+              underline: activeCategoryPaths?.length,
             })}
             onClick={() => setActiveCategory('/')}
           >
             All products
           </span>
-          {activeCategoryPaths.length > 1 && (
-            <span className='inline-block mx-2'>/</span>
-          )}
         </li>
         {activeCategoryPaths.map((path, i) => {
           const isLastPath = i === activeCategoryPaths.length - 1;
@@ -43,7 +40,7 @@ const CategoriesMenu = () => {
             <li key={i}>
               <span className='inline-block mx-2'>/</span>
               <span
-                className={cx('text-sm', { underline: !isLastPath })}
+                className='text-sm underline'
                 onClick={() => (isLastPath ? null : setCategoryPathAsActive(i))}
               >
                 {path}
@@ -72,7 +69,7 @@ const CategoriesMenu = () => {
                 <IonMenuToggle>
                   <IonButton
                     fill='clear'
-                    className='ion-no-padding underline'
+                    className='ion-no-padding'
                     color='dark'
                   >
                     {name}

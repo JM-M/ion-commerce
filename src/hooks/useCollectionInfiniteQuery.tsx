@@ -112,6 +112,7 @@ const useCollectionInfiniteQuery = (props: FirestoreInfiniteQuery) => {
         .flat(),
     }),
     staleTime: Infinity,
+    refetchOnWindowFocus: false,
   });
 
   const isLoading = countQueryState.isLoading || queryState.isLoading;

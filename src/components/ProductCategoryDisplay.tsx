@@ -106,7 +106,7 @@ const ProductCategoryDisplay = ({
       <IonModal
         ref={filterModal}
         trigger='filter-open-button'
-        initialBreakpoint={0.5}
+        // initialBreakpoint={0.5}
       >
         <IonHeader className='ion-no-border'>
           <IonToolbar>

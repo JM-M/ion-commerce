@@ -43,6 +43,13 @@ const useWishlist = (props: Props = { productId: '' }) => {
     keys: [uid],
     retry: false,
   });
+  if (productId === '389ff1f3-e3d5-4068-a5e9-809bdc36ee94')
+    console.log({
+      collectionName,
+      documentId: productId,
+      keys: [uid],
+      retry: false,
+    });
 
   const onWishlistItemAdd = (wishlistItem: WishlistItem) => {
     queryClient.setQueriesData(

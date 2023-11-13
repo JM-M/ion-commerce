@@ -38,7 +38,7 @@ const ToggleWishlistIcon = ({ product, className = {}, ...props }: Props) => {
     addWishlistItem(wishlistItem);
   };
 
-  if (isLoading || !isLoggedIn) return null;
+  if (!isLoggedIn) return null;
 
   const iconClassName = 'h-[20px] w-[20px] mt-[2px]';
 
@@ -72,7 +72,8 @@ const ToggleWishlistIcon = ({ product, className = {}, ...props }: Props) => {
     <span
       className={cx(
         'absolute bottom-3 right-3 inline-flex items-center justify-center h-[30px] w-[30px] bg-white rounded-[50%]',
-        className
+        className,
+        { 'pointer-events-none': isLoading }
       )}
     >
       {iconDisplayed}
