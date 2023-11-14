@@ -149,7 +149,6 @@ const useProducts = (props: Props = {}) => {
     collectionName: `products/${product?.id}/buyers`,
     documentId: uid,
   });
-  console.log(hasBoughtProductQuery.data);
 
   return {
     productsQuery,
