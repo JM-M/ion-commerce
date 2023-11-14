@@ -12,7 +12,7 @@ export interface Category {
 const useCategories = () => {
   const categoriesQuery = useFirestoreCollectionQuery({
     collectionName: 'categories',
-    orderByField: 'createdAt',
+    orderByField: 'value',
     options: {
       pageSize: 1000,
     },
