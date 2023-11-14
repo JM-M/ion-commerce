@@ -32,6 +32,7 @@ const ProductCategoryDisplay = ({
   const [queryFilter, setQueryFilter] = useState<any>();
   const { categoriesQuery, getCategoryFromValue } = useCategories();
   const categories = categoriesQuery.data?.docs;
+  console.log(categories);
 
   const filters = useMemo(() => {
     let categoryLevelIds = '';
