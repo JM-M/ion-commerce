@@ -62,9 +62,6 @@ export const CategoryHeader = ({ sortOptions, setSortOption }: Props) => {
           })}
         </ul>
       </div>
-      {/* <PageHeader backHref={baseUrlPath} noBackButton={isRootCategory}>
-        {!isRootCategory ? activeCategory?.name : 'All products'}
-      </PageHeader> */}
       <IonHeader className='container ion-no-border'>
         {' '}
         <div className='w-screen overflow-x-auto pb-1'>

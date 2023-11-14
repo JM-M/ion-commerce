@@ -9,7 +9,6 @@ import PageLoader from './PageLoader';
 import SimilarProducts from './SimilarProducts';
 import useProducts from '../hooks/useProducts';
 import { Product } from '../constants/schemas/product';
-import useCategories from '../hooks/useCategories';
 
 interface Props {
   id: string;
@@ -31,8 +30,6 @@ const ProductDetails = ({ id }: Props) => {
     discount,
     category,
   } = product;
-
-  const { getCategoryFromId } = useCategories();
 
   const setProductVariant = (key: string, name: string) =>
     setVariant((v: any) => ({ ...v, [key]: name }));
@@ -60,37 +57,35 @@ const ProductDetails = ({ id }: Props) => {
 
   return (
     <>
-      <div className='container'>
-        <div className='md:flex'>
-          <div className='md:flex-1 md:max-w-[60%]'>
-            <ProductCarousel
-              product={product}
-              hasVariant={!!variantKeys.length}
-            />
-          </div>
-          <div className='md:flex-1'>
-            <ProductInfo
-              name={name}
-              price={price}
-              rating={rating}
-              discount={discount}
-            />
-            <ProductVariations
-              variant={variant}
-              variations={variations}
-              setProductVariant={setProductVariant}
-            />
-            <AddToCartButton
-              product={product}
-              variant={variant}
-              variantValid={variantValid}
-            />
-            <ProductDescription description={description} />
-          </div>
+      <div className='md:flex'>
+        <div className='-mr-5 md:-mr-0 md:flex-1 md:max-w-[60%]'>
+          <ProductCarousel
+            product={product}
+            hasVariant={!!variantKeys.length}
+          />
         </div>
-        <ProductReviews />
+        <div className='md:flex-1'>
+          <ProductInfo
+            name={name}
+            price={price}
+            rating={rating}
+            discount={discount}
+          />
+          <ProductVariations
+            variant={variant}
+            variations={variations}
+            setProductVariant={setProductVariant}
+          />
+          <AddToCartButton
+            product={product}
+            variant={variant}
+            variantValid={variantValid}
+          />
+          <ProductDescription description={description} />
+        </div>
       </div>
-      <div className='container pb-10'>
+      <ProductReviews />
+      <div className='pb-10'>
         <SimilarProducts categoryId={category} />
       </div>
     </>
