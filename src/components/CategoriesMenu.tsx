@@ -15,6 +15,7 @@ const CategoriesMenu = () => {
 
   if (isLoading) return <CategoriesMenuSkeleton />;
   const categories = getChildCategories(activeCategory || '/');
+  console.log(categoriesQuery.data, categories);
   const activeCategoryPaths = activeCategory.split('/').filter((v) => v);
 
   const setCategoryPathAsActive = (i: number) => {

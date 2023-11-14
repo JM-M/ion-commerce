@@ -34,7 +34,7 @@ const HomeCarousel = () => {
               <Slide
                 key={id}
                 index={index}
-                style={width >= 1280 ? { paddingBottom: '9.5%' } : {}}
+                style={width >= 1280 ? { paddingBottom: '20%' } : {}}
               >
                 <div
                   className={cx(
