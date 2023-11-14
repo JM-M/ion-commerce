@@ -17,15 +17,17 @@ const Product: React.FC<Props> = ({ match }) => {
 
   return (
     <>
-      <div className='block container mb-3'>
-        <IonIcon
-          icon={arrowBackOutline}
-          color='dark'
-          className='h-[20px] w-[20px]'
-          onClick={() => (canGoBack() ? goBack() : push('/store', 'back'))}
-        />
+      <div className='container min-h-fit h-fit flex flex-col'>
+        <div className='block mb-3'>
+          <IonIcon
+            icon={arrowBackOutline}
+            color='dark'
+            className='h-[20px] w-[20px]'
+            onClick={() => (canGoBack() ? goBack() : push('/store', 'back'))}
+          />
+        </div>
+        <ProductDetails id={productId} />
       </div>
-      <ProductDetails id={productId} />
       <Footer />
     </>
   );
