@@ -82,10 +82,10 @@ const ProductDetails = ({ id }: Props) => {
             variantValid={variantValid}
           />
           <ProductDescription description={description} />
+          <ProductReviews />
         </div>
       </div>
-      <ProductReviews />
-      <div className='pb-10'>
+      <div className='py-10'>
         <SimilarProducts categoryId={category} />
       </div>
     </>

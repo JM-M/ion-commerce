@@ -28,7 +28,7 @@ const ProductReviews = () => {
   const { hasNextPage, fetchNextPage } = reviewsQuery;
 
   return (
-    <div className='container pt-[30px]'>
+    <div className='pt-[30px]'>
       {!!reviews?.length && (
         <h4 className='mb-[10px] font-medium text-gray-500 text-base'>
           Reviews
